@@ -168,19 +168,20 @@ export default function AssessmentResults({
           </div>
         </div>
 
-        <div className="w-full h-80">
+        <div className="w-full h-[430px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 20, right: 30, left: 0, bottom: 40 }}
+              margin={{ top: 15, right: 30, left: 0, bottom: 95 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.3} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#64748b" strokeOpacity={0.2} />
               <XAxis
                 dataKey="name"
-                angle={-25}
+                angle={-32}
                 textAnchor="end"
                 interval={0}
-                tick={{ fill: "#94a3b8", fontSize: 11 }}
+                height={105}
+                tick={{ fill: "#94a3b8", fontSize: 10.5 }}
               />
               <YAxis domain={[0, 100]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
               <Tooltip
@@ -193,11 +194,15 @@ export default function AssessmentResults({
                   boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)"
                 }}
               />
-              <Legend wrapperStyle={{ paddingTop: "10px", fontSize: "12px" }} />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                wrapperStyle={{ paddingBottom: "12px", fontSize: "12px" }}
+              />
               <Bar
                 name={isHi ? "आपका स्कोर (%)" : "Your Score (%)"}
                 dataKey="currentScore"
-                fill="#134074"
+                fill="#0284c7"
                 radius={[4, 4, 0, 0]}
               />
               <Bar
@@ -206,7 +211,18 @@ export default function AssessmentResults({
                 fill="#ea580c"
                 radius={[4, 4, 0, 0]}
               />
-              <ReferenceLine y={75} stroke="#10b981" strokeDasharray="3 3" label={isHi ? "संवर्ग मानक (75%)" : "Cadre Baseline (75%)"} />
+              <ReferenceLine
+                y={75}
+                stroke="#10b981"
+                strokeDasharray="3 3"
+                label={{
+                  value: isHi ? "संवर्ग मानक (75%)" : "Cadre Baseline (75%)",
+                  position: "insideTopRight",
+                  fill: "#10b981",
+                  fontSize: 11,
+                  fontWeight: 600
+                }}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
