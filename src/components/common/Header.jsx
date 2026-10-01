@@ -30,20 +30,20 @@ export default function Header({ toggleMobileSidebar }) {
       </div>
 
       {/* Main navigation header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
           <button
             onClick={toggleMobileSidebar}
-            className="md:hidden p-2 text-slate-300 hover:text-white focus:outline-none"
+            className="md:hidden p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg focus:outline-none shrink-0"
             aria-label="Toggle navigation"
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-5 h-5" />
           </button>
 
           {/* National Emblem & Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center p-1.5 shadow-inner">
-              <svg viewBox="0 0 24 24" className="w-7 h-7 text-gov-sky" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center p-1.5 shadow-inner shrink-0">
+              <svg viewBox="0 0 24 24" className="w-6 h-6 sm:w-7 sm:h-7 text-gov-sky" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" r="10" />
                 <path d="m4.93 4.93 4.24 4.24" />
                 <path d="m14.83 9.17 4.24-4.24" />
@@ -52,11 +52,11 @@ export default function Header({ toggleMobileSidebar }) {
                 <circle cx="12" cy="12" r="3" />
               </svg>
             </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-lg tracking-wide text-white">{t("appTitle", "StatSkill AI")}</span>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <span className="font-bold text-sm sm:text-lg tracking-wide text-white truncate">{t("appTitle", "StatSkill AI")}</span>
               </div>
-              <p className="text-xs text-slate-300 hidden sm:block">
+              <p className="text-[11px] text-slate-300 hidden md:block truncate max-w-xs lg:max-w-md">
                 {t("appSubtitle", "Competency Intelligence & Personalized Learning Platform")}
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function Header({ toggleMobileSidebar }) {
         </div>
 
         {/* User Info & Actions */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
           {/* Bilingual En / हि Switcher */}
           <LanguageToggle />
 
@@ -72,10 +72,10 @@ export default function Header({ toggleMobileSidebar }) {
           <ThemeToggle />
 
           {currentUser && (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               {/* Role badge */}
-              <div className="hidden sm:flex flex-col items-end">
-                <span className="text-sm font-semibold text-white leading-tight">
+              <div className="hidden lg:flex flex-col items-end">
+                <span className="text-sm font-semibold text-white leading-tight truncate max-w-[140px]">
                   {isOfficer ? (officerProfile?.fullName || currentUser.displayName) : currentUser.displayName}
                 </span>
                 <span className="text-xs text-slate-300 flex items-center space-x-1">
@@ -98,11 +98,11 @@ export default function Header({ toggleMobileSidebar }) {
               <img
                 src={currentUser.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"}
                 alt={currentUser.displayName}
-                className="w-9 h-9 rounded-full border-2 border-gov-accent/60 object-cover"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-gov-accent/60 object-cover shrink-0"
               />
 
               {/* Role Indicator Pill */}
-              <span className={`text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${
+              <span className={`hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
                 isOfficer
                   ? "bg-blue-900/80 text-blue-200 border border-blue-500/40"
                   : "bg-emerald-900/80 text-emerald-200 border border-emerald-500/40"
@@ -114,10 +114,10 @@ export default function Header({ toggleMobileSidebar }) {
               <button
                 onClick={logout}
                 title="Logout from session"
-                className="p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-1 text-xs cursor-pointer"
+                className="p-1.5 sm:p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex items-center space-x-1 text-xs cursor-pointer shrink-0"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden md:inline">{t("logout", "Logout")}</span>
+                <span className="hidden sm:inline">{t("logout", "Logout")}</span>
               </button>
             </div>
           )}

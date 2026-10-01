@@ -36,3 +36,5 @@ Thumbs.db
 # Testing & Scratch
 scratch/
 .system_generated/
+
+.vercel
