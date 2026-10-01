@@ -224,7 +224,7 @@ export default function CoursePlayerModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className='p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900 flex items-start justify-between'>
+        <div className='p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900 flex items-start justify-between print:hidden'>
           <div>
             <div className='flex items-center space-x-2'>
               <span className='text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded'>
@@ -242,14 +242,14 @@ export default function CoursePlayerModal({
 
           <button
             onClick={onClose}
-            className='p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors'
+            className='p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer'
           >
             <X className='w-5 h-5' />
           </button>
         </div>
 
         {/* Progress Bar */}
-        <div className='px-6 py-2.5 bg-slate-100/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs'>
+        <div className='px-6 py-2.5 bg-slate-100/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs print:hidden'>
           <div className='flex items-center space-x-2'>
             <span className='font-bold text-slate-700 dark:text-slate-300'>
               {isHi ? 'पाठ्यक्रम प्रगति:' : 'Course Completion:'}
@@ -265,9 +265,9 @@ export default function CoursePlayerModal({
         </div>
 
         {/* Content Body: Sidebar + Main Viewer */}
-        <div className='flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden'>
+        <div className='flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden print:block'>
           {/* Chapter Tree Sidebar */}
-          <div className='md:col-span-4 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 p-4 overflow-y-auto space-y-2'>
+          <div className='md:col-span-4 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 p-4 overflow-y-auto space-y-2 print:hidden'>
             <h4 className='text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 px-1'>
               {isHi ? 'पाठ्यक्रम अनुक्रमणिका' : 'Course Syllabus'}
             </h4>
@@ -309,63 +309,80 @@ export default function CoursePlayerModal({
           </div>
 
           {/* Active Lesson Reader / Certificate View */}
-          <div className='md:col-span-8 p-6 overflow-y-auto flex flex-col justify-between space-y-6'>
+          <div className='md:col-span-8 p-6 overflow-y-auto flex flex-col justify-between space-y-6 print:p-0 print:overflow-visible print:block'>
             {certificateData ? (
               /* Verified MoSPI / NSSTA Certificate View */
-              <div className='p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl border-2 border-amber-300 dark:border-amber-600/60 shadow-lg text-center space-y-4 animate-modal-pop'>
+              <div className='p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl border-2 border-amber-300 dark:border-amber-600/60 shadow-lg text-center space-y-4 animate-modal-pop certificate-print-sheet print:border-4 print:border-amber-700 print:p-10 print:bg-white print:text-slate-900'>
                 <div className='flex justify-center relative'>
                   {/* Glowing halo ripple ring */}
-                  <div className='absolute w-16 h-16 rounded-full bg-amber-400/30 dark:bg-amber-500/20 animate-halo-ripple pointer-events-none' />
-                  <div className='w-14 h-14 bg-amber-100 dark:bg-amber-950 rounded-full flex items-center justify-center border-2 border-amber-400 shadow-md animate-badge-drop relative z-10'>
+                  <div className='absolute w-16 h-16 rounded-full bg-amber-400/30 dark:bg-amber-500/20 animate-halo-ripple pointer-events-none print:hidden' />
+                  <div className='w-14 h-14 bg-amber-100 dark:bg-amber-950 rounded-full flex items-center justify-center border-2 border-amber-400 shadow-md animate-badge-drop relative z-10 print:bg-amber-50 print:border-amber-600'>
                     <Award className='w-8 h-8 text-amber-600 dark:text-amber-400' />
                   </div>
                 </div>
 
                 <div>
-                  <span className='text-[11px] font-extrabold uppercase tracking-widest text-amber-800 dark:text-amber-300 block'>
+                  <span className='text-[11px] font-extrabold uppercase tracking-widest text-amber-800 dark:text-amber-300 block print:text-amber-900'>
                     Ministry of Statistics & Programme Implementation
                   </span>
-                  <span className='text-[10px] font-bold text-slate-600 dark:text-slate-400 block'>
-                    National Statistical Systems Training Academy (NSSTA)
+                  <span className='text-[10px] font-bold text-slate-600 dark:text-slate-400 block print:text-slate-700'>
+                    National Statistical Systems Training Academy (NSSTA) • Government of India
                   </span>
-                  <h3 className='text-xl font-black text-slate-900 dark:text-white mt-2'>
+                  <h3 className='text-xl font-black text-slate-900 dark:text-white mt-2 print:text-slate-950 font-serif'>
                     {isHi ? 'संवर्ग दक्षता प्रवीणता प्रमाण पत्र' : 'Certificate of Cadre Competency'}
                   </h3>
                 </div>
 
-                <div className='py-2 text-xs text-slate-700 dark:text-slate-300 space-y-1.5'>
+                <div className='py-2 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 print:text-slate-800'>
                   <p>{isHi ? 'यह प्रमाणित किया जाता है कि अधिकारी' : 'This is to officially certify that Officer'}</p>
-                  <p className='text-base font-extrabold text-gov-blue dark:text-sky-400'>
+                  <p className='text-lg font-black text-gov-blue dark:text-sky-400 print:text-gov-navy font-serif'>
                     {certificateData.officerName}
                   </p>
                   <p>{isHi ? 'ने निम्नलिखित आधिकारिक संवर्ग पाठ्यक्रम सफलतापूर्वक पूर्ण किया है:' : 'has successfully mastered and completed the cadre module:'}</p>
-                  <p className='font-bold text-slate-900 dark:text-white text-sm'>
+                  <p className='font-bold text-slate-900 dark:text-white text-sm print:text-slate-950'>
                     {certificateData.courseTitle}
                   </p>
                 </div>
 
-                <div className='p-3 bg-white/90 dark:bg-slate-900 rounded-xl border border-amber-200 dark:border-amber-800/60 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400'>
-                  <div>
-                    <span className='block text-[10px] font-mono uppercase text-slate-400'>Certificate ID</span>
-                    <span className='font-mono font-bold text-slate-800 dark:text-slate-200'>{certificateData.certificateId}</span>
+                <div className='p-3 bg-white/90 dark:bg-slate-900 rounded-xl border border-amber-200 dark:border-amber-800/60 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 print:bg-slate-50 print:border-slate-300 print:text-slate-800'>
+                  <div className='text-left'>
+                    <span className='block text-[10px] font-mono uppercase text-slate-400 print:text-slate-600'>Certificate ID</span>
+                    <span className='font-mono font-bold text-slate-800 dark:text-slate-200 print:text-slate-900'>{certificateData.certificateId}</span>
                   </div>
-                  <div>
-                    <span className='block text-[10px] font-mono uppercase text-slate-400'>Issue Date</span>
-                    <span className='font-bold text-slate-800 dark:text-slate-200'>{certificateData.completedAt}</span>
+                  <div className='text-right'>
+                    <span className='block text-[10px] font-mono uppercase text-slate-400 print:text-slate-600'>Issue Date</span>
+                    <span className='font-bold text-slate-800 dark:text-slate-200 print:text-slate-900'>{certificateData.completedAt}</span>
                   </div>
                 </div>
 
-                <div className='flex items-center justify-center space-x-3 pt-2'>
+                {/* Print Signatures Block (Only appears on printed certificate) */}
+                <div className='hidden print:flex items-center justify-between pt-6 text-xs text-slate-700 border-t border-slate-300 mt-4'>
+                  <div className='text-center'>
+                    <div className='font-serif italic font-bold text-slate-900'>Dr. K. S. Sharma</div>
+                    <div className='text-[10px] uppercase font-bold text-slate-500'>Dean of Training, NSSTA</div>
+                  </div>
+                  <div className='text-center'>
+                    <div className='w-12 h-12 rounded-full border-2 border-amber-600 flex items-center justify-center font-bold text-[9px] text-amber-700 mx-auto'>
+                      SEAL
+                    </div>
+                  </div>
+                  <div className='text-center'>
+                    <div className='font-serif italic font-bold text-slate-900'>MoSPI Official Cadre Authority</div>
+                    <div className='text-[10px] uppercase font-bold text-slate-500'>Director General (Statistics)</div>
+                  </div>
+                </div>
+
+                <div className='flex items-center justify-center space-x-3 pt-2 print:hidden'>
                   <button
                     onClick={() => window.print()}
-                    className='px-4 py-2 bg-gov-blue hover:bg-gov-navy text-white text-xs font-bold rounded-lg flex items-center space-x-1.5 transition-colors shadow-xs'
+                    className='px-4 py-2 bg-gov-blue hover:bg-gov-navy text-white text-xs font-bold rounded-lg flex items-center space-x-1.5 transition-colors shadow-xs cursor-pointer'
                   >
                     <Printer className='w-3.5 h-3.5' />
                     <span>{isHi ? 'प्रमाण पत्र प्रिंट करें' : 'Print Certificate'}</span>
                   </button>
                   <button
                     onClick={onClose}
-                    className='px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-lg transition-colors'
+                    className='px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-lg transition-colors cursor-pointer'
                   >
                     {isHi ? 'डैशबोर्ड पर लौटें' : 'Return to Dashboard'}
                   </button>
