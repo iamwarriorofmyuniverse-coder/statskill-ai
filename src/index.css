@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+}
+
+/* Voice assistant sound wave animation */
+@keyframes voice-wave {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 18px;
+  }
+}
+
+.animate-voice-wave-1 {
+  animation: voice-wave 0.8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.animate-voice-wave-2 {
+  animation: voice-wave 0.8s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+.animate-voice-wave-3 {
+  animation: voice-wave 0.8s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+.animate-voice-wave-4 {
+  animation: voice-wave 0.8s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+
+/* ==========================================================================
+   STATSKILL AI — HIGH-PERFORMANCE POP-UP & MICRO-INTERACTION ANIMATIONS
+   ========================================================================== */
+
+/* 1. Spring-Scale Modal Pop-Up */
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(14px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.015) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-pop {
+  animation: modalPopIn 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* 2. Slide & Spring Drawer Pop-In */
+@keyframes drawerSlidePop {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.98);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(-4px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-drawer-pop {
+  animation: drawerSlidePop 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* 3. Magnetic Floating Tooltip Pill Pop */
+@keyframes floatingPillPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(10px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-floating-pill {
+  animation: floatingPillPop 200ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* 4. Milestone Achievement Halo Ripple */
+@keyframes haloRipple {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-halo-ripple {
+  animation: haloRipple 1.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+/* 5. Achievement Badge Drop & Bounce */
+@keyframes badgeDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.1);
+  }
+  80% {
+    transform: translateY(-2px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-badge-drop {
+  animation: badgeDrop 450ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 6. Shimmer Glow for Live Metrics & Badges */
+@keyframes shimmerGlow {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer-glow {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(56,189,248,0.18) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerGlow 2.5s infinite;
+}
+
+/* 7. Staggered Cascade Entry Animation */
+@keyframes cascadePop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cascade-1 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 30ms forwards; opacity: 0; }
+.cascade-2 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards; opacity: 0; }
+.cascade-3 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 90ms forwards; opacity: 0; }
+.cascade-4 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 120ms forwards; opacity: 0; }
+.cascade-5 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 150ms forwards; opacity: 0; }
+.cascade-6 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards; opacity: 0; }
+.cascade-7 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 210ms forwards; opacity: 0; }
+.cascade-8 { animation: cascadePop 200ms cubic-bezier(0.16, 1, 0.3, 1) 240ms forwards; opacity: 0; }
+
+
+/* Print Styles for Official MoSPI/NSSTA Diagnostic Reports */
+@media print {
+  nav,
+  aside,
+  header,
+  .print-hide,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .page-break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .page-break-after {
+    break-after: page;
+    page-break-after: always;
+  }
+}
