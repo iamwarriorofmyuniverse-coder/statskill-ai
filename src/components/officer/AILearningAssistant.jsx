@@ -21,6 +21,8 @@ import {
   UserCheck,
   Mic,
   MicOff,
+  Volume2,
+  VolumeX,
   Layers,
   HelpCircle,
   Award
@@ -174,6 +176,30 @@ export default function AILearningAssistant({ setCurrentTab, onLaunchQuiz }) {
         setIsListening(false);
       }
     }
+  };
+
+  // Text-to-Speech state
+  const [speakingMsgId, setSpeakingMsgId] = useState(null);
+
+  const handleToggleSpeak = (msgId, text) => {
+    if (!('speechSynthesis' in window)) {
+      alert(isHi ? "आपका ब्राउज़र टेक्स्ट-टू-स्पीच का समर्थन नहीं करता है।" : "Text-to-speech is not supported in this browser.");
+      return;
+    }
+    if (speakingMsgId === msgId) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const clean = (text || "").replace(/[*#_`]/g, "");
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = isHi ? "hi-IN" : "en-IN";
+    utterance.rate = 1.0;
+    utterance.onend = () => setSpeakingMsgId(null);
+    utterance.onerror = () => setSpeakingMsgId(null);
+    setSpeakingMsgId(msgId);
+    window.speechSynthesis.speak(utterance);
   };
 
   useEffect(() => {
@@ -339,12 +365,35 @@ export default function AILearningAssistant({ setCurrentTab, onLaunchQuiz }) {
               </div>
 
               <div className="flex flex-col max-w-[85%]">
-                <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  <span className="font-bold text-slate-700 dark:text-slate-300">
-                    {msg.role === "user" ? (officerProfile?.fullName || "Officer") : "StatSkill AI"}
-                  </span>
-                  <span>•</span>
-                  <span>{msg.timestamp}</span>
+                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                  <div className="flex items-center space-x-2">
+                    <span className="font-bold text-slate-700 dark:text-slate-300">
+                      {msg.role === "user" ? (officerProfile?.fullName || "Officer") : "StatSkill AI"}
+                    </span>
+                    <span>•</span>
+                    <span>{msg.timestamp}</span>
+                  </div>
+
+                  {msg.role === "assistant" && !msg.isError && (
+                    <button
+                      type="button"
+                      onClick={() => handleToggleSpeak(msg.id, msg.content)}
+                      title={speakingMsgId === msg.id ? (isHi ? "ऑडियो बंद करें" : "Stop voice playback") : (isHi ? "ऑडियो सुनें (Multimodal Voice)" : "Listen to audio response (Multimodal Voice)")}
+                      className="p-1 rounded hover:bg-slate-200/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-gov-blue dark:hover:text-sky-400 transition-colors cursor-pointer flex items-center space-x-1"
+                    >
+                      {speakingMsgId === msg.id ? (
+                        <>
+                          <VolumeX className="w-3.5 h-3.5 text-red-500 animate-pulse" />
+                          <span className="text-[10px] text-red-500 font-bold">{isHi ? "रोकें" : "Stop"}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+                          <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-300">{isHi ? "सुनें" : "Listen"}</span>
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
 
                 <div className={`rounded-xl p-4 shadow-xs transition-colors ${
