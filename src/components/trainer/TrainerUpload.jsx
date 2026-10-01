@@ -226,7 +226,7 @@ export default function TrainerUpload({ onMaterialReady }) {
         className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${
           isDragging
             ? "border-gov-blue bg-blue-50/80 dark:bg-sky-950/40 scale-[1.005]"
-            : "border-slate-300 dark:border-slate-700 hover:border-gov-blue/60 dark:hover:border-sky-500/60 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:hover:bg-slate-850/50"
+            : "border-slate-300 dark:border-slate-700 hover:border-gov-blue/60 dark:hover:border-sky-500/60 bg-white dark:bg-slate-900 hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
         }`}
       >
         <input

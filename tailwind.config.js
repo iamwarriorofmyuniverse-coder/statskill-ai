@@ -8,6 +8,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        slate: {
+          850: "#172033",
+        },
         gov: {
           dark: "#081c33",
           navy: "#0b2545",

@@ -174,7 +174,7 @@ export default function CompetencyRadarChart({ data }) {
 
         {/* Highlighted Domain Floating Info Banner */}
         {activeItem && (
-          <div className="mt-2.5 p-3 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-slate-800 dark:to-slate-850 rounded-xl border-2 border-sky-400/60 shadow-md text-xs animate-floating-pill flex items-center justify-between">
+          <div className="mt-2.5 p-3 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 rounded-xl border-2 border-sky-400/60 shadow-md text-xs animate-floating-pill flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-lg bg-gov-blue text-white flex items-center justify-center font-black">
                 <Target className="w-4 h-4" />

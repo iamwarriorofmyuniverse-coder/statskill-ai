@@ -224,7 +224,7 @@ export default function CoursePlayerModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className='p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-850/90 flex items-start justify-between'>
+        <div className='p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900 flex items-start justify-between'>
           <div>
             <div className='flex items-center space-x-2'>
               <span className='text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded'>
@@ -267,7 +267,7 @@ export default function CoursePlayerModal({
         {/* Content Body: Sidebar + Main Viewer */}
         <div className='flex-1 grid grid-cols-1 md:grid-cols-12 overflow-hidden'>
           {/* Chapter Tree Sidebar */}
-          <div className='md:col-span-4 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850/40 p-4 overflow-y-auto space-y-2'>
+          <div className='md:col-span-4 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 p-4 overflow-y-auto space-y-2'>
             <h4 className='text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 px-1'>
               {isHi ? 'पाठ्यक्रम अनुक्रमणिका' : 'Course Syllabus'}
             </h4>
@@ -344,7 +344,7 @@ export default function CoursePlayerModal({
                   </p>
                 </div>
 
-                <div className='p-3 bg-white/80 dark:bg-slate-850/80 rounded-xl border border-amber-200 dark:border-amber-800/60 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400'>
+                <div className='p-3 bg-white/90 dark:bg-slate-900 rounded-xl border border-amber-200 dark:border-amber-800/60 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400'>
                   <div>
                     <span className='block text-[10px] font-mono uppercase text-slate-400'>Certificate ID</span>
                     <span className='font-mono font-bold text-slate-800 dark:text-slate-200'>{certificateData.certificateId}</span>
@@ -385,7 +385,7 @@ export default function CoursePlayerModal({
                   </div>
 
                   {/* Chapter Content Card with Structured Lists */}
-                  <div className='p-5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4 text-xs leading-relaxed text-slate-800 dark:text-slate-200'>
+                  <div className='p-5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4 text-xs leading-relaxed text-slate-800 dark:text-slate-200'>
                     {currentChapter.intro && (
                       <p className='text-slate-700 dark:text-slate-300 text-xs leading-relaxed font-normal'>
                         {currentChapter.intro}
@@ -411,18 +411,18 @@ export default function CoursePlayerModal({
                               key={iIdx}
                               className={`p-3 rounded-lg border text-xs flex items-start space-x-2.5 ${
                                 currentChapter.sectionType === 'formula'
-                                  ? 'bg-blue-50/60 dark:bg-slate-850/80 border-blue-200/80 dark:border-blue-900/50 font-mono text-slate-800 dark:text-slate-200'
-                                  : 'bg-white dark:bg-slate-850/60 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300'
+                                  ? 'bg-blue-50/60 dark:bg-slate-800/90 border-blue-200/80 dark:border-slate-700 font-mono text-slate-800 dark:text-slate-100'
+                                  : 'bg-white dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 shadow-2xs'
                               }`}
                             >
                               <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold mt-0.5 ${
                                 currentChapter.sectionType === 'formula'
                                   ? 'bg-gov-blue text-white'
-                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600'
+                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-600'
                               }`}>
                                 {iIdx + 1}
                               </span>
-                              <span className='flex-1 leading-relaxed font-medium'>{item}</span>
+                              <span className='flex-1 leading-relaxed font-medium text-slate-800 dark:text-slate-200'>{item}</span>
                             </div>
                           ))}
                         </div>
@@ -430,7 +430,7 @@ export default function CoursePlayerModal({
                     )}
 
                     {!currentChapter.items && currentChapter.content && (
-                      <p className='whitespace-pre-line'>{currentChapter.content}</p>
+                      <p className='whitespace-pre-line text-slate-800 dark:text-slate-200'>{currentChapter.content}</p>
                     )}
                   </div>
 

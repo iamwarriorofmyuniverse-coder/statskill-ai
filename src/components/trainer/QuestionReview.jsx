@@ -211,7 +211,7 @@ export default function QuestionReview({
               q.status === "APPROVED" || q.status === "EDITED"
                 ? "border-emerald-400/80 dark:border-emerald-600/80 ring-1 ring-emerald-200/50 dark:ring-emerald-800/30"
                 : q.status === "REJECTED"
-                ? "border-slate-200 dark:border-slate-800 opacity-60 bg-slate-50/70 dark:bg-slate-850/60"
+                ? "border-slate-200 dark:border-slate-800 opacity-60 bg-slate-50/70 dark:bg-slate-900/60"
                 : "border-slate-200 dark:border-slate-800"
             }`}
           >

@@ -106,7 +106,7 @@ export default function CompetencyDetailModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className='p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-850/80 flex items-start justify-between'>
+        <div className='p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900 flex items-start justify-between'>
           <div>
             <div className='flex items-center space-x-2'>
               <span className='text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-gov-blue dark:bg-sky-950 dark:text-sky-300 px-2 py-0.5 rounded'>
@@ -308,7 +308,7 @@ export default function CompetencyDetailModal({
         </div>
 
         {/* Footer */}
-        <div className='p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850/50 flex items-center justify-end space-x-2'>
+        <div className='p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 flex items-center justify-end space-x-2'>
           <button
             onClick={onClose}
             className='px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-lg transition-colors'

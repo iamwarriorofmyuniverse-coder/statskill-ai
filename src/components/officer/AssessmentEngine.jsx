@@ -180,9 +180,9 @@ export default function AssessmentEngine({
               const isCurrent = idx === currentIndex;
               const isFlagged = flagged[q.id];
 
-              let bg = "bg-slate-100 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-200";
-              if (isAnswered) bg = "bg-gov-blue text-white border-gov-blue font-bold";
-              if (isCurrent) bg = "ring-2 ring-gov-saffron ring-offset-1 " + (isAnswered ? "bg-gov-blue text-white" : "bg-white text-gov-blue font-black border-gov-blue");
+              let bg = "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700";
+              if (isAnswered) bg = "bg-gov-blue dark:bg-sky-700 text-white border-gov-blue dark:border-sky-600 font-bold";
+              if (isCurrent) bg = "ring-2 ring-gov-saffron ring-offset-1 dark:ring-offset-slate-900 " + (isAnswered ? "bg-gov-blue dark:bg-sky-700 text-white" : "bg-white dark:bg-slate-800 text-gov-blue dark:text-sky-400 font-black border-gov-blue dark:border-sky-500");
 
               return (
                 <button
