@@ -12,25 +12,71 @@ import {
   HelpCircle,
   Award,
   Languages,
-  Command
+  Command,
+  ArrowLeft,
+  ArrowRight
 } from "lucide-react";
 import StatusBadge from "../common/StatusBadge.jsx";
 
 export default function AssessmentEngine({
-  assessmentMetadata,
-  questions,
+  assessmentMetadata = {},
+  questions = [],
   onSubmit,
   onCancel
 }) {
   const { language, setLanguage } = useLanguage();
   const isHi = language === "hi";
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({}); // { [questionId]: selectedOptionIndex }
   const [flagged, setFlagged] = useState({}); // { [questionId]: boolean }
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(
-    (assessmentMetadata.durationMinutes || 30) * 60
+    (assessmentMetadata?.durationMinutes || 30) * 60
   );
+
+  const totalQuestions = questions?.length || 0;
+  const currentQ = questions?.[currentIndex] || questions?.[0] || {};
+  const answeredCount = Object.keys(answers).length;
+  const progressPercent = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+  const unansweredCount = Math.max(0, totalQuestions - answeredCount);
+
+  // Format time MM:SS
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
+  // Option selection
+  const handleSelectOption = (optionIndex) => {
+    if (!currentQ?.id) return;
+    setAnswers((prev) => ({
+      ...prev,
+      [currentQ.id]: optionIndex
+    }));
+  };
+
+  const handleToggleFlag = () => {
+    if (!currentQ?.id) return;
+    setFlagged((prev) => ({
+      ...prev,
+      [currentQ.id]: !prev[currentQ.id]
+    }));
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((idx) => Math.max(0, idx - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((idx) => Math.min(totalQuestions - 1, idx + 1));
+  };
+
+  const handleFinalSubmit = () => {
+    setShowConfirmModal(false);
+    if (onSubmit) onSubmit(answers);
+  };
 
   // Countdown timer
   useEffect(() => {
@@ -45,7 +91,7 @@ export default function AssessmentEngine({
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [answers]);
 
   // Keyboard navigation & option selection
   useEffect(() => {
@@ -65,12 +111,12 @@ export default function AssessmentEngine({
       } else if (key === "f") {
         handleToggleFlag();
       } else if (e.key === "ArrowLeft") {
-        setCurrentIndex((idx) => Math.max(0, idx - 1));
+        handlePrev();
       } else if (e.key === "ArrowRight") {
-        setCurrentIndex((idx) => Math.min(totalQuestions - 1, idx + 1));
+        handleNext();
       } else if (e.key === "Enter") {
         if (currentIndex < totalQuestions - 1) {
-          setCurrentIndex((idx) => Math.min(totalQuestions - 1, idx + 1));
+          handleNext();
         } else {
           setShowConfirmModal(true);
         }
@@ -81,53 +127,39 @@ export default function AssessmentEngine({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentIndex, currentQ, totalQuestions, showConfirmModal]);
 
-  const currentQ = questions[currentIndex] || questions[0];
-  const totalQuestions = questions.length;
-  const answeredCount = Object.keys(answers).length;
-  const progressPercent = Math.round((answeredCount / totalQuestions) * 100);
-
-  // Format time MM:SS
-  const formatTime = (secs) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-  };
-
-  // Prevent accidental duplicate answers: atomic state update
-  const handleSelectOption = (optionIndex) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [currentQ.id]: optionIndex
-    }));
-  };
-
-  const handleToggleFlag = () => {
-    setFlagged((prev) => ({
-      ...prev,
-      [currentQ.id]: !prev[currentQ.id]
-    }));
-  };
-
-  const handleFinalSubmit = () => {
-    setShowConfirmModal(false);
-    onSubmit(answers);
-  };
-
-  const unansweredCount = totalQuestions - answeredCount;
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto" />
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+          {isHi ? "कोई मूल्यांकन प्रश्न उपलब्ध नहीं है" : "No assessment questions found"}
+        </h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {isHi ? "कृपया पुनः प्रयास करें या संवर्ग डैशबोर्ड पर लौटें।" : "Please return to the dashboard and try launching the diagnostic again."}
+        </p>
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 bg-gov-blue text-white rounded-lg text-xs font-bold shadow-xs hover:bg-gov-navy transition-colors"
+        >
+          {isHi ? "डैशबोर्ड पर लौटें" : "Return to Dashboard"}
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
       {/* Top Status Header */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 dark:border-slate-800 p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-gov-blue px-2 py-0.5 rounded border border-blue-200">
-              Official Assessment in Progress
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-100 text-gov-blue dark:bg-sky-950 dark:text-sky-300 px-2 py-0.5 rounded border border-blue-200 dark:border-sky-800">
+              {isHi ? "आधिकारिक संवर्ग मूल्यांकन प्रगति पर" : "Official Assessment in Progress"}
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400">� {assessmentMetadata.targetRole}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">• {assessmentMetadata?.targetRole || "Statistical Officer (Cadre S-1)"}</span>
           </div>
           <h2 className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
-            {assessmentMetadata.title}
+            {assessmentMetadata?.title || (isHi ? "आधिकारिक सांख्यिकी संवर्ग दक्षता मूल्यांकन" : "Official Statistical Cadre Competency Diagnostic")}
           </h2>
         </div>
 
@@ -135,8 +167,8 @@ export default function AssessmentEngine({
           {/* Timer */}
           <div className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border font-mono font-bold ${
             timeLeftSeconds < 300
-              ? "bg-red-50 text-red-700 border-red-200 animate-pulse"
-              : "bg-slate-50 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800"
+              ? "bg-red-50 text-red-700 border-red-200 animate-pulse dark:bg-red-950/60 dark:text-red-300 dark:border-red-800"
+              : "bg-slate-50 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 dark:bg-slate-800"
           }`}>
             <Clock className="w-4 h-4" />
             <span>{formatTime(timeLeftSeconds)}</span>
@@ -145,35 +177,34 @@ export default function AssessmentEngine({
           {/* Cancel button */}
           <button
             onClick={onCancel}
-            className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:text-slate-100 underline"
+            className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 underline cursor-pointer"
           >
-            Exit
+            {isHi ? "बाहर निकलें" : "Exit"}
           </button>
         </div>
       </div>
 
-      {/* Progress Bar & Summary */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 dark:border-slate-800 p-4 shadow-xs space-y-2">
-        <div className="flex justify-between items-center text-xs font-semibold text-slate-700 dark:text-slate-300">
-          <span>Progress: <strong>{answeredCount} of {totalQuestions} Answered</strong> ({progressPercent}%)</span>
+      {/* Progress & Palette Navigation */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-3">
+        {/* Progress bar */}
+        <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300">
+          <span className="font-semibold">
+            {isHi ? "प्रगति:" : "Progress:"} <strong>{answeredCount} of {totalQuestions} {isHi ? "प्रश्न पूर्ण" : "answered"}</strong> ({progressPercent}%)
+          </span>
           <span className="text-slate-500 dark:text-slate-400">
-            {Object.values(flagged).filter(Boolean).length > 0 && (
-              <span className="text-amber-600 font-bold mr-2">
-                ? {Object.values(flagged).filter(Boolean).length} Flagged
-              </span>
-            )}
-            Question {currentIndex + 1} of {totalQuestions}
+            {unansweredCount} {isHi ? "शेष" : "remaining"}
           </span>
         </div>
-        <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+
+        <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
           <div
-            className="bg-gov-blue h-full rounded-full transition-all duration-300"
+            className="bg-gov-blue dark:bg-sky-500 h-full rounded-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
 
         {/* Question Navigator Palette */}
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1.5 items-center justify-between">
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5 items-center justify-between">
           <div className="flex flex-wrap gap-1.5 max-w-2xl">
             {questions.map((q, idx) => {
               const isAnswered = answers[q.id] !== undefined;
@@ -186,10 +217,10 @@ export default function AssessmentEngine({
 
               return (
                 <button
-                  key={q.id}
+                  key={q.id || idx}
                   onClick={() => setCurrentIndex(idx)}
-                  className={`w-7 h-7 rounded text-[11px] border flex items-center justify-center transition-all relative ${bg}`}
-                  title={`Question ${idx + 1}: ${q.competencyName}`}
+                  className={`w-7 h-7 rounded text-[11px] border flex items-center justify-center transition-all relative cursor-pointer ${bg}`}
+                  title={`Question ${idx + 1}: ${q.competencyName || q.competency}`}
                 >
                   <span>{idx + 1}</span>
                   {isFlagged && (
@@ -202,25 +233,25 @@ export default function AssessmentEngine({
 
           <button
             onClick={() => setShowConfirmModal(true)}
-            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center space-x-1.5 transition-colors shrink-0"
+            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center space-x-1.5 transition-colors shrink-0 cursor-pointer"
           >
-            <span>Finish & Submit</span>
+            <span>{isHi ? "समीक्षा एवं सबमिट" : "Finish & Submit"}</span>
             <Send className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Active Question Display (One Question at a Time) */}
+      {/* Active Question Display */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-6">
         {/* Question Metadata Bar with Bilingual Toggle */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">
               {isHi ? `प्रश्न ${currentIndex + 1}` : `Question ${currentIndex + 1}`}
             </span>
             <StatusBadge type="domain" value={currentQ.domain} />
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
-              {isHi ? "दक्षता:" : "Competency:"} <strong>{currentQ.competencyName}</strong>
+              {isHi ? "दक्षता:" : "Competency:"} <strong>{currentQ.competencyName || currentQ.competency}</strong>
             </span>
           </div>
 
@@ -230,14 +261,14 @@ export default function AssessmentEngine({
               <button
                 type="button"
                 onClick={() => setLanguage("en")}
-                className={`px-2 py-0.5 rounded ${language === "en" ? "bg-gov-blue text-white shadow-2xs" : "text-slate-600 dark:text-slate-300 hover:text-slate-900"}`}
+                className={`px-2 py-0.5 rounded cursor-pointer ${language === "en" ? "bg-gov-blue text-white shadow-2xs" : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"}`}
               >
                 EN
               </button>
               <button
                 type="button"
                 onClick={() => setLanguage("hi")}
-                className={`px-2 py-0.5 rounded ${language === "hi" ? "bg-gov-saffron text-slate-900 font-bold shadow-2xs" : "text-slate-600 dark:text-slate-300 hover:text-slate-900"}`}
+                className={`px-2 py-0.5 rounded cursor-pointer ${language === "hi" ? "bg-gov-saffron text-slate-900 font-bold shadow-2xs" : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"}`}
               >
                 हिं
               </button>
@@ -279,7 +310,7 @@ export default function AssessmentEngine({
 
         {/* Options Selection (Radio Cards - Bilingual) */}
         <div className="space-y-3">
-          {(isHi && currentQ.optionsHi ? currentQ.optionsHi : currentQ.options).map((opt, optIdx) => {
+          {((isHi && currentQ.optionsHi ? currentQ.optionsHi : currentQ.options) || []).map((opt, optIdx) => {
             const isSelected = answers[currentQ.id] === optIdx;
 
             return (
@@ -289,7 +320,7 @@ export default function AssessmentEngine({
                 onClick={() => handleSelectOption(optIdx)}
                 className={`w-full p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-center justify-between cursor-pointer ${
                   isSelected
-                    ? "border-gov-blue bg-blue-50/80 dark:bg-blue-950/40 text-gov-navy dark:text-sky-200 font-bold ring-2 ring-gov-blue/20 shadow-xs"
+                    ? "border-gov-blue dark:border-sky-500 bg-blue-50/80 dark:bg-sky-950/40 text-gov-navy dark:text-sky-200 font-bold ring-2 ring-gov-blue/20 dark:ring-sky-500/20 shadow-xs"
                     : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
                 }`}
               >
@@ -312,7 +343,7 @@ export default function AssessmentEngine({
         </div>
 
         {/* Question Footer Navigation */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800/80">
+        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
           <button
             type="button"
             onClick={handlePrev}
@@ -329,11 +360,11 @@ export default function AssessmentEngine({
 
           <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {isHi
-              ? `प्रश्न ${currentIndex + 1} / ${questions.length}`
-              : `Question ${currentIndex + 1} of ${questions.length}`}
+              ? `प्रश्न ${currentIndex + 1} / ${totalQuestions}`
+              : `Question ${currentIndex + 1} of ${totalQuestions}`}
           </span>
 
-          {currentIndex < questions.length - 1 ? (
+          {currentIndex < totalQuestions - 1 ? (
             <button
               type="button"
               onClick={handleNext}
@@ -392,7 +423,7 @@ export default function AssessmentEngine({
               ) : (
                 <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-lg text-emerald-900 dark:text-emerald-200 flex items-start space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                  <p>{isHi ? "सभी 22 प्रश्नों के उत्तर दर्ज हैं! मूल्यांकन हेतु तैयार।" : "All 22 questions answered! Ready for deterministic capability evaluation."}</p>
+                  <p>{isHi ? `सभी ${totalQuestions} प्रश्नों के उत्तर दर्ज हैं! मूल्यांकन हेतु तैयार।` : `All ${totalQuestions} questions answered! Ready for deterministic capability evaluation.`}</p>
                 </div>
               )}
 
