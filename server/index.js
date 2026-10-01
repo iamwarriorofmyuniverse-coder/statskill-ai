@@ -49,10 +49,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(` StatSkill AI Server running on http://localhost:${PORT}`);
-  console.log(` Problem Statement: SIH 26101 - Official Statistical System`);
-  console.log(` Recommendation Engine: Deterministic (40% Gap, 20% Role, 15% Career, 10% Dept, 10% Prev, 5% Diff)`);
-  console.log(`=======================================================`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`=======================================================`);
+    console.log(` StatSkill AI Server running on http://localhost:${PORT}`);
+    console.log(` Problem Statement: SIH 26101 - Official Statistical System`);
+    console.log(` Recommendation Engine: Deterministic (40% Gap, 20% Role, 15% Career, 10% Dept, 10% Prev, 5% Diff)`);
+    console.log(`=======================================================`);
+  });
+}
+
+export default app;
