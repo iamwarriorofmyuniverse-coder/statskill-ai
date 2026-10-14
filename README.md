@@ -1,6 +1,7 @@
-# StatSkill AI (Smart India Hackathon Problem Statement 26101)
+# StatSkill AI (Smart India Hackathon Idea / PS ID: 21121)
 
-> **AI-Powered Competency Intelligence & Personalized Learning Platform for India'\''s Official Statistical System (MoSPI / NSO / NSSTA)**
+> **StatSkill AI: AI-Assisted Skill Assessment & Competency Calibration Platform**
+> *(Team AIZENIX • Team ID: 176704 • Idea / PS ID: 21121)*
 
 StatSkill AI is an enterprise-grade web application that implements an end-to-end competency loop for the Subordinate Statistical Service (SSS) and Indian Statistical Service (ISS):
 

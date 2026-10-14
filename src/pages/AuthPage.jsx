@@ -51,7 +51,7 @@ export default function AuthPage() {
           <div className="flex items-center space-x-3">
             <div className="hidden sm:block text-right text-xs text-slate-300 mr-2">
               <span className="font-semibold text-gov-sky">{isHi ? "स्मार्ट इंडिया हैकाथॉन" : "Smart India Hackathon"}</span>
-              <p className="text-[11px] text-slate-400">{isHi ? "समस्या विवरण 26101" : "Problem Statement 26101"}</p>
+              <p className="text-[11px] text-slate-400">{isHi ? "समस्या / आइडिया विवरण 21121" : "Idea / PS ID 21121"}</p>
             </div>
             <LanguageToggle />
             <ThemeToggle />
@@ -212,7 +212,7 @@ export default function AuthPage() {
               </div>
 
               <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-                <p className="font-semibold text-slate-700 dark:text-slate-200">{isHi ? "SIH 26101 सुरक्षा प्रोटोकॉल:" : "SIH 26101 Security Protocol:"}</p>
+                <p className="font-semibold text-slate-700 dark:text-slate-200">{isHi ? "SIH सुरक्षा प्रोटोकॉल:" : "SIH Security Protocol:"}</p>
                 <p>
                   {isHi
                     ? "प्रशिक्षक भूमिका सर्वर-साइड कोड सत्यापन द्वारा सुरक्षित है। गुप्त कुंजी क्लाइंट कोड में प्रदर्शित नहीं होती।"
@@ -228,7 +228,7 @@ export default function AuthPage() {
       {/* Footer */}
       <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 text-center text-xs text-slate-500 dark:text-slate-400">
         <p>{isHi ? "राष्ट्रीय सांख्यिकी प्रणाली प्रशिक्षण अकादमी (NSSTA) • सांख्यिकी और कार्यक्रम कार्यान्वयन मंत्रालय (MoSPI)" : "National Statistical Systems Training Academy (NSSTA) • Ministry of Statistics and Programme Implementation (MoSPI)"}</p>
-        <p className="text-[11px] text-slate-400 mt-0.5">{isHi ? "भारत सरकार • स्मार्ट इंडिया हैकाथॉन समस्या विवरण 26101 हेतु विकसित" : "Government of India • Built for Smart India Hackathon Problem Statement 26101"}</p>
+        <p className="text-[11px] text-slate-400 mt-0.5">{isHi ? "भारत सरकार • स्मार्ट इंडिया हैकाथॉन (आइडिया / PS ID: 21121)" : "Government of India • Smart India Hackathon (Idea / PS ID: 21121)"}</p>
       </div>
     </div>
   );

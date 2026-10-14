@@ -33,8 +33,8 @@ app.get("/api/health", (req, res) => {
     status: "healthy",
     service: "StatSkill AI Backend API",
     version: "1.0.0",
-    sihProblemStatement: "26101",
-    targetSystem: "India's Official Statistical System (MoSPI)",
+    sihProblemStatement: "21121",
+    targetSystem: "India's Official Workforce & Statistical System",
     geminiConfigured: !!(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here"),
     serverTime: new Date().toISOString()
   });
@@ -53,7 +53,7 @@ if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`=======================================================`);
     console.log(` StatSkill AI Server running on http://localhost:${PORT}`);
-    console.log(` Problem Statement: SIH 26101 - Official Statistical System`);
+    console.log(` Smart India Hackathon: Idea / PS ID 21121 (AIZENIX - 176704)`);
     console.log(` Recommendation Engine: Deterministic (40% Gap, 20% Role, 15% Career, 10% Dept, 10% Prev, 5% Diff)`);
     console.log(`=======================================================`);
   });

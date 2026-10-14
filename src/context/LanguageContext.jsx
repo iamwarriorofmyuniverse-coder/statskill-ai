@@ -6,7 +6,7 @@ export const translations = {
   en: {
     // Branding & Header
     govMasthead: "Government of India | Ministry of Statistics and Programme Implementation (MoSPI)",
-    govMastheadSih: "Smart India Hackathon (PS: 26101)",
+    govMastheadSih: "Smart India Hackathon (PS / Idea ID: 21121)",
     govMastheadNssta: "National Statistical Systems Training Academy (NSSTA)",
     appTitle: "StatSkill AI",
     appSubtitle: "Competency Intelligence & Personalized Learning Platform",
@@ -346,7 +346,7 @@ export const translations = {
   hi: {
     // Branding & Header
     govMasthead: "भारत सरकार | सांख्यिकी एवं कार्यक्रम कार्यान्वयन मंत्रालय (MoSPI)",
-    govMastheadSih: "स्मार्ट इंडिया हैकथॉन (PS: 26101)",
+    govMastheadSih: "स्मार्ट इंडिया हैकथॉन (PS / Idea ID: 21121)",
     govMastheadNssta: "राष्ट्रीय सांख्यिकी प्रणाली प्रशिक्षण अकादमी (NSSTA)",
     appTitle: "स्टेटस्किल एआई",
     appSubtitle: "दक्षता विश्लेषण एवं व्यक्तिगत शिक्षण मंच",

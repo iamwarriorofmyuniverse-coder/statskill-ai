@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart India Hackathon 2026 — Team AIZENIX (176704) • Idea ID: 21121</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #0b192c;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      gap: 30px;
+    }
+    .slide {
+      width: 297mm;
+      height: 210mm;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      padding: 16mm 20mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+    }
+    .slide-title-banner {
+      background: #0b2545;
+      color: #ffffff;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 25mm 20mm;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+    .header-title h2 {
+      font-size: 20pt;
+      color: #0b2545;
+      font-weight: 800;
+    }
+    .header-title span {
+      font-size: 9pt;
+      font-weight: 800;
+      color: #ea580c;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .team-badge {
+      font-size: 9pt;
+      font-weight: 800;
+      color: #0b2545;
+      background: #e0f2fe;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #bae6fd;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      flex: 1;
+      margin-top: 14px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card.highlight {
+      background: #f0f9ff;
+      border-color: #0284c7;
+    }
+    .card-title {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #0b2545;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-text {
+      font-size: 9.5pt;
+      color: #334155;
+      line-height: 1.45;
+    }
+    .footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      color: #94a3b8;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 8px;
+    }
+    .link-box {
+      background: #ffffff;
+      border: 1.5px solid #0284c7;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 9.5pt;
+      color: #0284c7;
+      font-weight: bold;
+      word-break: break-all;
+    }
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+        gap: 0;
+      }
+      .slide {
+        box-shadow: none;
+        border-radius: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+    .print-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background: #ea580c;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn no-print" onclick="window.print()">🖨️ Print / Save as PDF (SIH_PPT-1.pdf)</button>
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide slide-title-banner">
+    <div style="font-size: 14pt; font-weight: 800; color: #ea580c; text-transform: uppercase; letter-spacing: 2px;">Smart India Hackathon 2026</div>
+    <h1 style="font-size: 38pt; font-weight: 900; color: #ffffff; margin: 12px 0 6px;">StatSkill AI</h1>
+    <p style="font-size: 14pt; color: #e0f2fe; max-width: 800px; margin-bottom: 24px; line-height: 1.4;">
+      Adaptive Competency Diagnostic & Automated Capacity Building Platform for Public Sector and Higher Education
+    </p>
+    <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 16px 28px; border-radius: 12px; display: inline-block; text-align: left; font-size: 11pt; color: #ffffff; line-height: 1.6;">
+      <div><strong>• Theme:</strong> Smart Education &nbsp;|&nbsp; <strong>• Category:</strong> Software &nbsp;|&nbsp; <strong>• Target Ecosystem:</strong> Mission Karmayogi (iGOT) & MoSPI</div>
+      <div style="color: #fed7aa; font-weight: bold; font-size: 13pt; margin-top: 4px;">• Team Name: AIZENIX &nbsp;|&nbsp; • Team ID: 176704 &nbsp;|&nbsp; • Idea / PS ID: 21121</div>
+      <div style="color: #38bdf8; font-size: 10pt; margin-top: 6px;">• Live Demo: https://statskill-ai-five.vercel.app &nbsp;|&nbsp; • GitHub: https://github.com/iamwarriorofmyuniverse-coder/statskill-ai</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Proposed Solution -->
+  <div class="slide">
+    <div class="header-top">
+      <div class="header-title">
+        <span>Smart India Hackathon 2026</span>
+        <h2>StatSkill AI — Competency Layer for iGOT Karmayogi</h2>
+      </div>
+      <div class="team-badge">Team AIZENIX • ID: 176704 • Idea ID: 21121</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 14px; flex: 1; margin-top: 14px;">
+      <div class="card" style="border-left: 6px solid #0b2545;">
+        <div class="card-title">1. Role-Calibrated Capability Profiling</div>
+        <div class="card-text">Profiles each officer (role, seniority, past training) and scores competency across 4 core domains (Statistical Methods, Technical Analytics, Governance/DPDP 2023, and Behavioural Leadership) to find exact skill gaps with deterministic zero-hallucination scoring.</div>
+      </div>
+      <div class="card" style="border-left: 6px solid #0284c7;">
+        <div class="card-title">2. Closed-Loop Remediation Cycle</div>
+        <div class="card-text">Recommends personalized iGOT / NSSTA-TPAC courses, tracks completion via iGOT APIs, and re-scores after learning in a continuous: <strong>Measure → Diagnose → Learn → Reassess</strong> loop.</div>
+      </div>
+      <div class="card" style="border-left: 6px solid #ea580c;">
+        <div class="card-title">3. Flagship AI MCQ Generator & Document Intelligence</div>
+        <div class="card-text">Training managers upload reference manuals (PDF/DOCX/PPT) → AI extracts concepts and generates trainer-reviewed MCQs with explanations. Sits <strong>ON TOP of iGOT</strong> as an intelligence layer, not a replacement.</div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>Slide 2 | Proposed Solution</span>
+      <span>AIZENIX</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Technical Approach -->
+  <div class="slide">
+    <div class="header-top">
+      <div class="header-title">
+        <span>Smart India Hackathon 2026</span>
+        <h2>Technical Approach & Architecture</h2>
+      </div>
+      <div class="team-badge">Team AIZENIX • ID: 176704 • Idea ID: 21121</div>
+    </div>
+
+    <div class="content-grid">
+      <div class="card">
+        <div class="card-title">🖥️ Frontend & UI/UX</div>
+        <div class="card-text">
+          • React.js 18 + Vite & Tailwind CSS<br>
+          • Dynamic Recharts (Radar + Bar comparison)<br>
+          • Fully responsive across Mobile, Tablet, Desktop<br>
+          • WCAG AAA High-Contrast Dark/Light themes
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚙️ Backend & Cloud</div>
+        <div class="card-text">
+          • Node.js & Express REST APIs<br>
+          • Deterministic JS scoring engine<br>
+          • Firebase Cloud Firestore for real-time telemetry<br>
+          • Vercel Serverless auto-scaling deployment
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🤖 AI / NLP & Voice</div>
+        <div class="card-text">
+          • Google Gemini Multimodal APIs<br>
+          • Automated document parsing & MCQ generator<br>
+          • Bilingual Web Speech API (English & Hindi)<br>
+          • Real-time speech tutor for field officers
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔒 Security, RBAC & SSO</div>
+        <div class="card-text">
+          • Role-Based Access Control (Officer, Trainer, Admin)<br>
+          • Tokenized Firebase Authentication<br>
+          • DPDP Act 2023 microdata privacy compliance<br>
+          • iGOT Karmayogi REST API Federation ready
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>Slide 3 | Technical Approach</span>
+      <span>AIZENIX</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Feasibility and Viability -->
+  <div class="slide">
+    <div class="header-top">
+      <div class="header-title">
+        <span>Smart India Hackathon 2026</span>
+        <h2>Feasibility, Viability & Mitigation Strategy</h2>
+      </div>
+      <div class="team-badge">Team AIZENIX • ID: 176704 • Idea ID: 21121</div>
+    </div>
+
+    <div class="content-grid">
+      <div class="card highlight">
+        <div class="card-title" style="color: #0284c7;">✔ Technical Feasibility</div>
+        <div class="card-text">
+          • <strong>MCQ Generation:</strong> Built using LLM and NLP document parsing technology.<br><br>
+          • <strong>Competency Scoring:</strong> Pure JavaScript algorithmic engine guaranteeing 100% mathematical consistency without hallucinations.<br><br>
+          • <strong>Course Recommendations:</strong> Automated mapping of deficiency vectors (Gap = Target - Current) to iGOT modules.<br><br>
+          • <strong>Lightweight Footprint:</strong> <500KB client bundle optimized for low-bandwidth field deployment.
+        </div>
+      </div>
+      <div class="card" style="background: #fff7ed; border-color: #ea580c;">
+        <div class="card-title" style="color: #ea580c;">🛡️ Challenges & Institutional Solutions</div>
+        <div class="card-text">
+          • <strong style="color: #b91c1c;">Challenge:</strong> No direct access to iGOT production APIs.<br>
+          &nbsp;&nbsp;↳ <strong style="color: #15803d;">Solution:</strong> Start with mock/sandbox iGOT data; transition to live gateway via institutional MoU.<br><br>
+          • <strong style="color: #b91c1c;">Challenge:</strong> Officer data privacy and security concerns.<br>
+          &nbsp;&nbsp;↳ <strong style="color: #15803d;">Solution:</strong> DPDP Act 2023 compliance, tokenized auth, zero plaintext credential storage.<br><br>
+          • <strong style="color: #b91c1c;">Challenge:</strong> Accurate cadre competency taxonomy.<br>
+          &nbsp;&nbsp;↳ <strong style="color: #15803d;">Solution:</strong> Calibrated with MoSPI/NSSTA expert benchmarks.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>Slide 4 | Feasibility and Viability</span>
+      <span>AIZENIX</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Impact and Benefits -->
+  <div class="slide">
+    <div class="header-top">
+      <div class="header-title">
+        <span>Smart India Hackathon 2026</span>
+        <h2>Impact and National Benefits</h2>
+      </div>
+      <div class="team-badge">Team AIZENIX • ID: 176704 • Idea ID: 21121</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; flex: 1; margin-top: 14px;">
+      <div class="card" style="padding: 10px 14px;">
+        <div class="card-title" style="font-size: 11pt;">⚡ Faster, Targeted Upskilling for Statistical Officers</div>
+        <div class="card-text">Officers address specific weaknesses (Sampling, DPDP compliance, Python) in 15-minute micro-learning sprints rather than 40-hour generic courses.</div>
+      </div>
+      <div class="card" style="padding: 10px 14px;">
+        <div class="card-title" style="font-size: 11pt;">🎯 Better Utilization of Existing iGOT Assets</div>
+        <div class="card-text">Increases course completion rates by precision-routing officers directly to relevant modules instead of browsing unindexed catalogues.</div>
+      </div>
+      <div class="card" style="padding: 10px 14px;">
+        <div class="card-title" style="font-size: 11pt;">📝 Cuts Manual Course-Curation & Quiz-Writing Load by 80%</div>
+        <div class="card-text">Automated document ingestion generates verified, curriculum-aligned MCQ banks in seconds, eliminating manual test creation for trainers.</div>
+      </div>
+      <div class="card" style="padding: 10px 14px;">
+        <div class="card-title" style="font-size: 11pt;">📊 Actionable Training-Effectiveness Telemetry</div>
+        <div class="card-text">Gives ministry leadership and NSSTA real-time heatmaps of national statistical readiness and skill gaps.</div>
+      </div>
+      <div class="card" style="padding: 10px 14px;">
+        <div class="card-title" style="font-size: 11pt;">🌐 Extensible to Other Government Cadres Beyond Statistics</div>
+        <div class="card-text">The competency diagnostic model readily scales to State DES, Finance, and Public Administration cadres.</div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>Slide 5 | Impact and Benefits</span>
+      <span>AIZENIX</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Research, References & Live Prototype -->
+  <div class="slide">
+    <div class="header-top">
+      <div class="header-title">
+        <span>Smart India Hackathon 2026</span>
+        <h2>Research, References & Live Working Prototype</h2>
+      </div>
+      <div class="team-badge">Team AIZENIX • ID: 176704 • Idea ID: 21121</div>
+    </div>
+
+    <div class="content-grid">
+      <div class="card">
+        <div class="card-title" style="color: #0b2545;">📚 Research & References</div>
+        <div class="card-text" style="line-height: 1.6;">
+          • <strong>iGOT Karmayogi / Mission Karmayogi:</strong><br>
+          &nbsp;&nbsp;FRAC competency framework — <a href="https://igotkarmayogi.gov.in" target="_blank" style="color:#0284c7;">igotkarmayogi.gov.in</a><br><br>
+          • <strong>NSSTA / TPAC Training Academy:</strong><br>
+          &nbsp;&nbsp;Cadre training resources — <a href="https://nssta.gov.in" target="_blank" style="color:#0284c7;">nssta.gov.in</a><br><br>
+          • <strong>Ministry of Statistics & PI (MoSPI):</strong><br>
+          &nbsp;&nbsp;Official statistics standards — <a href="https://mospi.gov.in" target="_blank" style="color:#0284c7;">mospi.gov.in</a><br><br>
+          • <strong>Digital Personal Data Protection Act 2023:</strong><br>
+          &nbsp;&nbsp;Microdata privacy & anonymization standards
+        </div>
+      </div>
+
+      <div class="card highlight" style="border-width: 2px;">
+        <div class="card-title" style="color: #0284c7; font-size: 13pt;">🚀 Live Working Prototype & Source Code</div>
+        <div class="card-text">
+          <div style="font-weight: bold; color: #0b2545; margin-bottom: 4px;">🌐 Live Production URL:</div>
+          <div class="link-box">https://statskill-ai-five.vercel.app</div>
+
+          <div style="font-weight: bold; color: #0b2545; margin: 10px 0 4px;">💻 GitHub Repository:</div>
+          <div class="link-box" style="border-color: #0d9488; color: #0d9488;">https://github.com/iamwarriorofmyuniverse-coder/statskill-ai</div>
+
+          <div style="margin-top: 10px; font-size: 8.5pt; color: #475569; line-height: 1.4;">
+            ✔ 22-Question Deterministic Diagnostic<br>
+            ✔ Bilingual Voice Assistant (English & Hindi)<br>
+            ✔ iGOT Module Player & 1-Page Official Certificate
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>Slide 6 | Research, References & Live Prototype</span>
+      <span>AIZENIX</span>
+    </div>
+  </div>
+
+</body>
+</html>

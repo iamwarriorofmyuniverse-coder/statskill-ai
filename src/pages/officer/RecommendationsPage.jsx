@@ -171,8 +171,8 @@ export default function RecommendationsPage({ setCurrentTab }) {
           </div>
           <p className="mt-1 text-slate-700 dark:text-slate-300 leading-relaxed">
             {isHi
-              ? "नीचे सूचीबद्ध पाठ्यक्रम स्मार्ट इंडिया हैकाथॉन समस्या विवरण 26101 हेतु iGOT कर्मयोगी, NSSTA, TPAC और MoSPI आंतरिक प्रशिक्षण रिपॉजिटरी से संकलित हैं।"
-              : "Courses listed below are curated from prototype iGOT Karmayogi, NSSTA, TPAC, and MoSPI internal training repositories to demonstrate automated capability gap bridging for Smart India Hackathon Problem Statement 26101."
+              ? "नीचे सूचीबद्ध पाठ्यक्रम स्मार्ट इंडिया हैकाथॉन (आइडिया / PS ID: 21121) हेतु iGOT कर्मयोगी, NSSTA, TPAC और राष्ट्रीय प्रशिक्षण रिपॉजिटरी से संकलित हैं।"
+              : "Courses listed below are curated from prototype iGOT Karmayogi, NSSTA, TPAC, and national training repositories to demonstrate automated capability gap bridging for Smart India Hackathon (Idea / PS ID: 21121)."
             }
           </p>
         </div>
