@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="100" fill="#0b2545" />
+  <circle cx="256" cy="256" r="190" stroke="#38BDF8" stroke-width="12" stroke-opacity="0.9" />
+  <circle cx="256" cy="256" r="140" stroke="#FF9933" stroke-width="8" stroke-opacity="0.9" />
+  <circle cx="256" cy="256" r="50" fill="#0f172a" stroke="#38BDF8" stroke-width="10" />
+  <circle cx="256" cy="256" r="22" fill="#138808" stroke="#ffffff" stroke-width="4" />
+  <!-- Spokes -->
+  <line x1="256" y1="70" x2="256" y2="200" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="256" y1="312" x2="256" y2="442" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="70" y1="256" x2="200" y2="256" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="312" y1="256" x2="442" y2="256" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="125" y1="125" x2="217" y2="217" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="295" y1="295" x2="387" y2="387" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="387" y1="125" x2="295" y2="217" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <line x1="217" y1="295" x2="125" y2="387" stroke="#E0F2FE" stroke-width="6" stroke-opacity="0.7" />
+  <!-- Growth trend vector -->
+  <polyline points="150,330 220,290 280,240 360,170" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+  <polygon points="360,170 335,175 350,195" fill="#38BDF8" />
+</svg>

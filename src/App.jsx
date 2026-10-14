@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { LanguageProvider } from "./context/LanguageContext.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
@@ -27,11 +27,72 @@ import QuestionReviewPage from "./pages/trainer/QuestionReviewPage.jsx";
 import QuestionBankPage from "./pages/trainer/QuestionBankPage.jsx";
 import LearnerPerformancePage from "./pages/trainer/LearnerPerformancePage.jsx";
 
+const OFFICER_TABS = [
+  "dashboard", "profile", "assessment", "skill-gaps",
+  "recommendations", "learning", "practice-quiz", "ai-assistant", "progress"
+];
+
+const TRAINER_TABS = [
+  "dashboard", "upload-material", "ai-mcq-generator",
+  "question-review", "question-bank", "learner-performance"
+];
+
+function getCleanHash() {
+  return window.location.hash.replace(/^#\/?/, "").trim();
+}
+
 function MainLayout() {
   const { currentUser, loading } = useAuth();
-  const [currentTab, setCurrentTab] = useState("dashboard");
+  
+  const getInitialTab = (role) => {
+    const raw = getCleanHash();
+    const allowed = role === "TRAINER" ? TRAINER_TABS : OFFICER_TABS;
+    return allowed.includes(raw) ? raw : "dashboard";
+  };
+
+  const [currentTab, setCurrentTabState] = useState(() => getInitialTab(currentUser?.role));
   const [practiceCompetencyId, setPracticeCompetencyId] = useState(null);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Synchronize tab changes to URL hash and browser history stack
+  const setCurrentTab = (newTab, replace = false) => {
+    setCurrentTabState(newTab);
+    const targetHash = `#${newTab}`;
+    if (window.location.hash !== targetHash) {
+      if (replace) {
+        window.history.replaceState({ tab: newTab }, "", targetHash);
+      } else {
+        window.history.pushState({ tab: newTab }, "", targetHash);
+      }
+    }
+  };
+
+  // Listen to browser Back/Forward (popstate / hashchange)
+  // This prevents browser back button or undo gesture from exiting/closing the app
+  useEffect(() => {
+    const handleHashNavigation = () => {
+      const target = getCleanHash() || "dashboard";
+      const allowed = currentUser?.role === "TRAINER" ? TRAINER_TABS : OFFICER_TABS;
+      if (allowed.includes(target)) {
+        setCurrentTabState(target);
+      } else {
+        setCurrentTabState("dashboard");
+      }
+    };
+
+    window.addEventListener("popstate", handleHashNavigation);
+    window.addEventListener("hashchange", handleHashNavigation);
+
+    // If starting with no hash, initialize to #dashboard
+    if (!getCleanHash()) {
+      window.history.replaceState({ tab: "dashboard" }, "", "#dashboard");
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handleHashNavigation);
+      window.removeEventListener("hashchange", handleHashNavigation);
+    };
+  }, [currentUser?.role]);
 
   const handleLaunchQuiz = (compId) => {
     setPracticeCompetencyId(compId);

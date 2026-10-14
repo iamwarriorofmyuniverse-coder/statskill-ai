@@ -19,6 +19,7 @@ import {
   Layers,
   Bot
 } from "lucide-react";
+import InstallAppButton from "./InstallAppButton.jsx";
 
 export default function Sidebar({ currentTab, setCurrentTab, mobileOpen, setMobileOpen }) {
   const { currentUser } = useAuth();
@@ -140,6 +141,11 @@ export default function Sidebar({ currentTab, setCurrentTab, mobileOpen, setMobi
             );
           })}
         </nav>
+
+        {/* PWA Install Button for Mobile / Tablet / Desktop Users */}
+        <div className="px-3 pb-2 pt-1">
+          <InstallAppButton variant="sidebar" />
+        </div>
 
         {/* Cadre System Info Footer */}
         <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-400">
