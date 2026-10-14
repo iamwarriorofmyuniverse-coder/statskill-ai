@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { usePWA } from "../../hooks/usePWA.js";
 import { useLanguage } from "../../context/LanguageContext.jsx";
 import { Smartphone, Download, WifiOff, MoreVertical, PlusSquare, CheckCircle2, X } from "lucide-react";
+import AppLogo from "./AppLogo.jsx";
 
 export default function InstallAppButton({ variant = "header" }) {
   const { isInstallable, isInstalled, isOffline, promptInstall } = usePWA();
@@ -73,9 +74,7 @@ export default function InstallAppButton({ variant = "header" }) {
 
             {/* Header */}
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gov-navy text-gov-sky flex items-center justify-center shadow-inner">
-                <Smartphone className="w-5 h-5" />
-              </div>
+              <AppLogo className="w-11 h-11 shrink-0 shadow-md" />
               <div>
                 <h3 className="font-bold text-base text-gov-navy dark:text-white">
                   {isHi ? "ऐप कैसे इंस्टॉल करें" : "How to Install StatSkill AI"}

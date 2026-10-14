@@ -1,6 +1,7 @@
 import React from "react";
 import ThemeToggle from "../components/common/ThemeToggle.jsx";
 import LanguageToggle from "../components/common/LanguageToggle.jsx";
+import AppLogo from "../components/common/AppLogo.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useLanguage } from "../context/LanguageContext.jsx";
 import {
@@ -31,16 +32,7 @@ export default function AuthPage() {
       <div className="bg-gov-navy text-white border-b-4 border-gov-saffron px-4 py-3 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center p-1.5 shadow-inner">
-              <svg viewBox="0 0 24 24" className="w-7 h-7 text-gov-sky" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="m4.93 4.93 4.24 4.24" />
-                <path d="m14.83 9.17 4.24-4.24" />
-                <path d="m14.83 14.83 4.24 4.24" />
-                <path d="m9.17 14.83-4.24 4.24" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </div>
+            <AppLogo className="w-10 h-10 shadow-md shrink-0" />
             <div>
               <span className="font-bold text-lg tracking-wide text-white">{t("appTitle", "StatSkill AI")}</span>
               <p className="text-xs text-slate-300">

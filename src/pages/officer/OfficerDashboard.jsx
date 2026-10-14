@@ -165,13 +165,13 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             </span>
           </div>
 
-          <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 bg-white dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs w-full sm:w-auto">
             <button
               onClick={() => {
                 setSimulatedTargetBoost(0);
                 showSuccess(isHi ? "मानक सांख्यिकी अधिकारी संवर्ग स्तर लागू" : "Standard Statistical Officer benchmark active", isHi ? "लक्ष्य अपडेट" : "Target Active");
               }}
-              className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-none px-2.5 py-1.5 sm:py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer text-center whitespace-nowrap ${
                 simulatedTargetBoost === 0
                   ? "bg-gov-blue text-white shadow-xs"
                   : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -185,7 +185,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
                 setSimulatedTargetBoost(10);
                 showSuccess(isHi ? "वरिष्ठ विश्लेषक पदोन्नति बेंचमार्क (+10%) सक्रिय" : "Senior Analyst Target benchmark (+10%) simulated", isHi ? "लक्ष्य अनुकरण" : "Target Simulated");
               }}
-              className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-none px-2.5 py-1.5 sm:py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer text-center whitespace-nowrap ${
                 simulatedTargetBoost === 10
                   ? "bg-gov-blue text-white shadow-xs"
                   : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
@@ -199,7 +199,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
                 setSimulatedTargetBoost(20);
                 showSuccess(isHi ? "निदेशक/प्रमुख सांख्यिकीविद बेंचमार्क (+20%) सक्रिय" : "Director Cadre benchmark (+20%) simulated", isHi ? "लक्ष्य अनुकरण" : "Target Simulated");
               }}
-              className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-none px-2.5 py-1.5 sm:py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer text-center whitespace-nowrap ${
                 simulatedTargetBoost === 20
                   ? "bg-gov-blue text-white shadow-xs"
                   : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"

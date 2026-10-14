@@ -295,15 +295,15 @@ export default function AssessmentEngine({
 
         {/* Question Statement (Bilingual) */}
         <div className="space-y-1">
-          <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white leading-relaxed">
+          <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white leading-relaxed break-words">
             {isHi && currentQ.questionHi ? currentQ.questionHi : currentQ.question}
           </h3>
         </div>
 
-        {/* Keyboard shortcut banner */}
-        <div className="py-2 px-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+        {/* Keyboard shortcut banner (Desktop only) */}
+        <div className="hidden sm:flex py-2 px-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-800 items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
           <span className="flex items-center space-x-1.5">
-            <Command className="w-3.5 h-3.5 text-gov-blue dark:text-sky-400" />
+            <Command className="w-3.5 h-3.5 text-gov-blue dark:text-sky-400 shrink-0" />
             <span><strong>Shortcuts:</strong> [A/B/C/D] Select • [←/→] Navigate • [F] Flag • [Enter] Next</span>
           </span>
         </div>
@@ -318,13 +318,13 @@ export default function AssessmentEngine({
                 key={optIdx}
                 type="button"
                 onClick={() => handleSelectOption(optIdx)}
-                className={`w-full p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-center justify-between cursor-pointer ${
+                className={`w-full p-3.5 sm:p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-center justify-between cursor-pointer ${
                   isSelected
                     ? "border-gov-blue dark:border-sky-500 bg-blue-50/80 dark:bg-sky-950/40 text-gov-navy dark:text-sky-200 font-bold ring-2 ring-gov-blue/20 dark:ring-sky-500/20 shadow-xs"
                     : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
                 }`}
               >
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-3 min-w-0 flex-1">
                   <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 border ${
                     isSelected
                       ? "bg-gov-blue text-white border-gov-blue"
@@ -332,7 +332,7 @@ export default function AssessmentEngine({
                   }`}>
                     {String.fromCharCode(65 + optIdx)}
                   </span>
-                  <span className="leading-relaxed">{opt}</span>
+                  <span className="leading-relaxed break-words">{opt}</span>
                 </div>
                 {isSelected && (
                   <CheckCircle2 className="w-5 h-5 text-gov-blue dark:text-sky-400 shrink-0 ml-2" />

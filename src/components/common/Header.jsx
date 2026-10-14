@@ -6,6 +6,7 @@ import ThemeToggle from "./ThemeToggle.jsx";
 import LanguageToggle from "./LanguageToggle.jsx";
 
 import InstallAppButton from "./InstallAppButton.jsx";
+import AppLogo from "./AppLogo.jsx";
 
 export default function Header({ toggleMobileSidebar }) {
   const { currentUser, officerProfile, logout, setRoleModalOpen } = useAuth();
@@ -18,11 +19,11 @@ export default function Header({ toggleMobileSidebar }) {
   return (
     <header className="bg-gov-navy dark:bg-slate-900 text-white border-b-4 border-gov-saffron sticky top-0 z-40 shadow-md transition-colors duration-200">
       {/* Official Government of India / MoSPI Masthead Strip */}
-      <div className="bg-slate-950/80 border-b border-white/10 px-4 sm:px-6 lg:px-8 py-1 text-[11px] text-slate-300">
-        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2">
+      <div className="bg-slate-950/80 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-1 text-[11px] text-slate-300">
+        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-1">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-medium text-slate-200">{t("govMasthead")}</span>
+            <span className="font-medium text-slate-200 text-[10px] sm:text-[11px] truncate">{t("govMasthead")}</span>
           </div>
           <div className="hidden sm:flex items-center space-x-3 text-slate-400">
             <span>{t("govMastheadSih")}</span>
@@ -37,27 +38,18 @@ export default function Header({ toggleMobileSidebar }) {
         <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
           <button
             onClick={toggleMobileSidebar}
-            className="md:hidden p-2 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg focus:outline-none shrink-0"
+            className="md:hidden p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg focus:outline-none shrink-0"
             aria-label="Toggle navigation"
           >
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* National Emblem & Logo */}
+          {/* Modernized National Emblem & AI Logo */}
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center p-1.5 shadow-inner shrink-0">
-              <svg viewBox="0 0 24 24" className="w-6 h-6 sm:w-7 sm:h-7 text-gov-sky" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" r="10" />
-                <path d="m4.93 4.93 4.24 4.24" />
-                <path d="m14.83 9.17 4.24-4.24" />
-                <path d="m14.83 14.83 4.24 4.24" />
-                <path d="m9.17 14.83-4.24 4.24" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </div>
+            <AppLogo className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 shadow-md" />
             <div className="min-w-0">
               <div className="flex items-center space-x-1 sm:space-x-2">
-                <span className="font-bold text-sm sm:text-lg tracking-wide text-white truncate">{t("appTitle", "StatSkill AI")}</span>
+                <span className="font-extrabold text-sm sm:text-lg tracking-wide text-white truncate">{t("appTitle", "StatSkill AI")}</span>
               </div>
               <p className="text-[11px] text-slate-300 hidden md:block truncate max-w-xs lg:max-w-md">
                 {t("appSubtitle", "Competency Intelligence & Personalized Learning Platform")}
@@ -67,9 +59,11 @@ export default function Header({ toggleMobileSidebar }) {
         </div>
 
         {/* User Info & Actions */}
-        <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
-          {/* PWA Install Button */}
-          <InstallAppButton variant="header" />
+        <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
+          {/* PWA Install Button (Desktop & Tablet) */}
+          <div className="hidden sm:block">
+            <InstallAppButton variant="header" />
+          </div>
 
           {/* Bilingual En / हि Switcher */}
           <LanguageToggle />

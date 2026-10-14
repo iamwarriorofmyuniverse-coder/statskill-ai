@@ -380,7 +380,7 @@ export default function PracticeQuizPage({ setCurrentTab, initialCompetencyId })
             </div>
 
             {/* Question Body */}
-            <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white leading-relaxed">
+            <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white leading-relaxed break-words">
               {isHi && currentQ.questionHi ? currentQ.questionHi : currentQ.question}
             </h3>
 
@@ -406,16 +406,16 @@ export default function PracticeQuizPage({ setCurrentTab, initialCompetencyId })
                     }`}>
                       {String.fromCharCode(65 + idx)}
                     </span>
-                    <span className="flex-1 leading-normal">{opt}</span>
+                    <span className="flex-1 leading-normal break-words">{opt}</span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Keyboard shortcuts hint bar */}
-            <div className='py-2 px-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400'>
+            {/* Keyboard shortcuts hint bar (Desktop only) */}
+            <div className='hidden sm:flex py-2 px-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-800 items-center justify-between text-[11px] text-slate-500 dark:text-slate-400'>
               <span className='flex items-center space-x-1.5'>
-                <Command className='w-3.5 h-3.5 text-gov-blue dark:text-sky-400' />
+                <Command className='w-3.5 h-3.5 text-gov-blue dark:text-sky-400 shrink-0' />
                 <span><strong>Shortcuts:</strong> [A/B/C/D] Select • [←/→] Navigate • [Enter] Next</span>
               </span>
             </div>

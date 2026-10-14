@@ -63,17 +63,17 @@ export default function RoleSelectionModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md transition-all duration-300">
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white overflow-hidden animate-modal-pop">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-md transition-all duration-300">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full max-h-[92vh] flex flex-col border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white overflow-hidden animate-modal-pop">
         {/* Modal Header */}
-        <div className="bg-gov-navy dark:bg-slate-800 text-white px-6 py-4 border-b-2 border-gov-saffron">
-          <h2 className="text-lg font-bold">{isHi ? "संवर्ग प्रोफाइल एवं भूमिका का चयन करें" : "Select Cadre Profile & Role"}</h2>
-          <p className="text-xs text-slate-300">
+        <div className="bg-gov-navy dark:bg-slate-800 text-white px-5 sm:px-6 py-3.5 sm:py-4 border-b-2 border-gov-saffron shrink-0">
+          <h2 className="text-base sm:text-lg font-bold">{isHi ? "संवर्ग प्रोफाइल एवं भूमिका का चयन करें" : "Select Cadre Profile & Role"}</h2>
+          <p className="text-[11px] sm:text-xs text-slate-300">
             {isHi ? "भारतीय आधिकारिक सांख्यिकी प्रणाली - पहुंच प्राधिकरण" : "India Official Statistical System - Access Authorization"}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto">
           {(authError || localError) && (
             <div className="p-3 bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 text-xs flex items-center space-x-2">
               <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />

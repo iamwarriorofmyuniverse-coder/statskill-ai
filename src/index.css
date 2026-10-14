@@ -6,7 +6,16 @@
   body {
     background-color: #f8fafc;
     color: #0f172a;
+    -webkit-tap-highlight-color: transparent;
   }
+}
+
+/* Mobile viewport safe area utilities */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Voice assistant sound wave animation */
