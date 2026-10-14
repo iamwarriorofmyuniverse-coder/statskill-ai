@@ -21,13 +21,22 @@ export default function RoleSelectionModal() {
 
   // Officer Profile quick fields
   const [officerData, setOfficerData] = useState({
-    fullName: currentUser?.displayName || "Ananya Sharma",
+    fullName: currentUser?.displayName || "Statistical Officer",
     designation: "Statistical Officer",
     department: "Official Statistics",
     yearsOfExperience: 4,
     education: "Master's in Statistics",
     careerGoal: "Senior Statistical Analyst"
   });
+
+  React.useEffect(() => {
+    if (currentUser?.displayName) {
+      setOfficerData(prev => ({
+        ...prev,
+        fullName: currentUser.displayName
+      }));
+    }
+  }, [currentUser]);
 
   if (!roleModalOpen) return null;
 
