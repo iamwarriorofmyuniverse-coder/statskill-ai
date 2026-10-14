@@ -203,10 +203,10 @@ export default function RoleSelectionModal() {
                 required
               />
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                {isHi ? "मूल्यांकन हेतु टिप: सर्वर परिवेश में कॉन्फ़िगर की गई डिफ़ॉल्ट कुंजी है " : "Tip for evaluation: Default prototype key configured in server environment is "}
-                <code className="bg-emerald-100 text-emerald-900 dark:bg-emerald-900 dark:text-emerald-100 px-1 py-0.5 rounded font-mono">
-                  TRAINER-MOSPI-2025
-                </code>
+                {isHi
+                  ? "केवल अधिकृत MoSPI / NSSTA संकाय हेतु। त्वरित मूल्यांकन के लिए लॉगिन पृष्ठ पर 1-क्लिक मूल्यांकन का उपयोग करें।"
+                  : "Restricted to authorized MoSPI / NSSTA faculty. For prototype evaluation, use the 1-click evaluation option on the login page."
+                }
               </p>
             </div>
           )}
