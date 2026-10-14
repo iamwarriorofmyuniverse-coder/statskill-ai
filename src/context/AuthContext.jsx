@@ -18,64 +18,82 @@ import * as demoData from "../data/mockDataset.js";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [officerProfile, setOfficerProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Synchronous cache hydration for instant zero-latency UI rendering
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("statskill_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const [officerProfile, setOfficerProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem("statskill_profile");
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const [loading, setLoading] = useState(false);
   const [roleModalOpen, setRoleModalOpen] = useState(false);
   const [trainerModalOpen, setTrainerModalOpen] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  // Restore session from localStorage on mount
+  // Background session synchronization with Firebase Auth / Firestore
   useEffect(() => {
-    async function initSession() {
-      const savedUserJson = localStorage.getItem("statskill_user");
-      if (savedUserJson) {
-        try {
-          const parsed = JSON.parse(savedUserJson);
-          setCurrentUser(parsed);
-          if (parsed.role === "OFFICER") {
-            const profile = await getOfficerProfile(parsed.uid);
-            setOfficerProfile(profile);
-          }
-        } catch (e) {
-          console.error("Failed to restore session:", e);
-        }
-      }
-      setLoading(false);
-    }
-
-    // If Firebase Auth is live, listen to auth state changes
     if (isFirebaseConfigured && auth) {
       const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
         if (firebaseUser) {
           // Check if user exists in Firestore
-          const existingUser = await getFirestoreUser(firebaseUser.uid);
-          if (existingUser && existingUser.role) {
-            setCurrentUser(existingUser);
-            localStorage.setItem("statskill_user", JSON.stringify(existingUser));
-            if (existingUser.role === "OFFICER") {
-              const prof = await getOfficerProfile(existingUser.uid);
-              setOfficerProfile(prof);
+          try {
+            const existingUser = await getFirestoreUser(firebaseUser.uid);
+            if (existingUser && existingUser.role) {
+              setCurrentUser(existingUser);
+              localStorage.setItem("statskill_user", JSON.stringify(existingUser));
+              if (existingUser.role === "OFFICER") {
+                const prof = await getOfficerProfile(existingUser.uid);
+                if (prof) {
+                  setOfficerProfile(prof);
+                  localStorage.setItem("statskill_profile", JSON.stringify(prof));
+                }
+              }
+            } else {
+              // New user without role selected yet
+              const newUser = {
+                uid: firebaseUser.uid,
+                email: firebaseUser.email,
+                displayName: firebaseUser.displayName || "Statistical Cadre Member",
+                photoURL: firebaseUser.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+                role: null,
+                createdAt: new Date().toISOString()
+              };
+              setCurrentUser(newUser);
+              setRoleModalOpen(true);
             }
-          } else {
-            // New user without role selected yet
-            const newUser = {
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-              displayName: firebaseUser.displayName || "Statistical Cadre Member",
-              photoURL: firebaseUser.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-              role: null,
-              createdAt: new Date().toISOString()
-            };
-            setCurrentUser(newUser);
-            setRoleModalOpen(true);
+          } catch (err) {
+            console.warn("Background Firebase user sync error:", err);
+          }
+        } else {
+          // If no Firebase session, verify if local user was a Google session
+          const saved = localStorage.getItem("statskill_user");
+          if (saved) {
+            try {
+              const parsed = JSON.parse(saved);
+              // Only clear if it was an active Google Firebase session that signed out
+              if (parsed.email && !parsed.uid?.startsWith("demo_") && !parsed.uid?.startsWith("google_officer_demo")) {
+                setCurrentUser(null);
+                setOfficerProfile(null);
+                localStorage.removeItem("statskill_user");
+                localStorage.removeItem("statskill_profile");
+              }
+            } catch (e) {}
           }
         }
-        setLoading(false);
       });
       return () => unsubscribe();
-    } else {
-      initSession();
     }
   }, []);
 
@@ -132,8 +150,9 @@ export function AuthProvider({ children }) {
     setCurrentUser(user);
     setOfficerProfile(profile);
     localStorage.setItem("statskill_user", JSON.stringify(user));
-    await saveFirestoreUser(user);
-    await saveOfficerProfile(user.uid, profile);
+    localStorage.setItem("statskill_profile", JSON.stringify(profile));
+    saveFirestoreUser(user).catch(console.warn);
+    saveOfficerProfile(user.uid, profile).catch(console.warn);
     setRoleModalOpen(false);
   };
 
@@ -222,6 +241,7 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
     setOfficerProfile(null);
     localStorage.removeItem("statskill_user");
+    localStorage.removeItem("statskill_profile");
   };
 
   return (

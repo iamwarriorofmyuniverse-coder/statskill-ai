@@ -13,13 +13,32 @@
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
     <title>StatSkill AI - Competency Intelligence Platform | India's Official Statistical System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
-    <div id="root"></div>
+    <div id="root">
+      <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b2545;color:#ffffff;font-family:system-ui,-apple-system,sans-serif;">
+        <div style="width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg style="width:32px;height:32px;color:#38bdf8;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="m4.93 4.93 4.24 4.24"/>
+            <path d="m14.83 9.17 4.24-4.24"/>
+            <path d="m14.83 14.83 4.24 4.24"/>
+            <path d="m9.17 14.83-4.24 4.24"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div style="font-size:18px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;">StatSkill AI</div>
+        <div style="font-size:12px;color:#94a3b8;margin-bottom:24px;">National Statistical Workforce Intelligence</div>
+        <div style="width:32px;height:32px;border:3px solid rgba(255,255,255,0.15);border-top-color:#f59e0b;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

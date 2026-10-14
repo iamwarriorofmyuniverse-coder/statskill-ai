@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { LanguageProvider } from "./context/LanguageContext.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
@@ -8,24 +8,24 @@ import Sidebar from "./components/common/Sidebar.jsx";
 import RoleSelectionModal from "./components/common/RoleSelectionModal.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 
-// Officer Pages
-import OfficerDashboard from "./pages/officer/OfficerDashboard.jsx";
-import OfficerProfile from "./pages/officer/OfficerProfile.jsx";
-import AssessmentPage from "./pages/officer/AssessmentPage.jsx";
-import SkillGapsPage from "./pages/officer/SkillGapsPage.jsx";
-import RecommendationsPage from "./pages/officer/RecommendationsPage.jsx";
-import LearningPage from "./pages/officer/LearningPage.jsx";
-import PracticeQuizPage from "./pages/officer/PracticeQuizPage.jsx";
-import AIAssistantPage from "./pages/officer/AIAssistantPage.jsx";
-import ProgressPage from "./pages/officer/ProgressPage.jsx";
+// Officer Pages (Code-split with React.lazy for instant initial bundle loading)
+const OfficerDashboard = lazy(() => import("./pages/officer/OfficerDashboard.jsx"));
+const OfficerProfile = lazy(() => import("./pages/officer/OfficerProfile.jsx"));
+const AssessmentPage = lazy(() => import("./pages/officer/AssessmentPage.jsx"));
+const SkillGapsPage = lazy(() => import("./pages/officer/SkillGapsPage.jsx"));
+const RecommendationsPage = lazy(() => import("./pages/officer/RecommendationsPage.jsx"));
+const LearningPage = lazy(() => import("./pages/officer/LearningPage.jsx"));
+const PracticeQuizPage = lazy(() => import("./pages/officer/PracticeQuizPage.jsx"));
+const AIAssistantPage = lazy(() => import("./pages/officer/AIAssistantPage.jsx"));
+const ProgressPage = lazy(() => import("./pages/officer/ProgressPage.jsx"));
 
-// Trainer Pages
-import TrainerDashboard from "./pages/trainer/TrainerDashboard.jsx";
-import UploadMaterialPage from "./pages/trainer/UploadMaterialPage.jsx";
-import AiMcqGeneratorPage from "./pages/trainer/AiMcqGeneratorPage.jsx";
-import QuestionReviewPage from "./pages/trainer/QuestionReviewPage.jsx";
-import QuestionBankPage from "./pages/trainer/QuestionBankPage.jsx";
-import LearnerPerformancePage from "./pages/trainer/LearnerPerformancePage.jsx";
+// Trainer Pages (Code-split with React.lazy)
+const TrainerDashboard = lazy(() => import("./pages/trainer/TrainerDashboard.jsx"));
+const UploadMaterialPage = lazy(() => import("./pages/trainer/UploadMaterialPage.jsx"));
+const AiMcqGeneratorPage = lazy(() => import("./pages/trainer/AiMcqGeneratorPage.jsx"));
+const QuestionReviewPage = lazy(() => import("./pages/trainer/QuestionReviewPage.jsx"));
+const QuestionBankPage = lazy(() => import("./pages/trainer/QuestionBankPage.jsx"));
+const LearnerPerformancePage = lazy(() => import("./pages/trainer/LearnerPerformancePage.jsx"));
 
 const OFFICER_TABS = [
   "dashboard", "profile", "assessment", "skill-gaps",
@@ -136,32 +136,41 @@ function MainLayout() {
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-full">
-          {/* Officer Navigation Routing */}
-          {isOfficer && (
-            <>
-              {currentTab === "dashboard" && <OfficerDashboard setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
-              {currentTab === "profile" && <OfficerProfile />}
-              {currentTab === "assessment" && <AssessmentPage setCurrentTab={setCurrentTab} />}
-              {currentTab === "skill-gaps" && <SkillGapsPage setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
-              {currentTab === "recommendations" && <RecommendationsPage setCurrentTab={setCurrentTab} />}
-              {currentTab === "learning" && <LearningPage setCurrentTab={setCurrentTab} />}
-              {currentTab === "practice-quiz" && <PracticeQuizPage setCurrentTab={setCurrentTab} initialCompetencyId={practiceCompetencyId} />}
-              {currentTab === "ai-assistant" && <AIAssistantPage setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
-              {currentTab === "progress" && <ProgressPage setCurrentTab={setCurrentTab} />}
-            </>
-          )}
+          <Suspense
+            fallback={
+              <div className="min-h-[400px] flex flex-col items-center justify-center space-y-3">
+                <div className="w-8 h-8 rounded-full border-2 border-gov-blue dark:border-sky-400 border-t-transparent animate-spin" />
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Loading section...</span>
+              </div>
+            }
+          >
+            {/* Officer Navigation Routing */}
+            {isOfficer && (
+              <>
+                {currentTab === "dashboard" && <OfficerDashboard setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
+                {currentTab === "profile" && <OfficerProfile />}
+                {currentTab === "assessment" && <AssessmentPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "skill-gaps" && <SkillGapsPage setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
+                {currentTab === "recommendations" && <RecommendationsPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "learning" && <LearningPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "practice-quiz" && <PracticeQuizPage setCurrentTab={setCurrentTab} initialCompetencyId={practiceCompetencyId} />}
+                {currentTab === "ai-assistant" && <AIAssistantPage setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
+                {currentTab === "progress" && <ProgressPage setCurrentTab={setCurrentTab} />}
+              </>
+            )}
 
-          {/* Trainer Navigation Routing */}
-          {isTrainer && (
-            <>
-              {currentTab === "dashboard" && <TrainerDashboard setCurrentTab={setCurrentTab} />}
-              {currentTab === "upload-material" && <UploadMaterialPage setCurrentTab={setCurrentTab} />}
-              {currentTab === "ai-mcq-generator" && <AiMcqGeneratorPage setCurrentTab={setCurrentTab} />}
-              {currentTab === "question-review" && <QuestionReviewPage setCurrentTab={setCurrentTab} />}
-              {currentTab === "question-bank" && <QuestionBankPage />}
-              {currentTab === "learner-performance" && <LearnerPerformancePage />}
-            </>
-          )}
+            {/* Trainer Navigation Routing */}
+            {isTrainer && (
+              <>
+                {currentTab === "dashboard" && <TrainerDashboard setCurrentTab={setCurrentTab} />}
+                {currentTab === "upload-material" && <UploadMaterialPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "ai-mcq-generator" && <AiMcqGeneratorPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "question-review" && <QuestionReviewPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "question-bank" && <QuestionBankPage />}
+                {currentTab === "learner-performance" && <LearnerPerformancePage />}
+              </>
+            )}
+          </Suspense>
         </main>
       </div>
 

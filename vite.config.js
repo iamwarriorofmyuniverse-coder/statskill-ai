@@ -14,4 +14,17 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    target: "esnext",
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-firebase": ["firebase/app", "firebase/auth", "firebase/firestore"],
+          "vendor-charts": ["recharts"],
+          "vendor-icons": ["lucide-react"],
+        },
+      },
+    },
+  },
 });
