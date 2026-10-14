@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { ToastProvider } from "./context/ToastContext.jsx";
 import Header from "./components/common/Header.jsx";
 import Sidebar from "./components/common/Sidebar.jsx";
+import BottomNav from "./components/common/BottomNav.jsx";
 import RoleSelectionModal from "./components/common/RoleSelectionModal.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 
@@ -135,7 +136,7 @@ function MainLayout() {
           setMobileOpen={setMobileSidebarOpen}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-full">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto max-w-full pb-24 md:pb-8">
           <Suspense
             fallback={
               <div className="min-h-[400px] flex flex-col items-center justify-center space-y-3">
@@ -173,6 +174,9 @@ function MainLayout() {
           </Suspense>
         </main>
       </div>
+
+      {/* Native Mobile Bottom Navigation Bar */}
+      <BottomNav currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
       <RoleSelectionModal />
     </div>

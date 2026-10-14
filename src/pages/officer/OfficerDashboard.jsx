@@ -23,7 +23,12 @@ import {
   BookOpen,
   ArrowRight,
   Sparkles,
-  Layers
+  Layers,
+  Flame,
+  Zap,
+  Trophy,
+  BrainCircuit,
+  Compass
 } from "lucide-react";
 
 export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
@@ -37,6 +42,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
   const [history, setHistory] = useState([]);
   const [learningProgress, setLearningProgress] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mobileSection, setMobileSection] = useState("overview"); // "overview" | "gaps" | "courses"
 
   // Modals state
   const [activeGapModal, setActiveGapModal] = useState(null);
@@ -205,147 +211,290 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title={t("overallCompetencyScore")}
-          value={`${overallScore}%`}
-          subtitle={t("targetRoleBenchmark")}
-          trend={t("trendQuarter")}
-          icon={Award}
-          color="blue"
-          cascadeClass="cascade-1"
-        />
-        <StatCard
-          title={t("assessedCompetencies")}
-          value={`${assessedCount} / ${totalCount}`}
-          subtitle={t("pendingDiagnostics")}
-          icon={CheckCircle2}
-          color="emerald"
-          cascadeClass="cascade-2"
-        />
-        <StatCard
-          title={t("highPriorityGaps")}
-          value={highGaps.length + (simulatedTargetBoost > 0 ? 2 : 0)}
-          subtitle={t("requiresImmediateAction")}
-          icon={AlertTriangle}
-          color="amber"
-          cascadeClass="cascade-3"
-        />
-        <StatCard
-          title={t("learningProgress")}
-          value={`${avgProgress}%`}
-          subtitle={`${learningProgress.length} ${t("coursesActive")}`}
-          icon={BookOpen}
-          color="purple"
-          cascadeClass="cascade-4"
-        />
-      </div>
-
-      {/* Middle Section: Radar Chart & High Priority Gaps */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Recharts Radar Chart */}
-        <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                <Layers className="w-4 h-4 text-gov-blue" />
-                <span>{t("competencyRadarAnalysis")}</span>
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {t("radarSubtitle")}
-              </p>
+      {/* Gamified Mobile XP & Streak Strip (Exciting & Interactive) */}
+      <div className="bg-gradient-to-r from-gov-navy via-slate-900 to-gov-blue text-white rounded-2xl p-4 shadow-md border border-white/10 relative overflow-hidden">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center space-x-3 min-w-0">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 flex items-center justify-center text-white shadow-lg shrink-0">
+              <Trophy className="w-6 h-6 animate-bounce" />
             </div>
-            <button
-              onClick={() => setCurrentTab("skill-gaps")}
-              className="text-xs text-gov-blue hover:underline font-semibold"
-            >
-              {t("viewFullMatrix")}
-            </button>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-1.5 flex-wrap">
+                <span className="text-xs font-black tracking-wide text-amber-300 uppercase truncate">
+                  {isHi ? "स्तर 4 अधिकारी" : "Level 4 Cadre Officer"}
+                </span>
+                <span className="px-1.5 py-0.2 rounded bg-white/20 text-[10px] font-bold text-sky-200 shrink-0">
+                  840 XP
+                </span>
+              </div>
+              <h2 className="text-xs sm:text-sm font-bold text-white mt-0.5 truncate">
+                {isHi ? "संवर्ग लक्ष्य तैयारी: 74% पूर्ण" : "Target Competency: 74% Ready"}
+              </h2>
+            </div>
           </div>
-          <CompetencyRadarChart data={radarData} />
+
+          {/* Daily Streak Pill */}
+          <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl bg-orange-500/20 border border-orange-400/40 text-orange-300 shrink-0">
+            <div className="flex items-center space-x-1">
+              <Flame className="w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" />
+              <span className="font-extrabold text-sm text-white">7</span>
+            </div>
+            <span className="text-[9px] font-semibold uppercase tracking-wider text-orange-200">
+              {isHi ? "दिन स्ट्रीक" : "Streak"}
+            </span>
+          </div>
         </div>
 
-        {/* High Priority Gaps */}
-        <div className="lg:col-span-5 space-y-4 flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <AlertTriangle className="w-4 h-4 text-orange-600" />
-              <span>{t("prioritySkillGapsTitle")}</span>
-            </h3>
-            <button
-              onClick={() => setCurrentTab("skill-gaps")}
-              className="text-xs text-gov-blue hover:underline font-semibold"
-            >
-              {t("viewAll")} ({skillGaps.length})
-            </button>
+        {/* Level XP Progress Bar */}
+        <div className="mt-2.5">
+          <div className="flex justify-between text-[10px] text-slate-300 mb-1">
+            <span>{isHi ? "वरिष्ठ विश्लेषक संवर्ग स्तर की ओर" : "Towards Senior Analyst Promotion"}</span>
+            <span className="font-bold text-sky-300">160 XP to Lv 5</span>
           </div>
+          <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-amber-400 via-orange-500 to-emerald-400 h-full rounded-full transition-all duration-500"
+              style={{ width: "74%" }}
+            />
+          </div>
+        </div>
 
-          <div className="space-y-3">
-            {highGaps.slice(0, 2).map((gap) => (
-              <SkillGapCard
-                key={gap.id}
-                gap={gap}
-                onAction={() => setActiveGapModal(gap)}
-              />
-            ))}
-          </div>
+        {/* 1-Tap Quick Action Chips (Swipeable Horizontal Strip) */}
+        <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center space-x-2 overflow-x-auto no-scrollbar pb-0.5">
+          <button
+            onClick={() => {
+              if (onLaunchQuiz) onLaunchQuiz(null);
+              else setCurrentTab("practice-quiz");
+            }}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95 cursor-pointer"
+          >
+            <Zap className="w-3.5 h-3.5 fill-white" />
+            <span>{isHi ? "3-मिनट प्रश्नोत्तरी (+50 XP)" : "Quick 3-Min Quiz (+50 XP)"}</span>
+          </button>
 
-          <div className="p-3 bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200 dark:border-slate-700 rounded-lg text-xs text-blue-900 dark:text-sky-200 flex items-center justify-between">
-            <div>
-              <span className="font-bold block">{t("needAiDiagnostic")}</span>
-              <span className="text-slate-600 dark:text-slate-300 text-[11px]">{t("generatePsychometric")}</span>
-            </div>
-            <button
-              onClick={() => setCurrentTab("skill-gaps")}
-              className="px-3 py-1.5 bg-gov-blue text-white rounded text-xs font-bold hover:bg-gov-navy transition-colors shrink-0"
-            >
-              {t("diagnoseBtn")}
-            </button>
-          </div>
+          <button
+            onClick={() => setCurrentTab("assessment")}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
+          >
+            <BrainCircuit className="w-3.5 h-3.5 text-sky-300" />
+            <span>{isHi ? "दक्षता निदान (10 प्रश्न)" : "Diagnostic (10 Qs)"}</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab("ai-assistant")}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>{isHi ? "AI सलाहकार से पूछें" : "Ask AI Advisor"}</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab("learning")}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-emerald-300" />
+            <span>{isHi ? "iGOT कोर्स" : "iGOT Courses"}</span>
+          </button>
         </div>
       </div>
 
-      {/* Bottom Section: Recommended Courses & Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Recommended Courses */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-gov-accent" />
-                <span>{t("aiRecommendedLearning")}</span>
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                {t("curatedGapsSubtitle")}
-              </p>
-            </div>
-            <button
-              onClick={() => setCurrentTab("recommendations")}
-              className="text-xs text-gov-blue hover:underline font-semibold"
-            >
-              {t("exploreCatalog")}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {recommendations.slice(0, 2).map((rec) => (
-              <CourseRecommendationCard
-                key={rec.id}
-                rec={rec}
-                onEnroll={() => setActiveCourseModal(rec)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Activity & Recent Improvement Timeline */}
-        <div className="lg:col-span-4">
-          <ActivityTimeline
-            history={history}
-            learningProgress={learningProgress}
+      {/* Metric Cards - Horizontal Swipeable Carousel on Mobile, Grid on Tablet/Desktop */}
+      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-1 px-1 sm:mx-0 sm:px-0 snap-x snap-mandatory no-scrollbar">
+        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+          <StatCard
+            title={t("overallCompetencyScore")}
+            value={`${overallScore}%`}
+            subtitle={t("targetRoleBenchmark")}
+            trend={t("trendQuarter")}
+            icon={Award}
+            color="blue"
+            cascadeClass="cascade-1"
           />
         </div>
+        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+          <StatCard
+            title={t("assessedCompetencies")}
+            value={`${assessedCount} / ${totalCount}`}
+            subtitle={t("pendingDiagnostics")}
+            icon={CheckCircle2}
+            color="emerald"
+            cascadeClass="cascade-2"
+          />
+        </div>
+        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+          <StatCard
+            title={t("highPriorityGaps")}
+            value={highGaps.length + (simulatedTargetBoost > 0 ? 2 : 0)}
+            subtitle={t("requiresImmediateAction")}
+            icon={AlertTriangle}
+            color="amber"
+            cascadeClass="cascade-3"
+          />
+        </div>
+        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+          <StatCard
+            title={t("learningProgress")}
+            value={`${avgProgress}%`}
+            subtitle={`${learningProgress.length} ${t("coursesActive")}`}
+            icon={BookOpen}
+            color="purple"
+            cascadeClass="cascade-4"
+          />
+        </div>
+      </div>
+
+      {/* Mobile Segment Filter Switcher - Eliminates Endless Scrolling */}
+      <div className="lg:hidden flex items-center p-1 bg-slate-200/80 dark:bg-slate-800 rounded-xl text-xs font-bold shadow-xs">
+        <button
+          onClick={() => setMobileSection("overview")}
+          className={`flex-1 py-2 text-center rounded-lg transition-all ${
+            mobileSection === "overview"
+              ? "bg-white dark:bg-slate-900 text-gov-blue dark:text-sky-400 shadow-xs"
+              : "text-slate-600 dark:text-slate-400"
+          }`}
+        >
+          📊 {isHi ? "रडार चार्ट" : "Radar Analysis"}
+        </button>
+        <button
+          onClick={() => setMobileSection("gaps")}
+          className={`flex-1 py-2 text-center rounded-lg transition-all ${
+            mobileSection === "gaps"
+              ? "bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs"
+              : "text-slate-600 dark:text-slate-400"
+          }`}
+        >
+          ⚠️ {isHi ? "गैप्स" : "Priority Gaps"} ({highGaps.length})
+        </button>
+        <button
+          onClick={() => setMobileSection("courses")}
+          className={`flex-1 py-2 text-center rounded-lg transition-all ${
+            mobileSection === "courses"
+              ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs"
+              : "text-slate-600 dark:text-slate-400"
+          }`}
+        >
+          📚 {isHi ? "कोर्स" : "Courses"} ({recommendations.length})
+        </button>
+      </div>
+
+      {/* Middle & Bottom Sections: Switchable on Mobile, Responsive Multi-column Grid on Desktop */}
+      <div className="space-y-6">
+        {/* Radar Chart & Activity - Visible on Desktop OR when mobileSection is overview */}
+        <div className={`${mobileSection === "overview" ? "block" : "hidden lg:block"} space-y-6`}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                    <Layers className="w-4 h-4 text-gov-blue" />
+                    <span>{t("competencyRadarAnalysis")}</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {t("radarSubtitle")}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setCurrentTab("skill-gaps")}
+                  className="text-xs text-gov-blue hover:underline font-semibold"
+                >
+                  {t("viewFullMatrix")}
+                </button>
+              </div>
+              <CompetencyRadarChart data={radarData} />
+            </div>
+
+            <div className="lg:col-span-5 hidden lg:block">
+              <ActivityTimeline
+                history={history}
+                learningProgress={learningProgress}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* High Priority Gaps - Visible on Desktop OR when mobileSection is gaps */}
+        <div className={`${mobileSection === "gaps" ? "block" : "hidden lg:block"}`}>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <AlertTriangle className="w-4 h-4 text-orange-600" />
+                <span>{t("prioritySkillGapsTitle")}</span>
+              </h3>
+              <button
+                onClick={() => setCurrentTab("skill-gaps")}
+                className="text-xs text-gov-blue hover:underline font-semibold"
+              >
+                {t("viewAll")} ({skillGaps.length})
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {highGaps.slice(0, 4).map((gap) => (
+                <SkillGapCard
+                  key={gap.id}
+                  gap={gap}
+                  onAction={() => setActiveGapModal(gap)}
+                />
+              ))}
+            </div>
+
+            <div className="p-3 bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200 dark:border-slate-700 rounded-lg text-xs text-blue-900 dark:text-sky-200 flex items-center justify-between">
+              <div>
+                <span className="font-bold block">{t("needAiDiagnostic")}</span>
+                <span className="text-slate-600 dark:text-slate-300 text-[11px]">{t("generatePsychometric")}</span>
+              </div>
+              <button
+                onClick={() => setCurrentTab("skill-gaps")}
+                className="px-3 py-1.5 bg-gov-blue text-white rounded text-xs font-bold hover:bg-gov-navy transition-colors shrink-0"
+              >
+                {t("diagnoseBtn")}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Recommended Courses - Visible on Desktop OR when mobileSection is courses */}
+        <div className={`${mobileSection === "courses" ? "block" : "hidden lg:block"}`}>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-gov-accent" />
+                  <span>{t("aiRecommendedLearning")}</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {t("curatedGapsSubtitle")}
+                </p>
+              </div>
+              <button
+                onClick={() => setCurrentTab("recommendations")}
+                className="text-xs text-gov-blue hover:underline font-semibold"
+              >
+                {t("exploreCatalog")}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {recommendations.slice(0, 4).map((rec) => (
+                <CourseRecommendationCard
+                  key={rec.id}
+                  rec={rec}
+                  onEnroll={() => setActiveCourseModal(rec)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Activity Timeline in Overview tab */}
+        {mobileSection === "overview" && (
+          <div className="lg:hidden">
+            <ActivityTimeline
+              history={history}
+              learningProgress={learningProgress}
+            />
+          </div>
+        )}
       </div>
 
       {/* Interactive Competency Remediation Modal */}
