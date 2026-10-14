@@ -62,18 +62,21 @@ export function usePWA() {
 
   const promptInstall = async () => {
     if (!deferredPrompt) {
-      // If prompt not available yet, show manual instruction
-      alert("To install StatSkill AI:\n- On Chrome/Edge: Click the install icon in the address bar (or Menu > 'Install StatSkill AI').\n- On iPhone/iPad: Tap Share > 'Add to Home Screen'.");
-      return false;
+      return "SHOW_MANUAL_GUIDE";
     }
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      setIsInstalled(true);
-      setIsInstallable(false);
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        setIsInstalled(true);
+        setIsInstallable(false);
+      }
+      setDeferredPrompt(null);
+      return outcome === "accepted" ? "INSTALLED" : "DISMISSED";
+    } catch (err) {
+      console.warn("PWA prompt error:", err);
+      return "SHOW_MANUAL_GUIDE";
     }
-    setDeferredPrompt(null);
-    return outcome === "accepted";
   };
 
   return {
