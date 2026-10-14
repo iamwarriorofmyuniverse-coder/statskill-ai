@@ -1,25 +1,55 @@
 import express from "express";
+import crypto from "crypto";
 
 const router = express.Router();
 
 /**
+ * Constant-time string comparison to prevent side-channel timing attacks
+ */
+function timingSafeCompare(userInput, expectedSecret) {
+  if (typeof userInput !== "string" || typeof expectedSecret !== "string") {
+    return false;
+  }
+  const cleanInput = userInput.trim();
+  const cleanSecret = expectedSecret.trim();
+
+  // Create SHA-256 digests to ensure fixed length buffers for timingSafeEqual
+  const hashInput = crypto.createHash("sha256").update(cleanInput, "utf8").digest();
+  const hashSecret = crypto.createHash("sha256").update(cleanSecret, "utf8").digest();
+
+  return crypto.timingSafeEqual(hashInput, hashSecret);
+}
+
+/**
  * Validates Trainer Access Code server-side
  * Code is never exposed in client source code
+ * Protected by timing-safe cryptographic equality and strict sanitization
  */
 router.post("/validate-trainer", (req, res) => {
   const { accessCode, userId, email } = req.body;
 
-  const validKey = (process.env.STATSKILL_TRAINER_KEY || "TRAINER-MOSPI-2025").trim();
-
-  if (!accessCode) {
+  if (!accessCode || typeof accessCode !== "string") {
     return res.status(400).json({
       success: false,
       authorized: false,
-      error: "Trainer access code is required."
+      error: "Valid trainer access code is required."
     });
   }
 
-  if (accessCode.trim() === validKey) {
+  // Sanitize: reject suspiciously large strings to prevent resource exhaustion
+  if (accessCode.length > 128) {
+    return res.status(400).json({
+      success: false,
+      authorized: false,
+      error: "Access code exceeds maximum allowed length."
+    });
+  }
+
+  const validKey = (process.env.STATSKILL_TRAINER_KEY || "TRAINER-MOSPI-2025").trim();
+
+  const isMatch = timingSafeCompare(accessCode, validKey);
+
+  if (isMatch) {
     return res.json({
       success: true,
       authorized: true,

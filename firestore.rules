@@ -1,0 +1,683 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Project: StatSkill AI (Smart India Hackathon 2024 - Problem Statement 21121)
+// Architecture: Cloud Firestore for MoSPI Statistical Cadre Competency Platform
+//
+// Collection: users
+// Document ID: {uid} (Firebase Auth UID)
+// Fields:
+//   - uid: string (required, 1-128 chars, matches Auth UID, immutable)
+//   - email: string (required, valid email, 3-100 chars)
+//   - displayName: string (optional, 1-100 chars)
+//   - photoURL: string (optional, valid URL or empty, <= 500 chars)
+//   - role: string (required, 'OFFICER' or 'TRAINER', privilege escalation restricted)
+//   - createdAt: string | timestamp (required, immutable)
+//   - lastLogin: string | timestamp (optional)
+//   - isProfileComplete: bool (optional)
+//
+// Collection: officer_profiles
+// Document ID: {userId} (matches Auth UID)
+// Fields:
+//   - userId: string (required, matches Auth UID, immutable)
+//   - fullName: string (required, 1-100 chars)
+//   - designation: string (optional, <= 100 chars)
+//   - department: string (optional, <= 100 chars)
+//   - yearsOfExperience: number (optional, 0-60)
+//   - education: string (optional, <= 300 chars)
+//   - careerGoal: string (optional, <= 300 chars)
+//   - currentRole: string (optional, <= 150 chars)
+//   - previousTraining: string (optional, <= 1000 chars)
+//   - phone: string (optional, <= 30 chars)
+//   - email: string (optional, valid email, <= 100 chars)
+//   - employeeId: string (optional, <= 50 chars)
+//   - cadre: string (optional, <= 100 chars)
+//   - officeLocation: string (optional, <= 150 chars)
+//   - updatedAt: string | timestamp (optional)
+//
+// Collection: competencies
+// Document ID: {competencyId} (e.g. comp-stat-01)
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - name: string (required, 1-100 chars)
+//   - domain: string (required, 1-100 chars)
+//   - description: string (optional, <= 1000 chars)
+//   - maxLevel: number (optional, 1-10)
+//   - updatedAt: string | timestamp (optional)
+//
+// Collection: course_catalog
+// Document ID: {courseId} (e.g. course-01)
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - title: string (required, 1-250 chars)
+//   - courseId: string (optional, <= 50 chars)
+//   - domain: string (optional, <= 100 chars)
+//   - competenciesCovered: list of strings (optional, <= 20 items)
+//   - competencyName: string (optional, <= 100 chars)
+//   - competencyId: string (optional, <= 50 chars)
+//   - competency: string (optional, <= 100 chars)
+//   - provider: string (optional, <= 150 chars)
+//   - durationHours: number (optional, 0-500)
+//   - level: string (optional, <= 50 chars)
+//   - rating: number (optional, 0-5)
+//   - enrollmentCount: number (optional, >= 0)
+//   - description: string (optional, <= 2500 chars)
+//   - modulesCount: number (optional, >= 0)
+//   - link: string (optional, <= 500 chars)
+//   - updatedAt: string | timestamp (optional)
+//
+// Collection: skill_gaps
+// Document ID: {gapId}
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - userId: string (required, matches Auth UID, immutable)
+//   - competencyId: string (required, 1-50 chars)
+//   - competencyName: string (required, 1-100 chars)
+//   - domain: string (optional, <= 100 chars)
+//   - currentLevel: number (required, 0-100)
+//   - targetLevel: number (required, 0-100)
+//   - gapMagnitude: number (optional, 0-100)
+//   - rawGap: number (optional, -100 to 100)
+//   - priority: string (optional, 'HIGH'|'MEDIUM'|'LOW'|'CRITICAL')
+//   - priorityLabel: string (optional, <= 50 chars)
+//   - status: string (optional, 'NOT_STARTED'|'IN_PROGRESS'|'COMPLETED')
+//   - notes: string (optional, <= 1000 chars)
+//   - updatedAt: string | timestamp (optional)
+//
+// Collection: recommendations
+// Document ID: {recId}
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - userId: string (required, matches Auth UID, immutable)
+//   - courseId: string (required, 1-50 chars)
+//   - competencyId: string (optional, <= 50 chars)
+//   - relevanceScore: number (optional, 0-100)
+//   - priority: string (optional, 'HIGH'|'MEDIUM'|'LOW'|'CRITICAL')
+//   - aiRationale: string (optional, <= 1000 chars)
+//   - status: string (optional, 'RECOMMENDED'|'ENROLLED'|'IN_PROGRESS'|'COMPLETED')
+//   - course: map (optional)
+//   - updatedAt: string | timestamp (optional)
+//
+// Collection: learning_progress
+// Document ID: {progressId}
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - userId: string (required, matches Auth UID, immutable)
+//   - courseId: string (required, 1-50 chars)
+//   - progressPercent: number (required, 0-100)
+//   - status: string (required, 'NOT_STARTED'|'IN_PROGRESS'|'COMPLETED')
+//   - completedModules: number (optional, 0-500)
+//   - totalModules: number (optional, 0-500)
+//   - timeSpentHours: number (optional, 0-1000)
+//   - lastAccessed: string | timestamp (optional)
+//   - course: map (optional)
+//
+// Collection: assessment_attempts
+// Document ID: {attemptId} (Immutable records)
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - userId: string (required, matches Auth UID, immutable)
+//   - assessmentId: string (optional, <= 50 chars)
+//   - score: number (required, 0-100)
+//   - maxScore: number (optional, 0-1000)
+//   - completedAt: string | timestamp (required)
+//   - domainScores: map (optional)
+//   - competencyScores: map (optional)
+//   - answers: map (optional)
+//   - gaps: list of maps (optional, <= 50 items)
+//   - notes: string (optional, <= 500 chars)
+//
+// Collection: quiz_attempts
+// Document ID: {attemptId} (Immutable records)
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - userId: string (required, matches Auth UID, immutable)
+//   - quizTitle: string (optional, <= 200 chars)
+//   - competencyId: string (optional, <= 50 chars)
+//   - competencyName: string (optional, <= 100 chars)
+//   - domain: string (optional, <= 100 chars)
+//   - score: number (optional, 0-100)
+//   - quizScore: number (optional, 0-100)
+//   - previousScore: number (optional, 0-100)
+//   - newScore: number (optional, 0-100)
+//   - improvement: number (optional, -100 to 100)
+//   - completedAt: string | timestamp (required)
+//   - answers: map (optional)
+//   - totalQuestions: number (optional, 0-200)
+//   - correctCount: number (optional, 0-200)
+//
+// Collection: competency_history
+// Document ID: {historyId} (Immutable records)
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - userId: string (required, matches Auth UID, immutable)
+//   - competencyId: string (required, 1-50 chars)
+//   - competencyName: string (required, 1-100 chars)
+//   - domain: string (optional, <= 100 chars)
+//   - previousScore: number (optional, 0-100)
+//   - newScore: number (required, 0-100)
+//   - scoreBefore: number (optional, 0-100)
+//   - scoreAfter: number (optional, 0-100)
+//   - change: string (optional, <= 50 chars)
+//   - date: string | timestamp (optional)
+//   - assessedAt: string | timestamp (optional)
+//   - source: string (optional, 'DIAGNOSTIC'|'PRACTICE_QUIZ'|'QUIZ'|'IGOT_COURSE'|'TRAINING')
+//   - improvement: string (optional, <= 250 chars)
+//
+// Collection: question_bank
+// Document ID: {questionId}
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - question: string (required, 5-1000 chars)
+//   - options: list of strings (required, 2-6 items)
+//   - correctAnswer: number (required, 0-5)
+//   - status: string (required, 'PENDING'|'APPROVED'|'REJECTED'|'ARCHIVED')
+//   - explanation: string (optional, <= 1000 chars)
+//   - difficulty: string (optional, 'Foundational'|'Intermediate'|'Advanced'|'Expert')
+//   - competency: string (optional, <= 100 chars)
+//   - competencyId: string (optional, <= 50 chars)
+//   - domain: string (optional, <= 100 chars)
+//   - topic: string (optional, <= 100 chars)
+//   - sourceExcerpt: string (optional, <= 2000 chars)
+//   - sourceFile: string (optional, <= 200 chars)
+//   - approvedBy: string (optional, <= 100 chars)
+//   - approvedAt: string | timestamp (optional)
+//   - updatedAt: string | timestamp (optional)
+//   - verifiedByTrainer: bool (optional)
+//   - usageCount: number (optional, >= 0)
+//
+// Collection: learning_materials
+// Document ID: {materialId}
+// Fields:
+//   - id: string (required, 1-50 chars)
+//   - status: string (required, 'PENDING_GENERATION'|'PROCESSING'|'PROCESSED'|'FAILED')
+//   - fileName: string (optional, <= 200 chars)
+//   - fileType: string (optional, <= 20 chars)
+//   - fileSize: string (optional, <= 50 chars)
+//   - uploadedBy: string (optional, <= 100 chars)
+//   - trainerId: string (optional, <= 100 chars)
+//   - title: string (optional, <= 200 chars)
+//   - domain: string (optional, <= 100 chars)
+//   - uploadedAt: string | timestamp (optional)
+//   - uploadDate: string | timestamp (optional)
+//   - processingStatus: string (optional, 'PENDING'|'PROCESSING'|'COMPLETED'|'FAILED')
+//   - textLength: number (optional, >= 0)
+//   - questionsGenerated: number (optional, 0-500)
+//   - generatedCount: number (optional, 0-500)
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Standard Helper Functions
+    // ===============================================================
+
+    // Check if the request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if caller UID matches the target userId
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Determine if caller has Trainer privileges.
+    // Derived from trusted sources:
+    // 1. Firebase Auth Custom Claims (role == 'TRAINER' or trainer == true)
+    // 2. Verified NSSTA / MoSPI official faculty email domain
+    // 3. Stored user profile record with 'TRAINER' role
+    function isTrainer() {
+      return isAuthenticated() && (
+        ('role' in request.auth.token && request.auth.token.role == 'TRAINER') ||
+        ('trainer' in request.auth.token && request.auth.token.trainer == true) ||
+        ('email' in request.auth.token && request.auth.token.email is string && (
+          request.auth.token.email.matches('.*@nssta\\.gov\\.in$') ||
+          request.auth.token.email == 'dr.rajesh.verma@nssta.gov.in' ||
+          request.auth.token.email == 'trainer.rajesh@mospi.gov.in'
+        )) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'TRAINER')
+      );
+    }
+
+    // Strict authority check for self-escalation prevention
+    // Only caller with verified custom claims or NSSTA bootstrap email can grant TRAINER role
+    function isTrainerAuthority() {
+      return isAuthenticated() && (
+        ('role' in request.auth.token && request.auth.token.role == 'TRAINER') ||
+        ('trainer' in request.auth.token && request.auth.token.trainer == true) ||
+        ('email' in request.auth.token && request.auth.token.email is string && (
+          request.auth.token.email.matches('.*@nssta\\.gov\\.in$') ||
+          request.auth.token.email == 'dr.rajesh.verma@nssta.gov.in' ||
+          request.auth.token.email == 'trainer.rajesh@mospi.gov.in'
+        ))
+      );
+    }
+
+    // Email address format validation
+    function isValidEmail(email) {
+      return email is string &&
+        email.size() <= 100 &&
+        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // Web URL format validation
+    function isValidUrl(url) {
+      return url is string &&
+        url.size() <= 500 &&
+        (url == '' || url.matches("^https?://.*"));
+    }
+
+    // Date or timestamp validation
+    function isValidDate(dateVal) {
+      return dateVal is timestamp ||
+        (dateVal is string && dateVal.size() >= 10 && dateVal.size() <= 40);
+    }
+
+    // ===============================================================
+    // Domain Validator Functions (Validator Function Pattern)
+    // Called in BOTH create and update rules to eliminate Update Bypass
+    // ===============================================================
+
+    function isValidUser(data) {
+      return data.keys().hasOnly(['uid', 'email', 'displayName', 'photoURL', 'role', 'createdAt', 'lastLogin', 'isProfileComplete']) &&
+        data.keys().hasAll(['uid', 'email', 'role', 'createdAt']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        isValidEmail(data.email) &&
+        data.role in ['OFFICER', 'TRAINER'] &&
+        isValidDate(data.createdAt) &&
+        (!('displayName' in data) || (data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 100)) &&
+        (!('photoURL' in data) || isValidUrl(data.photoURL)) &&
+        (!('lastLogin' in data) || isValidDate(data.lastLogin)) &&
+        (!('isProfileComplete' in data) || data.isProfileComplete is bool);
+    }
+
+    function isValidOfficerProfile(data) {
+      return data.keys().hasOnly(['userId', 'fullName', 'designation', 'department', 'yearsOfExperience', 'education', 'careerGoal', 'currentRole', 'previousTraining', 'phone', 'email', 'employeeId', 'cadre', 'officeLocation', 'updatedAt']) &&
+        data.keys().hasAll(['userId', 'fullName']) &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.fullName is string && data.fullName.size() >= 1 && data.fullName.size() <= 100 &&
+        (!('designation' in data) || (data.designation is string && data.designation.size() <= 100)) &&
+        (!('department' in data) || (data.department is string && data.department.size() <= 100)) &&
+        (!('yearsOfExperience' in data) || (data.yearsOfExperience is number && data.yearsOfExperience >= 0 && data.yearsOfExperience <= 60)) &&
+        (!('education' in data) || (data.education is string && data.education.size() <= 300)) &&
+        (!('careerGoal' in data) || (data.careerGoal is string && data.careerGoal.size() <= 300)) &&
+        (!('currentRole' in data) || (data.currentRole is string && data.currentRole.size() <= 150)) &&
+        (!('previousTraining' in data) || (data.previousTraining is string && data.previousTraining.size() <= 1000)) &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 30)) &&
+        (!('email' in data) || isValidEmail(data.email)) &&
+        (!('employeeId' in data) || (data.employeeId is string && data.employeeId.size() <= 50)) &&
+        (!('cadre' in data) || (data.cadre is string && data.cadre.size() <= 100)) &&
+        (!('officeLocation' in data) || (data.officeLocation is string && data.officeLocation.size() <= 150)) &&
+        (!('updatedAt' in data) || isValidDate(data.updatedAt));
+    }
+
+    function isValidCompetency(data) {
+      return data.keys().hasOnly(['id', 'name', 'domain', 'description', 'maxLevel', 'updatedAt']) &&
+        data.keys().hasAll(['id', 'name', 'domain']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+        data.domain is string && data.domain.size() >= 1 && data.domain.size() <= 100 &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 1000)) &&
+        (!('maxLevel' in data) || (data.maxLevel is number && data.maxLevel >= 1 && data.maxLevel <= 10)) &&
+        (!('updatedAt' in data) || isValidDate(data.updatedAt));
+    }
+
+    function isValidCourse(data) {
+      return data.keys().hasOnly(['id', 'courseId', 'title', 'domain', 'competenciesCovered', 'competencyName', 'competencyId', 'competency', 'provider', 'durationHours', 'level', 'rating', 'enrollmentCount', 'description', 'modulesCount', 'link', 'updatedAt']) &&
+        data.keys().hasAll(['id', 'title']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 250 &&
+        (!('courseId' in data) || (data.courseId is string && data.courseId.size() <= 50)) &&
+        (!('domain' in data) || (data.domain is string && data.domain.size() <= 100)) &&
+        (!('competenciesCovered' in data) || (data.competenciesCovered is list && data.competenciesCovered.size() <= 20)) &&
+        (!('competencyName' in data) || (data.competencyName is string && data.competencyName.size() <= 100)) &&
+        (!('competencyId' in data) || (data.competencyId is string && data.competencyId.size() <= 50)) &&
+        (!('competency' in data) || (data.competency is string && data.competency.size() <= 100)) &&
+        (!('provider' in data) || (data.provider is string && data.provider.size() <= 150)) &&
+        (!('durationHours' in data) || (data.durationHours is number && data.durationHours >= 0 && data.durationHours <= 500)) &&
+        (!('level' in data) || (data.level is string && data.level.size() <= 50)) &&
+        (!('rating' in data) || (data.rating is number && data.rating >= 0 && data.rating <= 5)) &&
+        (!('enrollmentCount' in data) || (data.enrollmentCount is number && data.enrollmentCount >= 0)) &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 2500)) &&
+        (!('modulesCount' in data) || (data.modulesCount is number && data.modulesCount >= 0)) &&
+        (!('link' in data) || isValidUrl(data.link)) &&
+        (!('updatedAt' in data) || isValidDate(data.updatedAt));
+    }
+
+    function isValidSkillGap(data) {
+      return data.keys().hasOnly(['id', 'userId', 'competencyId', 'competencyName', 'domain', 'currentLevel', 'targetLevel', 'gapMagnitude', 'rawGap', 'priority', 'priorityLabel', 'status', 'notes', 'updatedAt']) &&
+        data.keys().hasAll(['id', 'userId', 'competencyId', 'competencyName', 'currentLevel', 'targetLevel']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.competencyId is string && data.competencyId.size() >= 1 && data.competencyId.size() <= 50 &&
+        data.competencyName is string && data.competencyName.size() >= 1 && data.competencyName.size() <= 100 &&
+        (!('domain' in data) || (data.domain is string && data.domain.size() <= 100)) &&
+        data.currentLevel is number && data.currentLevel >= 0 && data.currentLevel <= 100 &&
+        data.targetLevel is number && data.targetLevel >= 0 && data.targetLevel <= 100 &&
+        (!('gapMagnitude' in data) || (data.gapMagnitude is number && data.gapMagnitude >= 0 && data.gapMagnitude <= 100)) &&
+        (!('rawGap' in data) || (data.rawGap is number && data.rawGap >= -100 && data.rawGap <= 100)) &&
+        (!('priority' in data) || (data.priority in ['HIGH', 'MEDIUM', 'LOW', 'CRITICAL'])) &&
+        (!('priorityLabel' in data) || (data.priorityLabel is string && data.priorityLabel.size() <= 50)) &&
+        (!('status' in data) || (data.status in ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'])) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000)) &&
+        (!('updatedAt' in data) || isValidDate(data.updatedAt));
+    }
+
+    function isValidRecommendation(data) {
+      return data.keys().hasOnly(['id', 'userId', 'courseId', 'competencyId', 'relevanceScore', 'priority', 'aiRationale', 'status', 'course', 'updatedAt']) &&
+        data.keys().hasAll(['id', 'userId', 'courseId']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.courseId is string && data.courseId.size() >= 1 && data.courseId.size() <= 50 &&
+        (!('competencyId' in data) || (data.competencyId is string && data.competencyId.size() <= 50)) &&
+        (!('relevanceScore' in data) || (data.relevanceScore is number && data.relevanceScore >= 0 && data.relevanceScore <= 100)) &&
+        (!('priority' in data) || (data.priority in ['HIGH', 'MEDIUM', 'LOW', 'CRITICAL'])) &&
+        (!('aiRationale' in data) || (data.aiRationale is string && data.aiRationale.size() <= 1000)) &&
+        (!('status' in data) || (data.status in ['RECOMMENDED', 'ENROLLED', 'IN_PROGRESS', 'COMPLETED'])) &&
+        (!('course' in data) || data.course is map) &&
+        (!('updatedAt' in data) || isValidDate(data.updatedAt));
+    }
+
+    function isValidLearningProgress(data) {
+      return data.keys().hasOnly(['id', 'userId', 'courseId', 'progressPercent', 'status', 'completedModules', 'totalModules', 'timeSpentHours', 'lastAccessed', 'course']) &&
+        data.keys().hasAll(['id', 'userId', 'courseId', 'progressPercent', 'status']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.courseId is string && data.courseId.size() >= 1 && data.courseId.size() <= 50 &&
+        data.progressPercent is number && data.progressPercent >= 0 && data.progressPercent <= 100 &&
+        data.status in ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'] &&
+        (!('completedModules' in data) || (data.completedModules is number && data.completedModules >= 0 && data.completedModules <= 500)) &&
+        (!('totalModules' in data) || (data.totalModules is number && data.totalModules >= 0 && data.totalModules <= 500)) &&
+        (!('timeSpentHours' in data) || (data.timeSpentHours is number && data.timeSpentHours >= 0 && data.timeSpentHours <= 1000)) &&
+        (!('lastAccessed' in data) || isValidDate(data.lastAccessed)) &&
+        (!('course' in data) || data.course is map);
+    }
+
+    function isValidAssessmentAttempt(data) {
+      return data.keys().hasOnly(['id', 'userId', 'assessmentId', 'score', 'maxScore', 'completedAt', 'domainScores', 'competencyScores', 'answers', 'gaps', 'notes']) &&
+        data.keys().hasAll(['id', 'userId', 'score', 'completedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        (!('assessmentId' in data) || (data.assessmentId is string && data.assessmentId.size() <= 50)) &&
+        data.score is number && data.score >= 0 && data.score <= 100 &&
+        (!('maxScore' in data) || (data.maxScore is number && data.maxScore >= 0 && data.maxScore <= 1000)) &&
+        isValidDate(data.completedAt) &&
+        (!('domainScores' in data) || data.domainScores is map) &&
+        (!('competencyScores' in data) || data.competencyScores is map) &&
+        (!('answers' in data) || data.answers is map) &&
+        (!('gaps' in data) || (data.gaps is list && data.gaps.size() <= 50)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 500));
+    }
+
+    function isValidQuizAttempt(data) {
+      return data.keys().hasOnly(['id', 'userId', 'quizTitle', 'competencyId', 'competencyName', 'domain', 'score', 'quizScore', 'previousScore', 'newScore', 'improvement', 'completedAt', 'answers', 'totalQuestions', 'correctCount']) &&
+        data.keys().hasAll(['id', 'userId', 'completedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        (!('quizTitle' in data) || (data.quizTitle is string && data.quizTitle.size() <= 200)) &&
+        (!('competencyId' in data) || (data.competencyId is string && data.competencyId.size() <= 50)) &&
+        (!('competencyName' in data) || (data.competencyName is string && data.competencyName.size() <= 100)) &&
+        (!('domain' in data) || (data.domain is string && data.domain.size() <= 100)) &&
+        (!('score' in data) || (data.score is number && data.score >= 0 && data.score <= 100)) &&
+        (!('quizScore' in data) || (data.quizScore is number && data.quizScore >= 0 && data.quizScore <= 100)) &&
+        (!('previousScore' in data) || (data.previousScore is number && data.previousScore >= 0 && data.previousScore <= 100)) &&
+        (!('newScore' in data) || (data.newScore is number && data.newScore >= 0 && data.newScore <= 100)) &&
+        (!('improvement' in data) || (data.improvement is number && data.improvement >= -100 && data.improvement <= 100)) &&
+        isValidDate(data.completedAt) &&
+        (!('answers' in data) || data.answers is map) &&
+        (!('totalQuestions' in data) || (data.totalQuestions is number && data.totalQuestions >= 0 && data.totalQuestions <= 200)) &&
+        (!('correctCount' in data) || (data.correctCount is number && data.correctCount >= 0 && data.correctCount <= 200));
+    }
+
+    function isValidCompetencyHistory(data) {
+      return data.keys().hasOnly(['id', 'userId', 'competencyId', 'competencyName', 'domain', 'previousScore', 'newScore', 'scoreBefore', 'scoreAfter', 'change', 'date', 'assessedAt', 'source', 'improvement']) &&
+        data.keys().hasAll(['id', 'userId', 'competencyId', 'competencyName', 'newScore']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.competencyId is string && data.competencyId.size() >= 1 && data.competencyId.size() <= 50 &&
+        data.competencyName is string && data.competencyName.size() >= 1 && data.competencyName.size() <= 100 &&
+        (!('domain' in data) || (data.domain is string && data.domain.size() <= 100)) &&
+        (!('previousScore' in data) || (data.previousScore is number && data.previousScore >= 0 && data.previousScore <= 100)) &&
+        data.newScore is number && data.newScore >= 0 && data.newScore <= 100 &&
+        (!('scoreBefore' in data) || (data.scoreBefore is number && data.scoreBefore >= 0 && data.scoreBefore <= 100)) &&
+        (!('scoreAfter' in data) || (data.scoreAfter is number && data.scoreAfter >= 0 && data.scoreAfter <= 100)) &&
+        (!('change' in data) || (data.change is string && data.change.size() <= 50)) &&
+        (!('date' in data) || isValidDate(data.date)) &&
+        (!('assessedAt' in data) || isValidDate(data.assessedAt)) &&
+        (!('source' in data) || (data.source in ['DIAGNOSTIC', 'PRACTICE_QUIZ', 'QUIZ', 'IGOT_COURSE', 'TRAINING'])) &&
+        (!('improvement' in data) || (data.improvement is string && data.improvement.size() <= 250));
+    }
+
+    function isValidQuestion(data) {
+      return data.keys().hasOnly(['id', 'question', 'options', 'correctAnswer', 'explanation', 'difficulty', 'competency', 'competencyId', 'domain', 'topic', 'sourceExcerpt', 'sourceFile', 'status', 'approvedBy', 'approvedAt', 'updatedAt', 'verifiedByTrainer', 'usageCount']) &&
+        data.keys().hasAll(['id', 'question', 'options', 'correctAnswer', 'status']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.question is string && data.question.size() >= 5 && data.question.size() <= 1000 &&
+        data.options is list && data.options.size() >= 2 && data.options.size() <= 6 &&
+        data.correctAnswer is number && data.correctAnswer >= 0 && data.correctAnswer <= 5 &&
+        data.status in ['PENDING', 'APPROVED', 'REJECTED', 'ARCHIVED'] &&
+        (!('explanation' in data) || (data.explanation is string && data.explanation.size() <= 1000)) &&
+        (!('difficulty' in data) || (data.difficulty in ['Foundational', 'Intermediate', 'Advanced', 'Expert'])) &&
+        (!('competency' in data) || (data.competency is string && data.competency.size() <= 100)) &&
+        (!('competencyId' in data) || (data.competencyId is string && data.competencyId.size() <= 50)) &&
+        (!('domain' in data) || (data.domain is string && data.domain.size() <= 100)) &&
+        (!('topic' in data) || (data.topic is string && data.topic.size() <= 100)) &&
+        (!('sourceExcerpt' in data) || (data.sourceExcerpt is string && data.sourceExcerpt.size() <= 2000)) &&
+        (!('sourceFile' in data) || (data.sourceFile is string && data.sourceFile.size() <= 200)) &&
+        (!('approvedBy' in data) || (data.approvedBy is string && data.approvedBy.size() <= 100)) &&
+        (!('approvedAt' in data) || isValidDate(data.approvedAt)) &&
+        (!('updatedAt' in data) || isValidDate(data.updatedAt)) &&
+        (!('verifiedByTrainer' in data) || data.verifiedByTrainer is bool) &&
+        (!('usageCount' in data) || (data.usageCount is number && data.usageCount >= 0));
+    }
+
+    function isValidLearningMaterial(data) {
+      return data.keys().hasOnly(['id', 'fileName', 'fileType', 'fileSize', 'uploadedBy', 'trainerId', 'title', 'domain', 'uploadedAt', 'uploadDate', 'status', 'processingStatus', 'textLength', 'questionsGenerated', 'generatedCount']) &&
+        data.keys().hasAll(['id', 'status']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 50 &&
+        data.status in ['PENDING_GENERATION', 'PROCESSING', 'PROCESSED', 'FAILED'] &&
+        (!('fileName' in data) || (data.fileName is string && data.fileName.size() <= 200)) &&
+        (!('fileType' in data) || (data.fileType is string && data.fileType.size() <= 20)) &&
+        (!('fileSize' in data) || (data.fileSize is string && data.fileSize.size() <= 50)) &&
+        (!('uploadedBy' in data) || (data.uploadedBy is string && data.uploadedBy.size() <= 100)) &&
+        (!('trainerId' in data) || (data.trainerId is string && data.trainerId.size() <= 100)) &&
+        (!('title' in data) || (data.title is string && data.title.size() <= 200)) &&
+        (!('domain' in data) || (data.domain is string && data.domain.size() <= 100)) &&
+        (!('uploadedAt' in data) || isValidDate(data.uploadedAt)) &&
+        (!('uploadDate' in data) || isValidDate(data.uploadDate)) &&
+        (!('processingStatus' in data) || (data.processingStatus in ['PENDING', 'PROCESSING', 'COMPLETED', 'FAILED'])) &&
+        (!('textLength' in data) || (data.textLength is number && data.textLength >= 0)) &&
+        (!('questionsGenerated' in data) || (data.questionsGenerated is number && data.questionsGenerated >= 0 && data.questionsGenerated <= 500)) &&
+        (!('generatedCount' in data) || (data.generatedCount is number && data.generatedCount >= 0 && data.generatedCount <= 500));
+    }
+
+    // ===============================================================
+    // Collection Match Rules
+    // ===============================================================
+
+    // 1. Users Collection
+    // Owners read own user doc. Trainers read all users to monitor learner cohorts.
+    // Privileged role assignment restricted to verified trainers.
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isTrainer();
+      allow list: if isTrainer();
+      allow create: if isOwner(userId) &&
+        isValidUser(request.resource.data) &&
+        request.resource.data.uid == userId &&
+        (request.resource.data.role == 'OFFICER' || isTrainerAuthority());
+      allow update: if isOwner(userId) &&
+        isValidUser(request.resource.data) &&
+        request.resource.data.uid == resource.data.uid &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        (request.resource.data.role == resource.data.role || isTrainerAuthority());
+      allow delete: if false;
+    }
+
+    // 2. Officer Profiles
+    // Officers read/write only their own profile. Trainers read for analytics/evaluation.
+    match /officer_profiles/{userId} {
+      allow get: if isOwner(userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isOwner(userId) &&
+        isValidOfficerProfile(request.resource.data) &&
+        request.resource.data.userId == request.auth.uid;
+      allow update: if isOwner(userId) &&
+        isValidOfficerProfile(request.resource.data) &&
+        request.resource.data.userId == resource.data.userId;
+      allow delete: if false;
+    }
+
+    // 3. Competencies Catalog
+    // Official MoSPI statistical competency framework catalog.
+    // Read-only for authenticated officers. Writable only by trainers/admins.
+    match /competencies/{competencyId} {
+      allow read: if isAuthenticated();
+      allow create: if isTrainer() &&
+        isValidCompetency(request.resource.data) &&
+        request.resource.data.id == competencyId;
+      allow update: if isTrainer() &&
+        isValidCompetency(request.resource.data) &&
+        request.resource.data.id == resource.data.id;
+      allow delete: if isTrainer();
+    }
+
+    // 4. Course Catalog
+    // iGOT Karmayogi course curriculum catalog.
+    // Read-only for authenticated users. Writable only by trainers/curators.
+    match /course_catalog/{courseId} {
+      allow read: if isAuthenticated();
+      allow create: if isTrainer() &&
+        isValidCourse(request.resource.data) &&
+        request.resource.data.id == courseId;
+      allow update: if isTrainer() &&
+        isValidCourse(request.resource.data) &&
+        request.resource.data.id == resource.data.id;
+      allow delete: if isTrainer();
+    }
+
+    // 5. Skill Gaps (Diagnose Phase)
+    // Officers read/write their own diagnosed gaps. Trainers read for cohort analytics.
+    match /skill_gaps/{gapId} {
+      allow get: if isOwner(resource.data.userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidSkillGap(request.resource.data);
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == resource.data.userId &&
+        isValidSkillGap(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 6. Course Recommendations (Learn Phase)
+    // Officers read/write personalized recommendations. Trainers read for mentoring.
+    match /recommendations/{recId} {
+      allow get: if isOwner(resource.data.userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidRecommendation(request.resource.data);
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == resource.data.userId &&
+        isValidRecommendation(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 7. Learning Progress
+    // Officers record and track their own interactive iGOT module progress.
+    match /learning_progress/{progressId} {
+      allow get: if isOwner(resource.data.userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidLearningProgress(request.resource.data);
+      allow update: if isAuthenticated() &&
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.userId == resource.data.userId &&
+        isValidLearningProgress(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // 8. Assessment Attempts (National Statistical Capacity Diagnostic)
+    // Immutable submission records. Officers can create and read their own attempts.
+    // Trainers can read all attempts for cohort performance analytics.
+    match /assessment_attempts/{attemptId} {
+      allow get: if isOwner(resource.data.userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidAssessmentAttempt(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // 9. Practice Quiz Attempts
+    // Immutable records of micro-assessment attempts for competency calibration.
+    match /quiz_attempts/{attemptId} {
+      allow get: if isOwner(resource.data.userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidQuizAttempt(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // 10. Competency History Timeline
+    // Officers and Trainers can read longitudinal growth trajectory records.
+    // Immutable milestone logging.
+    match /competency_history/{historyId} {
+      allow get: if isOwner(resource.data.userId) || isTrainer();
+      allow list: if isTrainer() || (isAuthenticated() && request.auth.uid == resource.data.userId);
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid &&
+        isValidCompetencyHistory(request.resource.data);
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // 11. Question Bank
+    // Officers read approved assessment items. Trainers review, curate, and author questions.
+    match /question_bank/{questionId} {
+      allow read: if isTrainer() || (isAuthenticated() && resource.data.status == 'APPROVED');
+      allow create: if isTrainer() && isValidQuestion(request.resource.data);
+      allow update: if isTrainer() && isValidQuestion(request.resource.data);
+      allow delete: if isTrainer();
+    }
+
+    // 12. Learning Materials
+    // Curated official statistical training documents and manuals.
+    // Processed materials are accessible by authenticated users.
+    // Uploading and processing reserved for authorized trainers.
+    match /learning_materials/{materialId} {
+      allow read: if isTrainer() || (isAuthenticated() && resource.data.status == 'PROCESSED');
+      allow create: if isTrainer() && isValidLearningMaterial(request.resource.data);
+      allow update: if isTrainer() && isValidLearningMaterial(request.resource.data);
+      allow delete: if isTrainer();
+    }
+
+    // Read-only static references if queried via Firestore
+    match /assessments/{assessmentId} {
+      allow read: if isAuthenticated();
+      allow write: if isTrainer();
+    }
+
+    match /assessment_questions/{questionId} {
+      allow read: if isAuthenticated();
+      allow write: if isTrainer();
+    }
+
+    // Default Deny: All other documents are closed to any direct read or write access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
