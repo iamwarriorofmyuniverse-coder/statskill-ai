@@ -78,19 +78,26 @@ def create_sih_presentation():
 
     p1 = tf1.add_paragraph()
     p1.text = "StatSkill AI"
-    p1.font.size = Pt(40)
+    p1.font.size = Pt(36)
     p1.font.bold = True
     p1.font.color.rgb = WHITE
-    p1.space_after = Pt(10)
+    p1.space_after = Pt(6)
 
     p2 = tf1.add_paragraph()
-    p2.text = "Adaptive Competency Diagnostic & Automated Capacity Building Platform for Public Sector & Higher Education"
-    p2.font.size = Pt(16)
-    p2.font.color.rgb = RGBColor(224, 242, 254)
-    p2.space_after = Pt(28)
+    p2.text = "AI-Assisted Skill Assessment & Competency Calibration Platform"
+    p2.font.size = Pt(17)
+    p2.font.bold = True
+    p2.font.color.rgb = RGBColor(254, 215, 170)
+    p2.space_after = Pt(4)
+
+    p3 = tf1.add_paragraph()
+    p3.text = "Adaptive Competency Diagnostic & Automated Capacity Building Platform for Public Sector and RPL Framework"
+    p3.font.size = Pt(13)
+    p3.font.color.rgb = RGBColor(224, 242, 254)
+    p3.space_after = Pt(18)
 
     # Metadata Grid Box
-    meta_box = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(4.2), Inches(11.333), Inches(2.2))
+    meta_box = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.0), Inches(4.1), Inches(11.333), Inches(2.4))
     meta_box.fill.solid()
     meta_box.fill.fore_color.rgb = RGBColor(19, 64, 116)
     meta_box.line.color.rgb = RGBColor(56, 189, 248)
@@ -98,24 +105,24 @@ def create_sih_presentation():
     tf_meta = meta_box.text_frame
     tf_meta.word_wrap = True
     tf_meta.margin_left = Inches(0.4)
-    tf_meta.margin_top = Inches(0.3)
+    tf_meta.margin_top = Inches(0.25)
 
     pm1 = tf_meta.paragraphs[0]
-    pm1.text = "• Theme: Smart Education  |  • Category: Software  |  • Target Ecosystem: Mission Karmayogi (iGOT Bharat) & MoSPI"
-    pm1.font.size = Pt(13)
+    pm1.text = "• Theme: Smart Education   |   • Category: Software   |   • Target Ecosystem: Mission Karmayogi (iGOT) & RPL"
+    pm1.font.size = Pt(12)
     pm1.font.bold = True
     pm1.font.color.rgb = WHITE
-    pm1.space_after = Pt(8)
+    pm1.space_after = Pt(6)
 
     pm2 = tf_meta.add_paragraph()
-    pm2.text = "• Team Name: AIZENIX   |  • Team ID: 176704   |  • Idea / PS ID: 21121"
+    pm2.text = "• Team Name: AIZENIX       |   • Team ID: 176704      |   • Idea / PS ID: 21121"
     pm2.font.size = Pt(13)
     pm2.font.bold = True
     pm2.font.color.rgb = RGBColor(254, 215, 170)
-    pm2.space_after = Pt(8)
+    pm2.space_after = Pt(6)
 
     pm3 = tf_meta.add_paragraph()
-    pm3.text = "• Live Prototype: https://statskill-ai-five.vercel.app  |  • GitHub: https://github.com/iamwarriorofmyuniverse-coder/statskill-ai"
+    pm3.text = "• Live Prototype: https://statskill-ai-five.vercel.app   |   • GitHub: https://github.com/iamwarriorofmyuniverse-coder/statskill-ai"
     pm3.font.size = Pt(11)
     pm3.font.color.rgb = RGBColor(56, 189, 248)
 
