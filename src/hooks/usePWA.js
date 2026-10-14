@@ -1,51 +1,53 @@
 import { useState, useEffect } from "react";
 
 export function usePWA() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isInstallable, setIsInstallable] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(() => (typeof window !== "undefined" ? window.deferredPWAInstallPrompt : null));
+  const [isInstallable, setIsInstallable] = useState(() => (typeof window !== "undefined" ? !!window.deferredPWAInstallPrompt : false));
   const [isInstalled, setIsInstalled] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
-    // 1. Service Worker Registration
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((reg) => {
-            console.log("[PWA] ServiceWorker registered successfully:", reg.scope);
-          })
-          .catch((err) => {
-            console.warn("[PWA] ServiceWorker registration failed:", err);
-          });
-      });
-    }
-
-    // 2. Check if already installed
+    // 1. Check if already installed in standalone mode
     if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
       setIsInstalled(true);
     }
 
-    // 3. Capture Install Prompt
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
+    // 2. Synchronize with globally captured prompt
+    if (window.deferredPWAInstallPrompt) {
+      setDeferredPrompt(window.deferredPWAInstallPrompt);
       setIsInstallable(true);
+    }
+
+    const handlePromptCaptured = () => {
+      if (window.deferredPWAInstallPrompt) {
+        setDeferredPrompt(window.deferredPWAInstallPrompt);
+        setIsInstallable(true);
+      }
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    // 4. App Installed Listener
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
+      if (typeof window !== "undefined") {
+        window.deferredPWAInstallPrompt = null;
+      }
       console.log("[PWA] StatSkill AI installed successfully.");
     };
 
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      window.deferredPWAInstallPrompt = e;
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener("pwa-prompt-captured", handlePromptCaptured);
+    window.addEventListener("pwa-app-installed", handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
 
-    // 5. Online/Offline Listeners
+    // 3. Online/Offline Listeners
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
 
@@ -53,6 +55,8 @@ export function usePWA() {
     window.addEventListener("offline", handleOffline);
 
     return () => {
+      window.removeEventListener("pwa-prompt-captured", handlePromptCaptured);
+      window.removeEventListener("pwa-app-installed", handleAppInstalled);
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleAppInstalled);
       window.removeEventListener("online", handleOnline);
@@ -61,22 +65,23 @@ export function usePWA() {
   }, []);
 
   const promptInstall = async () => {
-    if (!deferredPrompt) {
-      return "SHOW_MANUAL_GUIDE";
-    }
-    try {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        setIsInstalled(true);
-        setIsInstallable(false);
+    const promptEvent = window.deferredPWAInstallPrompt || deferredPrompt;
+    if (promptEvent) {
+      try {
+        promptEvent.prompt();
+        const { outcome } = await promptEvent.userChoice;
+        if (outcome === "accepted") {
+          setIsInstalled(true);
+          setIsInstallable(false);
+        }
+        window.deferredPWAInstallPrompt = null;
+        setDeferredPrompt(null);
+        return outcome === "accepted" ? "INSTALLED" : "DISMISSED";
+      } catch (err) {
+        console.warn("PWA prompt error:", err);
       }
-      setDeferredPrompt(null);
-      return outcome === "accepted" ? "INSTALLED" : "DISMISSED";
-    } catch (err) {
-      console.warn("PWA prompt error:", err);
-      return "SHOW_MANUAL_GUIDE";
     }
+    return "SHOW_MANUAL_GUIDE";
   };
 
   return {

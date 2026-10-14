@@ -140,12 +140,24 @@ export default function InstallAppButton({ variant = "header" }) {
               </div>
             </div>
 
-            {/* Action button */}
+            {/* Action buttons */}
+            <button
+              onClick={async () => {
+                const res = await promptInstall();
+                if (res === "INSTALLED") {
+                  setShowGuide(false);
+                }
+              }}
+              className="w-full mt-2 py-3 bg-gradient-to-r from-gov-navy to-gov-blue hover:from-gov-blue hover:to-sky-700 text-white font-bold rounded-xl text-xs transition-all duration-200 cursor-pointer shadow-md flex items-center justify-center space-x-2 border border-white/20"
+            >
+              <Download className="w-4 h-4 text-gov-sky" />
+              <span>{isHi ? "वेबसाइट से अभी इंस्टॉल करें" : "Direct 1-Click Install to Phone"}</span>
+            </button>
             <button
               onClick={() => setShowGuide(false)}
-              className="w-full mt-2 py-2.5 bg-gov-blue hover:bg-sky-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-md"
+              className="w-full mt-2 py-2 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium text-xs transition-colors"
             >
-              {isHi ? "समझ गया (Got It)" : "Got It — I'll Tap the 3 Dots (⋮)"}
+              {isHi ? "बंद करें" : "Close"}
             </button>
           </div>
         </div>

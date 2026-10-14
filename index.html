@@ -19,6 +19,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      // 1. Immediate Service Worker registration at 0ms (Prerequisite for Chrome Web Install Prompt)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          console.log('[PWA SW] Immediate 0ms registration successful:', reg.scope);
+        }).catch(function(err) {
+          console.warn('[PWA SW] Registration error:', err);
+        });
+      }
+
+      // 2. Immediate capture of native browser web install prompt
+      window.deferredPWAInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window.deferredPWAInstallPrompt = e;
+        console.log('[PWA] Native web install prompt captured successfully');
+        window.dispatchEvent(new CustomEvent('pwa-prompt-captured'));
+      });
+
+      window.addEventListener('appinstalled', function() {
+        window.deferredPWAInstallPrompt = null;
+        console.log('[PWA] Application installed on device');
+        window.dispatchEvent(new CustomEvent('pwa-app-installed'));
+      });
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
     <div id="root">
