@@ -76,13 +76,13 @@ export default function ThemeToggle({ variant = "dropdown" }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="px-2.5 py-1.5 rounded-lg text-slate-200 hover:text-white bg-white/10 hover:bg-white/15 border border-white/20 flex items-center space-x-1.5 text-xs font-semibold transition-colors shadow-xs"
+        className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-slate-200 hover:text-white bg-white/10 hover:bg-white/15 border border-white/20 flex items-center space-x-1 sm:space-x-1.5 text-xs font-semibold transition-colors shadow-xs cursor-pointer"
         title={`Theme: ${theme.toUpperCase()} (Click to change)`}
         aria-expanded={isOpen}
       >
         <ActiveIcon className="w-4 h-4 text-gov-sky" />
         <span className="capitalize hidden sm:inline">{theme === "system" ? "Auto" : theme}</span>
-        <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+        <ChevronDown className="w-3.5 h-3.5 opacity-70 hidden sm:inline-block" />
       </button>
 
       {isOpen && (

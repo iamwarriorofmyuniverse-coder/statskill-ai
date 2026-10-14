@@ -117,7 +117,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Officer Welcome Banner */}
-      <div className="bg-gradient-to-r from-white via-blue-50/40 to-amber-50/30 dark:from-slate-900 dark:via-slate-850 dark:to-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-sm relative overflow-hidden transition-all">
+      <div className="bg-gradient-to-r from-white via-blue-50/40 to-amber-50/30 dark:from-slate-900 dark:via-slate-850 dark:to-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-6 shadow-sm relative overflow-hidden transition-all">
         <div className="absolute top-0 right-0 w-80 h-full bg-gradient-to-l from-gov-sky/30 dark:from-sky-900/10 to-transparent pointer-events-none" />
         
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 relative z-10">
@@ -299,8 +299,8 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
       </div>
 
       {/* Metric Cards - Horizontal Swipeable Carousel on Mobile, Grid on Tablet/Desktop */}
-      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-1 px-1 sm:mx-0 sm:px-0 snap-x snap-mandatory no-scrollbar">
-        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto pb-2 w-full max-w-full snap-x snap-mandatory no-scrollbar">
+        <div className="min-w-[190px] sm:min-w-0 snap-start flex-1 shrink-0">
           <StatCard
             title={t("overallCompetencyScore")}
             value={`${overallScore}%`}
@@ -311,7 +311,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             cascadeClass="cascade-1"
           />
         </div>
-        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+        <div className="min-w-[190px] sm:min-w-0 snap-start flex-1 shrink-0">
           <StatCard
             title={t("assessedCompetencies")}
             value={`${assessedCount} / ${totalCount}`}
@@ -321,7 +321,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             cascadeClass="cascade-2"
           />
         </div>
-        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+        <div className="min-w-[190px] sm:min-w-0 snap-start flex-1 shrink-0">
           <StatCard
             title={t("highPriorityGaps")}
             value={highGaps.length + (simulatedTargetBoost > 0 ? 2 : 0)}
@@ -331,7 +331,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             cascadeClass="cascade-3"
           />
         </div>
-        <div className="min-w-[220px] sm:min-w-0 snap-start flex-1 shrink-0">
+        <div className="min-w-[190px] sm:min-w-0 snap-start flex-1 shrink-0">
           <StatCard
             title={t("learningProgress")}
             value={`${avgProgress}%`}

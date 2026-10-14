@@ -125,10 +125,10 @@ function MainLayout() {
   const isTrainer = currentUser.role === "TRAINER";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200 w-full overflow-x-hidden">
       <Header toggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
 
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
+      <div className="flex-1 flex max-w-7xl w-full mx-auto overflow-x-hidden min-w-0">
         <Sidebar
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
@@ -136,7 +136,7 @@ function MainLayout() {
           setMobileOpen={setMobileSidebarOpen}
         />
 
-        <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto max-w-full pb-24 md:pb-8">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto overflow-x-hidden max-w-full pb-24 md:pb-8 w-full min-w-0">
           <Suspense
             fallback={
               <div className="min-h-[400px] flex flex-col items-center justify-center space-y-3">

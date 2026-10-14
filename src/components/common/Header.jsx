@@ -17,15 +17,17 @@ export default function Header({ toggleMobileSidebar }) {
   const isGoogleUser = currentUser?.email && currentUser.email.includes("@") && !currentUser.uid?.startsWith("google_officer_demo");
 
   return (
-    <header className="bg-gov-navy dark:bg-slate-900 text-white border-b-4 border-gov-saffron sticky top-0 z-40 shadow-md transition-colors duration-200">
+    <header className="bg-gov-navy dark:bg-slate-900 text-white border-b-4 border-gov-saffron sticky top-0 z-40 shadow-md transition-colors duration-200 w-full overflow-x-hidden">
       {/* Official Government of India / MoSPI Masthead Strip */}
-      <div className="bg-slate-950/80 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-1 text-[11px] text-slate-300">
-        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-1">
-          <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-medium text-slate-200 text-[10px] sm:text-[11px] truncate">{t("govMasthead")}</span>
+      <div className="bg-slate-950/90 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-1 text-[11px] text-slate-300 w-full overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 min-w-0 w-full">
+          <div className="flex items-center space-x-1.5 min-w-0 flex-1 overflow-hidden">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+            <span className="font-medium text-slate-200 text-[10px] sm:text-[11px] truncate block">
+              {t("govMasthead")}
+            </span>
           </div>
-          <div className="hidden sm:flex items-center space-x-3 text-slate-400">
+          <div className="hidden md:flex items-center space-x-3 text-slate-400 shrink-0 text-[10px]">
             <span>{t("govMastheadSih")}</span>
             <span className="text-slate-600">•</span>
             <span className="text-slate-300 font-medium">{t("govMastheadNssta")}</span>
@@ -34,23 +36,23 @@ export default function Header({ toggleMobileSidebar }) {
       </div>
 
       {/* Main navigation header */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 w-full">
+        <div className="flex items-center space-x-1.5 sm:space-x-3 min-w-0 shrink-0">
           <button
             onClick={toggleMobileSidebar}
-            className="md:hidden p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg focus:outline-none shrink-0"
+            className="md:hidden p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg focus:outline-none shrink-0 cursor-pointer"
             aria-label="Toggle navigation"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           {/* Modernized National Emblem & AI Logo */}
-          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-            <AppLogo className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 shadow-md" />
+          <div className="flex items-center space-x-2 min-w-0">
+            <AppLogo className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 shadow-md" />
             <div className="min-w-0">
-              <div className="flex items-center space-x-1 sm:space-x-2">
-                <span className="font-extrabold text-sm sm:text-lg tracking-wide text-white truncate">{t("appTitle", "StatSkill AI")}</span>
-              </div>
+              <span className="font-extrabold text-sm sm:text-lg tracking-tight text-white whitespace-nowrap block">
+                {t("appTitle", "StatSkill AI")}
+              </span>
               <p className="text-[11px] text-slate-300 hidden md:block truncate max-w-xs lg:max-w-md">
                 {t("appSubtitle", "Competency Intelligence & Personalized Learning Platform")}
               </p>
