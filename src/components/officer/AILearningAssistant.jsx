@@ -108,8 +108,10 @@ export default function AILearningAssistant({ setCurrentTab, onLaunchQuiz }) {
 
   // Speech-to-text state
   const [isListening, setIsListening] = useState(false);
-  const [speechSupported, setSpeechSupported] = useState(false);
+  const [voiceInterimText, setVoiceInterimText] = useState("");
   const recognitionRef = useRef(null);
+  const isListeningRef = useRef(false);
+  const baseQueryRef = useRef("");
 
   useEffect(() => {
     async function loadOfficerContext() {
@@ -133,78 +135,140 @@ export default function AILearningAssistant({ setCurrentTab, onLaunchQuiz }) {
     loadOfficerContext();
   }, [currentUser]);
 
-  // Speech Recognition handler with proactive mic permission and fresh session lifecycle
-  const toggleVoiceInput = async () => {
+  // Cleanup speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch (e) {}
+      }
+    };
+  }, []);
+
+  // Synchronous Speech Recognition handler preserving direct user gesture activation
+  const toggleVoiceInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert(isHi ? "आपका ब्राउज़र ध्वनि पहचान का समर्थन नहीं करता है। कृपया Chrome, Edge या समर्थित ब्राउज़र का उपयोग करें।" : "Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+      alert(
+        isHi
+          ? "आपका ब्राउज़र ध्वनि पहचान (Speech-to-Text) का समर्थन नहीं करता है। कृपया Google Chrome, Microsoft Edge या Safari का उपयोग करें।"
+          : "Speech-to-Text is not supported in this browser. Please open in Google Chrome, Microsoft Edge, or Safari for voice recognition."
+      );
       return;
     }
 
-    if (isListening) {
+    // Toggle off if currently active
+    if (isListeningRef.current || isListening) {
       if (recognitionRef.current) {
         try {
           recognitionRef.current.stop();
         } catch (e) {}
       }
       setIsListening(false);
+      isListeningRef.current = false;
+      setVoiceInterimText("");
       return;
     }
 
-    // 1. Proactively prompt for native microphone permission
     try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        stream.getTracks().forEach((track) => track.stop());
+      // Abort any previous zombie instance
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch (e) {}
       }
-    } catch (permErr) {
-      console.warn("Microphone permission denied:", permErr);
-      alert(isHi ? "माइक्रोफ़ोन अनुमति अस्वीकृत। कृपया ब्राउज़र या फ़ोन सेटिंग्स में माइक्रोफ़ोन की अनुमति दें।" : "Microphone permission was denied. Please allow microphone access in your browser or phone site settings.");
-      setIsListening(false);
-      return;
-    }
 
-    // 2. Fresh SpeechRecognition instance for this voice session (prevents InvalidStateError on restart)
-    try {
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
+      recognition.continuous = true;
       recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
       recognition.lang = isHi ? "hi-IN" : "en-IN";
+
+      // Cache previous input so new speech appends naturally
+      baseQueryRef.current = inputQuery ? inputQuery.trim() : "";
+      setVoiceInterimText(isHi ? "सुन रहे हैं... बोलिए..." : "Listening... Speak now...");
 
       recognition.onstart = () => {
         setIsListening(true);
+        isListeningRef.current = true;
         if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-          window.navigator.vibrate(20);
+          window.navigator.vibrate(25);
         }
       };
 
       recognition.onresult = (event) => {
-        let transcript = "";
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
+        let fullTranscript = "";
+        let interimTranscript = "";
+
+        // Accumulate all chunks across the active session
+        for (let i = 0; i < event.results.length; i++) {
+          const res = event.results[i];
+          if (res.isFinal) {
+            fullTranscript += res[0].transcript + " ";
+          } else {
+            interimTranscript += res[0].transcript;
+          }
         }
-        if (transcript) {
-          setInputQuery(transcript);
+
+        const spokenText = (fullTranscript + interimTranscript).trim();
+        if (spokenText) {
+          setVoiceInterimText(spokenText);
+          const finalQuery = baseQueryRef.current
+            ? `${baseQueryRef.current} ${spokenText}`
+            : spokenText;
+          setInputQuery(finalQuery);
         }
       };
 
       recognition.onerror = (event) => {
         console.warn("Speech recognition error:", event.error);
+        if (event.error === "no-speech") {
+          // Do not crash or alert on brief pause between words
+          setVoiceInterimText(isHi ? "कोई आवाज़ नहीं सुनी गई, कृपया स्पष्ट बोलें..." : "No speech heard, please speak clearly...");
+          return;
+        }
+
         setIsListening(false);
-        if (event.error === "not-allowed") {
-          alert(isHi ? "माइक्रोफ़ोन अनुमति आवश्यक है।" : "Microphone permission is required to use voice input.");
+        isListeningRef.current = false;
+        setVoiceInterimText("");
+
+        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+          alert(
+            isHi
+              ? "माइक्रोफ़ोन अनुमति अस्वीकृत है। कृपया ब्राउज़र पता पट्टी में लॉक (🔒) आइकन पर क्लिक करके माइक्रोफ़ोन की अनुमति दें।"
+              : "Microphone permission is blocked. Please click the lock icon (🔒) in your browser address bar to allow microphone access."
+          );
+        } else if (event.error === "network") {
+          alert(
+            isHi
+              ? "ध्वनि पहचान सेवा के लिए इंटरनेट कनेक्शन आवश्यक है।"
+              : "Speech recognition network error. Please verify your internet connection."
+          );
+        } else if (event.error === "audio-capture") {
+          alert(
+            isHi
+              ? "कोई कार्यशील माइक्रोफ़ोन नहीं मिला। कृपया अपने डिवाइस की ऑडियो सेटिंग्स जांचें।"
+              : "No microphone detected or it is in use by another app. Please check your audio settings."
+          );
         }
       };
 
       recognition.onend = () => {
         setIsListening(false);
+        isListeningRef.current = false;
+        setVoiceInterimText("");
       };
 
       recognitionRef.current = recognition;
+      // Start synchronously within user gesture callback to prevent browser blocking
       recognition.start();
     } catch (err) {
       console.warn("Could not start speech recognition:", err);
       setIsListening(false);
+      isListeningRef.current = false;
+      setVoiceInterimText("");
+      alert(isHi ? "ध्वनि पहचान शुरू नहीं हो सकी। कृपया Google Chrome का उपयोग करें।" : "Could not start speech recognition. Please try in Google Chrome or Edge.");
     }
   };
 
@@ -480,19 +544,30 @@ export default function AILearningAssistant({ setCurrentTab, onLaunchQuiz }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Listening Indicator */}
+        {/* Listening Indicator with Live Speech-to-Text Feedback */}
         {isListening && (
-          <div className="px-5 py-2 bg-red-50 dark:bg-red-950/70 border-t border-red-200 dark:border-red-800 text-xs text-red-900 dark:text-red-300 flex items-center justify-between animate-pulse">
-            <span className="font-bold flex items-center space-x-2">
-              <Mic className="w-4 h-4 text-red-600 animate-bounce" />
-              <span>{t("listening")}</span>
-            </span>
+          <div className="px-4 py-2.5 bg-red-50 dark:bg-red-950/80 border-t border-red-200 dark:border-red-800 text-xs text-red-900 dark:text-red-200 flex items-center justify-between shadow-inner">
+            <div className="flex items-center space-x-2.5 min-w-0 flex-1 mr-2">
+              <span className="relative flex h-3 w-3 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+              </span>
+              <Mic className="w-4 h-4 text-red-600 shrink-0 animate-bounce" />
+              <div className="min-w-0 flex-1">
+                <p className="font-bold text-[10px] uppercase tracking-wider text-red-600 dark:text-red-400">
+                  {isHi ? "ध्वनि पहचान चालू है (बोलें)" : "Listening Live (Speak your question)"}
+                </p>
+                <p className="text-xs text-slate-900 dark:text-white font-medium truncate">
+                  {voiceInterimText || (isHi ? "सुन रहे हैं... बोलिए..." : "Listening... Speak now...")}
+                </p>
+              </div>
+            </div>
             <button
               type="button"
               onClick={toggleVoiceInput}
-              className="px-2.5 py-0.5 bg-red-600 text-white rounded text-[10px] font-bold"
+              className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-bold shrink-0 shadow-xs transition-colors flex items-center space-x-1"
             >
-              {isHi ? "रोकें" : "Stop"}
+              <span>{isHi ? "समाप्त करें" : "Done"}</span>
             </button>
           </div>
         )}
