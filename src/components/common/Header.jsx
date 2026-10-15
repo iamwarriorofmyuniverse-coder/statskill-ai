@@ -17,7 +17,7 @@ export default function Header({ toggleMobileSidebar }) {
   const isGoogleUser = currentUser?.email && currentUser.email.includes("@") && !currentUser.uid?.startsWith("google_officer_demo");
 
   return (
-    <header className="bg-gov-navy dark:bg-slate-900 text-white border-b-4 border-gov-saffron sticky top-0 z-40 shadow-md transition-colors duration-200 w-full overflow-x-hidden">
+    <header className="bg-gov-navy dark:bg-slate-900 text-white border-b-4 border-gov-saffron sticky top-0 z-40 shadow-md transition-colors duration-200 w-full">
       {/* Official Government of India / MoSPI Masthead Strip */}
       <div className="bg-slate-950/90 border-b border-white/10 px-3 sm:px-6 lg:px-8 py-1 text-[11px] text-slate-300 w-full overflow-hidden">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 min-w-0 w-full">

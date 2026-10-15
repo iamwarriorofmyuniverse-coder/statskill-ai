@@ -53,31 +53,67 @@ export default function LearningPage({ setCurrentTab }) {
     load();
   }, [currentUser]);
 
-  // Initialize Web Speech API for voice question asking
-  useEffect(() => {
+  // Speech Recognition handler with proactive mic permission and fresh session lifecycle
+  const toggleVoiceInput = async () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      setSpeechSupported(true);
+    if (!SpeechRecognition) {
+      alert(isHi ? "आपका ब्राउज़र ध्वनि पहचान का समर्थन नहीं करता है। कृपया Chrome, Edge या समर्थित ब्राउज़र का उपयोग करें।" : "Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {}
+      }
+      setIsListening(false);
+      return;
+    }
+
+    // 1. Proactively prompt for native microphone permission
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    } catch (permErr) {
+      console.warn("Microphone permission denied:", permErr);
+      alert(isHi ? "माइक्रोफ़ोन अनुमति अस्वीकृत। कृपया ब्राउज़र सेटिंग्स में माइक्रोफ़ोन की अनुमति दें।" : "Microphone permission was denied. Please allow microphone access in your browser or phone site settings.");
+      setIsListening(false);
+      return;
+    }
+
+    // 2. Fresh SpeechRecognition instance for this voice session
+    try {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.interimResults = true;
       recognition.lang = isHi ? "hi-IN" : "en-IN";
 
       recognition.onstart = () => {
         setIsListening(true);
+        if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+          window.navigator.vibrate(20);
+        }
       };
 
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          setAdvisorQuery((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
         }
-        setIsListening(false);
+        if (transcript) {
+          setAdvisorQuery(transcript);
+        }
       };
 
       recognition.onerror = (event) => {
         console.warn("Speech recognition error:", event.error);
         setIsListening(false);
+        if (event.error === "not-allowed") {
+          alert(isHi ? "माइक्रोफ़ोन अनुमति आवश्यक है।" : "Microphone permission is required to use voice input.");
+        }
       };
 
       recognition.onend = () => {
@@ -85,25 +121,10 @@ export default function LearningPage({ setCurrentTab }) {
       };
 
       recognitionRef.current = recognition;
-    }
-  }, [isHi]);
-
-  const toggleVoiceInput = () => {
-    if (!speechSupported || !recognitionRef.current) {
-      alert(isHi ? "आपका ब्राउज़र ध्वनि पहचान का समर्थन नहीं करता है।" : "Voice input is not supported in this browser. Please use Chrome or Edge.");
-      return;
-    }
-
-    if (isListening) {
-      recognitionRef.current.stop();
-    } else {
-      try {
-        recognitionRef.current.lang = isHi ? "hi-IN" : "en-IN";
-        recognitionRef.current.start();
-      } catch (err) {
-        console.warn("Could not start speech recognition:", err);
-        setIsListening(false);
-      }
+      recognition.start();
+    } catch (err) {
+      console.warn("Could not start speech recognition:", err);
+      setIsListening(false);
     }
   };
 
