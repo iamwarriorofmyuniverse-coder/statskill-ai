@@ -20,7 +20,8 @@ import {
   Bot,
   Binary,
   Globe2,
-  Mic
+  Mic,
+  Terminal
 } from "lucide-react";
 import InstallAppButton from "./InstallAppButton.jsx";
 
@@ -33,6 +34,7 @@ export default function Sidebar({ currentTab, setCurrentTab, mobileOpen, setMobi
 
   const officerNavItems = [
     { id: "dashboard", label: t("dashboard", "Dashboard"), icon: LayoutDashboard, badge: null },
+    { id: "engineering", label: isHi ? "डीप-टेक वास्तुकला" : "Deep-Tech Architecture", icon: Terminal, badge: "CORE SPEC" },
     { id: "flight-simulator", label: isHi ? "फ्लाइट सिम्युलेटर" : "Flight Simulator", icon: Binary, badge: "NEXT-GEN" },
     { id: "viva-voce", label: isHi ? "एआई विवा-वोके" : "AI Viva-Voce", icon: Mic, badge: "ORAL" },
     { id: "profile", label: t("officerProfile", "Officer Profile"), icon: User, badge: null },
@@ -47,6 +49,7 @@ export default function Sidebar({ currentTab, setCurrentTab, mobileOpen, setMobi
 
   const trainerNavItems = [
     { id: "dashboard", label: t("dashboard", "Dashboard"), icon: LayoutDashboard, badge: null },
+    { id: "engineering", label: isHi ? "डीप-टेक वास्तुकला" : "Deep-Tech Architecture", icon: Terminal, badge: "CORE SPEC" },
     { id: "national-war-room", label: isHi ? "राष्ट्रीय वॉर रूम" : "National War Room", icon: Globe2, badge: "WAR ROOM" },
     { id: "upload-material", label: t("uploadMaterial", "Upload Material"), icon: UploadCloud, badge: null },
     { id: "ai-mcq-generator", label: t("aiMcqGenerator", "AI MCQ Generator"), icon: Cpu, badge: "Gemini" },

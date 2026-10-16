@@ -25,7 +25,8 @@ import {
   Layers,
   Globe2,
   Zap,
-  Sparkles
+  Sparkles,
+  Terminal
 } from "lucide-react";
 
 export default function TrainerDashboard({ setCurrentTab }) {
@@ -95,6 +96,14 @@ export default function TrainerDashboard({ setCurrentTab }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => setCurrentTab("engineering")}
+              className="px-3.5 py-2 bg-gradient-to-r from-amber-950 to-slate-900 hover:from-amber-900 hover:to-slate-800 text-amber-200 text-xs font-bold rounded-lg shadow-sm flex items-center space-x-1.5 transition-all border border-amber-500/40 cursor-pointer"
+            >
+              <Terminal className="w-4 h-4 text-amber-400" />
+              <span>{isHi ? "सिस्टम आर्किटेक्चर (C4 / CRDT)" : "Deep-Tech Specs (C4 / CRDT)"}</span>
+            </button>
+
             <button
               onClick={() => setCurrentTab("national-war-room")}
               className="px-4 py-2 bg-gradient-to-r from-gov-navy to-slate-900 hover:from-slate-900 hover:to-gov-navy text-white text-xs font-bold rounded-lg shadow-sm flex items-center space-x-1.5 transition-all border border-emerald-500/40 cursor-pointer"

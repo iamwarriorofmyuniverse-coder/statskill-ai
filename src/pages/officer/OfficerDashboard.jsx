@@ -37,7 +37,8 @@ import {
   Binary,
   Mic,
   Globe2,
-  FileCheck2
+  FileCheck2,
+  Terminal
 } from "lucide-react";
 import IrtAnalyticsModal from "../../components/officer/IrtAnalyticsModal.jsx";
 
@@ -328,7 +329,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
       </div>
 
       {/* Flagship Innovation Spotlight: What sets StatSkill AI apart from any generic app */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div
           onClick={() => setCurrentTab("flight-simulator")}
           className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-900 via-gov-navy to-slate-900 text-white border border-blue-500/30 shadow-md hover:border-sky-400 transition-all cursor-pointer flex flex-col justify-between group"
@@ -404,6 +405,32 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
           <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-emerald-300 font-bold">
             <span>{isHi ? "आईआरटी गणितीय विश्लेषण देखें →" : "Inspect IRT Math Model →"}</span>
             <span className="text-[10px] text-slate-400 font-normal">Bayesian Scoring</span>
+          </div>
+        </div>
+
+        <div
+          onClick={() => setCurrentTab("engineering")}
+          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-950 via-slate-900 to-slate-900 text-white border border-amber-500/40 shadow-md hover:border-amber-400 transition-all cursor-pointer flex flex-col justify-between group"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                Core Tech & Architecture
+              </span>
+              <Terminal className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+              {isHi ? "सिस्टम आर्किटेक्चर एवं सीआरडीटी कॉकपिट" : "Deep-Tech Systems & CRDT Engine"}
+            </h3>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              {isHi
+                ? "स्टार्टअप और मुख्य वास्तुकार विनिर्देश: लैम्पॉर्ट वेक्टर घड़ियां, 768-D कोसाइन वेक्टर्स, 10k मोंटे कार्लो और C4 यूनिट इकोनॉमिक्स।"
+                : "Hard-core distributed specs: Lamport vector clocks, 768-D cosine vectors, client 10k Monte Carlo & C4 economics."}
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-amber-300 font-bold">
+            <span>{isHi ? "सिस्टम कॉकपिट खोलें →" : "Open Systems Specs →"}</span>
+            <span className="text-[10px] text-slate-400 font-normal">C4 / Distributed</span>
           </div>
         </div>
       </div>

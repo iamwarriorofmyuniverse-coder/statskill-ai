@@ -1,14 +1,14 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
-import { LogOut, User, ShieldCheck, Award, Bell, Menu } from "lucide-react";
+import { LogOut, User, ShieldCheck, Award, Bell, Menu, Terminal } from "lucide-react";
 import ThemeToggle from "./ThemeToggle.jsx";
 import LanguageToggle from "./LanguageToggle.jsx";
 
 import InstallAppButton from "./InstallAppButton.jsx";
 import AppLogo from "./AppLogo.jsx";
 
-export default function Header({ toggleMobileSidebar }) {
+export default function Header({ toggleMobileSidebar, setCurrentTab }) {
   const { currentUser, officerProfile, logout, setRoleModalOpen } = useAuth();
   const { t } = useLanguage();
 
@@ -62,6 +62,19 @@ export default function Header({ toggleMobileSidebar }) {
 
         {/* User Info & Actions */}
         <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
+          {/* Deep-Tech Systems Specs Button */}
+          {setCurrentTab && (
+            <button
+              onClick={() => setCurrentTab("engineering")}
+              className="px-2.5 py-1 bg-gradient-to-r from-indigo-900/90 to-slate-900 hover:from-indigo-800 hover:to-indigo-950 text-indigo-200 border border-indigo-400/50 rounded-lg text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer transition-all hover:scale-105 shrink-0"
+              title="Open Deep-Tech Systems Architecture & Applied Science Cockpit"
+            >
+              <Terminal className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
+              <span className="hidden md:inline font-mono">⚡ Deep-Tech Specs</span>
+              <span className="md:hidden font-mono text-[10px]">⚡ ARCH</span>
+            </button>
+          )}
+
           {/* PWA Install Button (Desktop & Tablet) */}
           <div className="hidden sm:block">
             <InstallAppButton variant="header" />

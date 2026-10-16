@@ -22,6 +22,9 @@ const PracticeQuizPage = lazy(() => import("./pages/officer/PracticeQuizPage.jsx
 const AIAssistantPage = lazy(() => import("./pages/officer/AIAssistantPage.jsx"));
 const ProgressPage = lazy(() => import("./pages/officer/ProgressPage.jsx"));
 
+// Universal Deep-Tech Engineering & Systems Specs Cockpit
+const EngineeringCockpitPage = lazy(() => import("./pages/common/EngineeringCockpitPage.jsx"));
+
 // Trainer Pages (Code-split with React.lazy)
 const TrainerDashboard = lazy(() => import("./pages/trainer/TrainerDashboard.jsx"));
 const NationalWarRoomPage = lazy(() => import("./pages/trainer/NationalWarRoomPage.jsx"));
@@ -32,12 +35,12 @@ const QuestionBankPage = lazy(() => import("./pages/trainer/QuestionBankPage.jsx
 const LearnerPerformancePage = lazy(() => import("./pages/trainer/LearnerPerformancePage.jsx"));
 
 const OFFICER_TABS = [
-  "dashboard", "profile", "assessment", "flight-simulator", "viva-voce", "skill-gaps",
+  "dashboard", "engineering", "profile", "assessment", "flight-simulator", "viva-voce", "skill-gaps",
   "recommendations", "learning", "practice-quiz", "ai-assistant", "progress"
 ];
 
 const TRAINER_TABS = [
-  "dashboard", "national-war-room", "upload-material", "ai-mcq-generator",
+  "dashboard", "engineering", "national-war-room", "upload-material", "ai-mcq-generator",
   "question-review", "question-bank", "learner-performance"
 ];
 
@@ -129,7 +132,10 @@ function MainLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200 w-full overflow-x-hidden">
-      <Header toggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
+      <Header
+        toggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        setCurrentTab={setCurrentTab}
+      />
 
       <div className="flex-1 flex max-w-7xl w-full mx-auto overflow-x-hidden min-w-0">
         <Sidebar
@@ -148,6 +154,9 @@ function MainLayout() {
               </div>
             }
           >
+            {/* Universal Deep-Tech Engineering & Systems Architecture Cockpit */}
+            {currentTab === "engineering" && <EngineeringCockpitPage />}
+
             {/* Officer Navigation Routing */}
             {isOfficer && (
               <>
