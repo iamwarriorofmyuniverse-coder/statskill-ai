@@ -28,8 +28,13 @@ import {
   Zap,
   Trophy,
   BrainCircuit,
-  Compass
+  Compass,
+  Binary,
+  Mic,
+  Globe2,
+  FileCheck2
 } from "lucide-react";
+import IrtAnalyticsModal from "../../components/officer/IrtAnalyticsModal.jsx";
 
 export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
   const { currentUser, officerProfile } = useAuth();
@@ -47,6 +52,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
   // Modals state
   const [activeGapModal, setActiveGapModal] = useState(null);
   const [activeCourseModal, setActiveCourseModal] = useState(null);
+  const [showIrtModal, setShowIrtModal] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -262,6 +268,30 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         {/* 1-Tap Quick Action Chips (Swipeable Horizontal Strip) */}
         <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center space-x-2 overflow-x-auto no-scrollbar pb-0.5">
           <button
+            onClick={() => setCurrentTab("flight-simulator")}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95 cursor-pointer ring-1 ring-white/30"
+          >
+            <Binary className="w-3.5 h-3.5 text-amber-300" />
+            <span>{isHi ? "🔬 फ्लाइट सिम्युलेटर (नया)" : "🔬 Flight Simulator (Live)"}</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab("viva-voce")}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95 cursor-pointer ring-1 ring-white/30"
+          >
+            <Mic className="w-3.5 h-3.5 text-amber-300" />
+            <span>{isHi ? "🎙️ मौखिक बोर्ड परीक्षा" : "🎙️ AI Oral Viva-Voce"}</span>
+          </button>
+
+          <button
+            onClick={() => setShowIrtModal(true)}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
+          >
+            <BrainCircuit className="w-3.5 h-3.5 text-amber-300" />
+            <span>{isHi ? "मनोमितीय IRT क्षमता (θ)" : "2PL IRT Engine (θ = +1.84)"}</span>
+          </button>
+
+          <button
             onClick={() => {
               if (onLaunchQuiz) onLaunchQuiz(null);
               else setCurrentTab("practice-quiz");
@@ -276,7 +306,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             onClick={() => setCurrentTab("assessment")}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
           >
-            <BrainCircuit className="w-3.5 h-3.5 text-sky-300" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-sky-300" />
             <span>{isHi ? "दक्षता निदान (10 प्रश्न)" : "Diagnostic (10 Qs)"}</span>
           </button>
 
@@ -287,14 +317,87 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
             <span>{isHi ? "AI सलाहकार से पूछें" : "Ask AI Advisor"}</span>
           </button>
+        </div>
+      </div>
 
-          <button
-            onClick={() => setCurrentTab("learning")}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-emerald-300" />
-            <span>{isHi ? "iGOT कोर्स" : "iGOT Courses"}</span>
-          </button>
+      {/* Flagship Innovation Spotlight: What sets StatSkill AI apart from any generic app */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <div
+          onClick={() => setCurrentTab("flight-simulator")}
+          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-900 via-gov-navy to-slate-900 text-white border border-blue-500/30 shadow-md hover:border-sky-400 transition-all cursor-pointer flex flex-col justify-between group"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                Next-Gen Simulation
+              </span>
+              <Binary className="w-5 h-5 text-sky-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors">
+              {isHi ? "सर्वेक्षण माइक्रोडाटा फ्लाइट सिम्युलेटर" : "Survey Microdata Flight Simulator"}
+            </h3>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              {isHi
+                ? "केवल बहुविकल्पीय प्रश्न नहीं! वास्तविक NSSO, PLFS एवं DPDP 2023 माइक्रोडाटा में विसंगतियों और पीआईआई लीकेज की फोरेंसिक जांच करें।"
+                : "No mere MCQs! Audit live synthetic NSSO & PLFS microdata for sampling skew, fabrications, and DPDP Act 2023 PII breaches."}
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-sky-300 font-bold">
+            <span>{isHi ? "सिमुलेटर लैब खोलें →" : "Launch Simulator Lab →"}</span>
+            <span className="text-[10px] text-slate-400 font-normal">NSSTA Sandbox</span>
+          </div>
+        </div>
+
+        <div
+          onClick={() => setCurrentTab("viva-voce")}
+          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 text-white border border-indigo-500/30 shadow-md hover:border-indigo-400 transition-all cursor-pointer flex flex-col justify-between group"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                Real-Time Voice AI
+              </span>
+              <Mic className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
+              {isHi ? "एआई कैडर मौखिक बोर्ड परीक्षा (Viva-Voce)" : "AI Cadre Viva-Voce Board Exam"}
+            </h3>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              {isHi
+                ? "सिविल सेवा साक्षात्कार परिदृश्य! एआई बोर्ड परीक्षक का प्रश्न सुनें, बोलकर उत्तर दें और बहु-आयामी विधिक व सांख्यिकीय स्कोर प्राप्त करें।"
+                : "UPSC/NSSTA Oral Board Simulation! Listen to audio prompts, speak your field strategy aloud, and receive real-time statutory & technical grading."}
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-indigo-300 font-bold">
+            <span>{isHi ? "मौखिक साक्षात्कार शुरू करें →" : "Start Oral Interview →"}</span>
+            <span className="text-[10px] text-slate-400 font-normal">Speech Evaluation</span>
+          </div>
+        </div>
+
+        <div
+          onClick={() => setShowIrtModal(true)}
+          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-900 text-white border border-emerald-500/30 shadow-md hover:border-emerald-400 transition-all cursor-pointer flex flex-col justify-between group"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                Psychometric Math
+              </span>
+              <BrainCircuit className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+              {isHi ? "2PL आइटम रिस्पांस थ्योरी (IRT) इंजन" : "2PL Item Response Theory (IRT) Engine"}
+            </h3>
+            <p className="text-[11px] text-slate-300 leading-relaxed">
+              {isHi
+                ? "कच्चे प्रतिशत को त्यागें! अनुकूली गुप्त क्षमता (θ), वस्तु कठिनाई (b) और भेदभाव शक्ति (a) के वैज्ञानिक गणितीय मॉडल का निरीक्षण करें।"
+                : "Beyond crude percentages! Inspect latent cadre ability (θ = +1.84), item difficulty (b), and Fisher information curves."}
+            </p>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-emerald-300 font-bold">
+            <span>{isHi ? "आईआरटी गणितीय विश्लेषण देखें →" : "Inspect IRT Math Model →"}</span>
+            <span className="text-[10px] text-slate-400 font-normal">Bayesian Scoring</span>
+          </div>
         </div>
       </div>
 
@@ -527,6 +630,13 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         onCourseCompleted={() => {
           loadData();
         }}
+      />
+
+      {/* 2PL Item Response Theory (IRT) Bayesian Psychometric Modal */}
+      <IrtAnalyticsModal
+        isOpen={showIrtModal}
+        onClose={() => setShowIrtModal(false)}
+        currentTheta={1.84}
       />
     </div>
   );

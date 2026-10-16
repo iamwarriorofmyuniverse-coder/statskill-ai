@@ -10,7 +10,10 @@ import {
   UploadCloud,
   Cpu,
   CheckCircle,
-  Users
+  Users,
+  Binary,
+  Globe2,
+  Mic
 } from "lucide-react";
 
 export default function BottomNav({ currentTab, setCurrentTab }) {
@@ -24,15 +27,15 @@ export default function BottomNav({ currentTab, setCurrentTab }) {
 
   const officerTabs = [
     { id: "dashboard", label: t("dashboard", "Home"), icon: LayoutDashboard },
+    { id: "flight-simulator", label: "Flight Sim", icon: Binary },
+    { id: "viva-voce", label: "Viva-Voce", icon: Mic },
     { id: "assessment", label: t("assessment", "Diagnostic"), icon: ClipboardCheck },
-    { id: "learning", label: t("learning", "Learn"), icon: BookOpen },
-    { id: "practice-quiz", label: t("practiceQuiz", "Quiz"), icon: BrainCircuit },
     { id: "ai-assistant", label: t("aiAssistant", "AI Bot"), icon: Bot }
   ];
 
   const trainerTabs = [
     { id: "dashboard", label: t("dashboard", "Home"), icon: LayoutDashboard },
-    { id: "upload-material", label: t("uploadMaterial", "Curate"), icon: UploadCloud },
+    { id: "national-war-room", label: "War Room", icon: Globe2 },
     { id: "ai-mcq-generator", label: t("aiMcqGenerator", "AI Gen"), icon: Cpu },
     { id: "question-review", label: t("questionReview", "Review"), icon: CheckCircle },
     { id: "learner-performance", label: t("learnerPerformance", "Cohort"), icon: Users }

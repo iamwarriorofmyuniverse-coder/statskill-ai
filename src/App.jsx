@@ -13,6 +13,8 @@ import AuthPage from "./pages/AuthPage.jsx";
 const OfficerDashboard = lazy(() => import("./pages/officer/OfficerDashboard.jsx"));
 const OfficerProfile = lazy(() => import("./pages/officer/OfficerProfile.jsx"));
 const AssessmentPage = lazy(() => import("./pages/officer/AssessmentPage.jsx"));
+const FlightSimulatorPage = lazy(() => import("./pages/officer/FlightSimulatorPage.jsx"));
+const VivaVocePage = lazy(() => import("./pages/officer/VivaVocePage.jsx"));
 const SkillGapsPage = lazy(() => import("./pages/officer/SkillGapsPage.jsx"));
 const RecommendationsPage = lazy(() => import("./pages/officer/RecommendationsPage.jsx"));
 const LearningPage = lazy(() => import("./pages/officer/LearningPage.jsx"));
@@ -22,6 +24,7 @@ const ProgressPage = lazy(() => import("./pages/officer/ProgressPage.jsx"));
 
 // Trainer Pages (Code-split with React.lazy)
 const TrainerDashboard = lazy(() => import("./pages/trainer/TrainerDashboard.jsx"));
+const NationalWarRoomPage = lazy(() => import("./pages/trainer/NationalWarRoomPage.jsx"));
 const UploadMaterialPage = lazy(() => import("./pages/trainer/UploadMaterialPage.jsx"));
 const AiMcqGeneratorPage = lazy(() => import("./pages/trainer/AiMcqGeneratorPage.jsx"));
 const QuestionReviewPage = lazy(() => import("./pages/trainer/QuestionReviewPage.jsx"));
@@ -29,12 +32,12 @@ const QuestionBankPage = lazy(() => import("./pages/trainer/QuestionBankPage.jsx
 const LearnerPerformancePage = lazy(() => import("./pages/trainer/LearnerPerformancePage.jsx"));
 
 const OFFICER_TABS = [
-  "dashboard", "profile", "assessment", "skill-gaps",
+  "dashboard", "profile", "assessment", "flight-simulator", "viva-voce", "skill-gaps",
   "recommendations", "learning", "practice-quiz", "ai-assistant", "progress"
 ];
 
 const TRAINER_TABS = [
-  "dashboard", "upload-material", "ai-mcq-generator",
+  "dashboard", "national-war-room", "upload-material", "ai-mcq-generator",
   "question-review", "question-bank", "learner-performance"
 ];
 
@@ -151,6 +154,8 @@ function MainLayout() {
                 {currentTab === "dashboard" && <OfficerDashboard setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
                 {currentTab === "profile" && <OfficerProfile />}
                 {currentTab === "assessment" && <AssessmentPage setCurrentTab={setCurrentTab} />}
+                {currentTab === "flight-simulator" && <FlightSimulatorPage />}
+                {currentTab === "viva-voce" && <VivaVocePage />}
                 {currentTab === "skill-gaps" && <SkillGapsPage setCurrentTab={setCurrentTab} onLaunchQuiz={handleLaunchQuiz} />}
                 {currentTab === "recommendations" && <RecommendationsPage setCurrentTab={setCurrentTab} />}
                 {currentTab === "learning" && <LearningPage setCurrentTab={setCurrentTab} />}
@@ -164,6 +169,7 @@ function MainLayout() {
             {isTrainer && (
               <>
                 {currentTab === "dashboard" && <TrainerDashboard setCurrentTab={setCurrentTab} />}
+                {currentTab === "national-war-room" && <NationalWarRoomPage />}
                 {currentTab === "upload-material" && <UploadMaterialPage setCurrentTab={setCurrentTab} />}
                 {currentTab === "ai-mcq-generator" && <AiMcqGeneratorPage setCurrentTab={setCurrentTab} />}
                 {currentTab === "question-review" && <QuestionReviewPage setCurrentTab={setCurrentTab} />}

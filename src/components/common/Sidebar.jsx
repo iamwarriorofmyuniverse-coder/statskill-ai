@@ -17,18 +17,24 @@ import {
   Users,
   Shield,
   Layers,
-  Bot
+  Bot,
+  Binary,
+  Globe2,
+  Mic
 } from "lucide-react";
 import InstallAppButton from "./InstallAppButton.jsx";
 
 export default function Sidebar({ currentTab, setCurrentTab, mobileOpen, setMobileOpen }) {
   const { currentUser } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isHi = language === "hi";
   const isOfficer = currentUser?.role === "OFFICER";
   const isTrainer = currentUser?.role === "TRAINER";
 
   const officerNavItems = [
     { id: "dashboard", label: t("dashboard", "Dashboard"), icon: LayoutDashboard, badge: null },
+    { id: "flight-simulator", label: isHi ? "फ्लाइट सिम्युलेटर" : "Flight Simulator", icon: Binary, badge: "NEXT-GEN" },
+    { id: "viva-voce", label: isHi ? "एआई विवा-वोके" : "AI Viva-Voce", icon: Mic, badge: "ORAL" },
     { id: "profile", label: t("officerProfile", "Officer Profile"), icon: User, badge: null },
     { id: "assessment", label: t("assessment", "Assessment"), icon: ClipboardCheck, badge: t("loopMeasure", "MEASURE") },
     { id: "skill-gaps", label: t("skillGaps", "Skill Gaps"), icon: Target, badge: t("loopDiagnose", "DIAGNOSE") },
@@ -41,6 +47,7 @@ export default function Sidebar({ currentTab, setCurrentTab, mobileOpen, setMobi
 
   const trainerNavItems = [
     { id: "dashboard", label: t("dashboard", "Dashboard"), icon: LayoutDashboard, badge: null },
+    { id: "national-war-room", label: isHi ? "राष्ट्रीय वॉर रूम" : "National War Room", icon: Globe2, badge: "WAR ROOM" },
     { id: "upload-material", label: t("uploadMaterial", "Upload Material"), icon: UploadCloud, badge: null },
     { id: "ai-mcq-generator", label: t("aiMcqGenerator", "AI MCQ Generator"), icon: Cpu, badge: "Gemini" },
     { id: "question-review", label: t("questionReview", "Question Review"), icon: CheckCircle, badge: "3 Pending" },

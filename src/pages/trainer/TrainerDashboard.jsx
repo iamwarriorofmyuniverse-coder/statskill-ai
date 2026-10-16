@@ -13,7 +13,10 @@ import {
   ArrowRight,
   Database,
   Cpu,
-  Layers
+  Layers,
+  Globe2,
+  Zap,
+  Sparkles
 } from "lucide-react";
 
 export default function TrainerDashboard({ setCurrentTab }) {
@@ -82,7 +85,15 @@ export default function TrainerDashboard({ setCurrentTab }) {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => setCurrentTab("national-war-room")}
+              className="px-4 py-2 bg-gradient-to-r from-gov-navy to-slate-900 hover:from-slate-900 hover:to-gov-navy text-white text-xs font-bold rounded-lg shadow-sm flex items-center space-x-1.5 transition-all border border-emerald-500/40 cursor-pointer"
+            >
+              <Globe2 className="w-4 h-4 text-emerald-400" />
+              <span>{isHi ? "राष्ट्रीय वॉर रूम (FOD)" : "National War Room (FOD)"}</span>
+            </button>
+
             <button
               onClick={() => setCurrentTab("upload-material")}
               className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-lg shadow-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
@@ -91,6 +102,40 @@ export default function TrainerDashboard({ setCurrentTab }) {
               <span>{t("uploadMaterialNow")}</span>
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Flagship National Readiness Preview Strip */}
+      <div
+        onClick={() => setCurrentTab("national-war-room")}
+        className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-slate-900 border border-emerald-500/30 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md hover:border-emerald-400 transition-all cursor-pointer group"
+      >
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30 group-hover:scale-105 transition-transform">
+            <Globe2 className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/20 px-2 py-0.2 rounded-full border border-emerald-500/30">
+                MoSPI Digital Twin
+              </span>
+              <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                {isHi ? "राष्ट्रीय संवर्ग तत्परता एवं क्षेत्रीय FOD हीटमैप" : "National Cadre Readiness & 6-Zone FOD War Room"}
+              </h3>
+            </div>
+            <p className="text-[11px] text-slate-300 mt-0.5">
+              {isHi
+                ? "देश के 6 क्षेत्रीय संभागों में आगामी 8वीं आर्थिक गणना व पीएलएफएस हेतु संवर्ग कमजोरियों की निगरानी करें।"
+                : "Live Cadre Vulnerability Index across North, South, West, East, Central & North-East Field Divisions."}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-4 shrink-0 text-xs">
+          <span className="font-bold text-emerald-400 text-sm">83.6% Optimal</span>
+          <span className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors">
+            {isHi ? "वॉर रूम खोलें →" : "Open War Room →"}
+          </span>
         </div>
       </div>
 
