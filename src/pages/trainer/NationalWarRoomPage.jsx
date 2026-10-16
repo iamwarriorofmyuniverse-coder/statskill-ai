@@ -112,9 +112,9 @@ export default function NationalWarRoomPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="space-y-4 max-w-7xl mx-auto pb-6">
       {/* War Room Flagship Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gov-navy via-slate-900 to-emerald-950 p-6 sm:p-8 text-white shadow-xl border border-emerald-900/50">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gov-navy via-slate-900 to-emerald-950 p-4 sm:p-6 text-white shadow-xl border border-emerald-900/50">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold uppercase tracking-wider">

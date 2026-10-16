@@ -446,53 +446,63 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         </div>
       </div>
 
-      {/* Mobile Segment Filter Switcher - Eliminates Endless Scrolling */}
-      <div className="lg:hidden flex items-center p-1 bg-slate-200/80 dark:bg-slate-800 rounded-xl text-xs font-bold shadow-xs">
+      {/* Universal Executive Segment Filter Switcher - Eliminates Endless Scrolling on Both Web & Mobile */}
+      <div className="flex items-center p-1 bg-slate-200/90 dark:bg-slate-800 rounded-xl text-xs font-bold shadow-xs max-w-2xl w-full">
         <button
           onClick={() => setMobileSection("overview")}
-          className={`flex-1 py-2 text-center rounded-lg transition-all ${
+          className={`flex-1 py-2 text-center rounded-lg transition-all cursor-pointer ${
             mobileSection === "overview"
               ? "bg-white dark:bg-slate-900 text-gov-blue dark:text-sky-400 shadow-xs"
-              : "text-slate-600 dark:text-slate-400"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
-          📊 {isHi ? "रडार चार्ट" : "Radar Analysis"}
+          📊 {isHi ? "रडार चार्ट एवं टाइमलाइन" : "Radar & Timeline"}
         </button>
         <button
           onClick={() => setMobileSection("gaps")}
-          className={`flex-1 py-2 text-center rounded-lg transition-all ${
+          className={`flex-1 py-2 text-center rounded-lg transition-all cursor-pointer ${
             mobileSection === "gaps"
               ? "bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs"
-              : "text-slate-600 dark:text-slate-400"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
-          ⚠️ {isHi ? "गैप्स" : "Priority Gaps"} ({highGaps.length})
+          ⚠️ {isHi ? "प्राथमिकता गैप्स" : "Priority Gaps"} ({highGaps.length})
         </button>
         <button
           onClick={() => setMobileSection("courses")}
-          className={`flex-1 py-2 text-center rounded-lg transition-all ${
+          className={`flex-1 py-2 text-center rounded-lg transition-all cursor-pointer ${
             mobileSection === "courses"
               ? "bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs"
-              : "text-slate-600 dark:text-slate-400"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           }`}
         >
-          📚 {isHi ? "कोर्स" : "Courses"} ({recommendations.length})
+          📚 {isHi ? "अनुशंसित कोर्स" : "iGOT Courses"} ({recommendations.length})
+        </button>
+        <button
+          onClick={() => setMobileSection("all")}
+          className={`hidden sm:block px-3 py-2 text-center rounded-lg transition-all cursor-pointer ${
+            mobileSection === "all"
+              ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs"
+              : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+          }`}
+        >
+          🔍 {isHi ? "सभी" : "All Stacked"}
         </button>
       </div>
 
-      {/* Middle & Bottom Sections: Switchable on Mobile, Responsive Multi-column Grid on Desktop */}
-      <div className="space-y-6">
-        {/* Radar Chart & Activity - Visible on Desktop OR when mobileSection is overview */}
-        <div className={`${mobileSection === "overview" ? "block" : "hidden lg:block"} space-y-6`}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
+      {/* Middle & Bottom Sections: Switchable with Zero-Scroll */}
+      <div className="space-y-5">
+        {/* Radar Chart & Activity */}
+        <div className={`${mobileSection === "overview" || mobileSection === "all" ? "block" : "hidden"} space-y-4 animate-in fade-in duration-200`}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                     <Layers className="w-4 h-4 text-gov-blue" />
                     <span>{t("competencyRadarAnalysis")}</span>
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     {t("radarSubtitle")}
                   </p>
                 </div>
@@ -506,7 +516,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
               <CompetencyRadarChart data={radarData} />
             </div>
 
-            <div className="lg:col-span-5 hidden lg:block">
+            <div className="lg:col-span-5">
               <ActivityTimeline
                 history={history}
                 learningProgress={learningProgress}
@@ -515,11 +525,11 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
           </div>
         </div>
 
-        {/* High Priority Gaps - Visible on Desktop OR when mobileSection is gaps */}
-        <div className={`${mobileSection === "gaps" ? "block" : "hidden lg:block"}`}>
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+        {/* High Priority Gaps */}
+        <div className={`${mobileSection === "gaps" || mobileSection === "all" ? "block" : "hidden"} animate-in fade-in duration-200`}>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                 <AlertTriangle className="w-4 h-4 text-orange-600" />
                 <span>{t("prioritySkillGapsTitle")}</span>
               </h3>
@@ -556,16 +566,16 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
           </div>
         </div>
 
-        {/* Recommended Courses - Visible on Desktop OR when mobileSection is courses */}
-        <div className={`${mobileSection === "courses" ? "block" : "hidden lg:block"}`}>
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+        {/* Recommended Courses */}
+        <div className={`${mobileSection === "courses" || mobileSection === "all" ? "block" : "hidden"} animate-in fade-in duration-200`}>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                   <Sparkles className="w-4 h-4 text-gov-accent" />
                   <span>{t("aiRecommendedLearning")}</span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   {t("curatedGapsSubtitle")}
                 </p>
               </div>
@@ -577,7 +587,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {recommendations.slice(0, 4).map((rec) => (
                 <CourseRecommendationCard
                   key={rec.id}
@@ -588,16 +598,6 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             </div>
           </div>
         </div>
-
-        {/* Mobile Activity Timeline in Overview tab */}
-        {mobileSection === "overview" && (
-          <div className="lg:hidden">
-            <ActivityTimeline
-              history={history}
-              learningProgress={learningProgress}
-            />
-          </div>
-        )}
       </div>
 
       {/* Interactive Competency Remediation Modal */}

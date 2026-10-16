@@ -139,7 +139,7 @@ function MainLayout() {
           setMobileOpen={setMobileSidebarOpen}
         />
 
-        <main className="flex-1 p-3 sm:p-6 lg:p-8 overflow-y-auto overflow-x-hidden max-w-full pb-24 md:pb-8 w-full min-w-0">
+        <main className="flex-1 p-3 sm:p-5 lg:p-6 overflow-y-auto overflow-x-hidden max-w-full pb-20 md:pb-6 w-full min-w-0">
           <Suspense
             fallback={
               <div className="min-h-[400px] flex flex-col items-center justify-center space-y-3">

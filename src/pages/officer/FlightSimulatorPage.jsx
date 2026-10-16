@@ -146,9 +146,9 @@ export default function FlightSimulatorPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="space-y-4 max-w-7xl mx-auto pb-6">
       {/* Flagship Innovation Masthead */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gov-navy via-slate-900 to-blue-950 p-6 sm:p-8 text-white shadow-xl border border-blue-900/50">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gov-navy via-slate-900 to-blue-950 p-4 sm:p-6 text-white shadow-xl border border-blue-900/50">
         <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
