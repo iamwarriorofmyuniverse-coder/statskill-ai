@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
-import { getSkillGaps, getCompetencies, getRecommendations } from "../../services/firestoreService.js";
+import {
+  getSkillGaps,
+  getCompetencies,
+  getRecommendations,
+  getInitialSkillGaps,
+  getInitialCompetencies,
+  getInitialRecommendations
+} from "../../services/firestoreService.js";
 import { api } from "../../services/api.js";
 import StatusBadge from "../../components/common/StatusBadge.jsx";
 import SkillGapCard from "../../components/officer/SkillGapCard.jsx";
@@ -23,13 +30,14 @@ export default function SkillGapsPage({ setCurrentTab, onLaunchQuiz }) {
   const { language, t } = useLanguage();
   const isHi = language === "hi";
 
-  const [skillGaps, setSkillGaps] = useState([]);
-  const [competencies, setCompetencies] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
+  // Instant Hydration: 0ms initial render
+  const [skillGaps, setSkillGaps] = useState(() => getInitialSkillGaps(currentUser?.uid));
+  const [competencies, setCompetencies] = useState(() => getInitialCompetencies());
+  const [recommendations, setRecommendations] = useState(() => getInitialRecommendations(currentUser?.uid));
   const [selectedDomain, setSelectedDomain] = useState("ALL");
   const [aiDiagnosis, setAiDiagnosis] = useState(null);
   const [loadingAi, setLoadingAi] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Modals state
   const [activeGapModal, setActiveGapModal] = useState(null);
@@ -43,18 +51,18 @@ export default function SkillGapsPage({ setCurrentTab, onLaunchQuiz }) {
         getCompetencies(),
         getRecommendations(uid)
       ]);
-      setSkillGaps(gaps || []);
-      setCompetencies(comps || []);
-      setRecommendations(recs || []);
+      if (gaps && gaps.length > 0) setSkillGaps(gaps);
+      if (comps && comps.length > 0) setCompetencies(comps);
+      if (recs && recs.length > 0) setRecommendations(recs);
     } catch (e) {
-      console.error("Skill gaps load error:", e);
+      console.warn("Skill gaps background sync warning:", e);
     } finally {
       setLoading(false);
     }
   }, [currentUser]);
 
   useEffect(() => {
-    setLoading(true);
+    // Non-blocking background sync
     loadData();
   }, [loadData]);
 
@@ -82,7 +90,7 @@ export default function SkillGapsPage({ setCurrentTab, onLaunchQuiz }) {
 
   const targetRole = officerProfile?.careerGoal ? t(officerProfile.careerGoal, officerProfile.careerGoal) : t("seniorAnalyst");
 
-  if (loading) {
+  if (loading && skillGaps.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>

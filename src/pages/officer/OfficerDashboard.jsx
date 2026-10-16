@@ -14,7 +14,12 @@ import {
   getRecommendations,
   getRadarCompetencyData,
   getCompetencyHistory,
-  getLearningProgress
+  getLearningProgress,
+  getInitialSkillGaps,
+  getInitialRecommendations,
+  getInitialRadarData,
+  getInitialCompetencyHistory,
+  getInitialLearningProgress
 } from "../../services/firestoreService.js";
 import {
   Award,
@@ -41,12 +46,14 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
   const { language, t } = useLanguage();
   const { showSuccess } = useToast();
   const isHi = language === "hi";
-  const [skillGaps, setSkillGaps] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
-  const [radarData, setRadarData] = useState([]);
-  const [history, setHistory] = useState([]);
-  const [learningProgress, setLearningProgress] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  // Instant Hydration State: Renders in 0ms with local cache, updates via background SWR
+  const [skillGaps, setSkillGaps] = useState(() => getInitialSkillGaps(currentUser?.uid));
+  const [recommendations, setRecommendations] = useState(() => getInitialRecommendations(currentUser?.uid));
+  const [radarData, setRadarData] = useState(() => getInitialRadarData(currentUser?.uid));
+  const [history, setHistory] = useState(() => getInitialCompetencyHistory(currentUser?.uid));
+  const [learningProgress, setLearningProgress] = useState(() => getInitialLearningProgress(currentUser?.uid));
+  const [loading, setLoading] = useState(false);
   const [mobileSection, setMobileSection] = useState("overview"); // "overview" | "gaps" | "courses"
 
   // Modals state
@@ -64,20 +71,20 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         getCompetencyHistory(uid),
         getLearningProgress(uid)
       ]);
-      setSkillGaps(gaps || []);
-      setRecommendations(recs || []);
-      setRadarData(radar || []);
-      setHistory(hist || []);
-      setLearningProgress(progress || []);
+      if (gaps && gaps.length > 0) setSkillGaps(gaps);
+      if (recs && recs.length > 0) setRecommendations(recs);
+      if (radar && radar.length > 0) setRadarData(radar);
+      if (hist && hist.length > 0) setHistory(hist);
+      if (progress && progress.length > 0) setLearningProgress(progress);
     } catch (err) {
-      console.error("Dashboard data load error:", err);
+      console.warn("Background dashboard data sync error:", err);
     } finally {
       setLoading(false);
     }
   }, [currentUser]);
 
   useEffect(() => {
-    setLoading(true);
+    // Non-blocking background sync
     loadData();
   }, [loadData]);
 
@@ -112,7 +119,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
     return "Good evening";
   };
 
-  if (loading) {
+  if (loading && skillGaps.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>

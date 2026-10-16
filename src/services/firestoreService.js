@@ -74,14 +74,103 @@ let localStore = {
   competency_history: loadSaved("statskill_competency_history", [...demoData.DEMO_COMPETENCY_HISTORY])
 };
 
+// Maximum time to wait for remote Firestore queries before falling back to instant local store
+const FIRESTORE_READ_TIMEOUT_MS = 1200;
+
+function withTimeout(promise, ms = FIRESTORE_READ_TIMEOUT_MS) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`Firestore query exceeded ${ms}ms timeout`)), ms)
+    )
+  ]);
+}
+
+// Fast Synchronous Getters for Instant Zero-Latency Initial Render (0ms UI hydration)
+export function getInitialSkillGaps(userId = "officer_ananya_001") {
+  const filtered = localStore.skill_gaps.filter(g => !userId || g.userId === userId);
+  return filtered.length > 0 ? filtered : localStore.skill_gaps;
+}
+
+export function getInitialRecommendations(userId = "officer_ananya_001") {
+  return localStore.recommendations || [];
+}
+
+export function getInitialRadarData(userId = "officer_ananya_001") {
+  const currentGaps = localStore.skill_gaps.filter(g => !userId || g.userId === userId);
+  if (currentGaps.length > 0) {
+    return currentGaps.map(g => {
+      const currentLevel5 = g.targetLevel > 5
+        ? Number(((g.currentLevel / 100) * 5).toFixed(1))
+        : Number(Number(g.currentLevel).toFixed(1));
+      const targetLevel5 = g.targetLevel > 5
+        ? Number(((g.targetLevel / 100) * 5).toFixed(1))
+        : Number(Number(g.targetLevel).toFixed(1));
+      return {
+        domain: g.competencyName,
+        current: currentLevel5,
+        target: targetLevel5,
+        fullMark: 5
+      };
+    });
+  }
+  return demoData.DEMO_RADAR_DATA;
+}
+
+export function getInitialCompetencyHistory(userId = "officer_ananya_001") {
+  return localStore.competency_history || [];
+}
+
+export function getInitialLearningProgress(userId = "officer_ananya_001") {
+  return (localStore.learning_progress || []).map(lp => {
+    const course = (localStore.course_catalog || []).find(c => c.courseId === lp.courseId || c.id === lp.courseId) || {};
+    return { ...lp, course };
+  });
+}
+
+export function getInitialCompetencies() {
+  return localStore.competencies || [];
+}
+
+export function getInitialCohort() {
+  return demoData.DEMO_LEARNER_PERFORMANCE || [];
+}
+
+export function getInitialUploadedMaterials() {
+  return localStore.uploaded_materials || [];
+}
+
+export function getInitialQuestionBank() {
+  return localStore.question_bank || [];
+}
+
+export function getInitialGeneratedQuestions() {
+  return localStore.generated_questions || [];
+}
+
+export function getInitialLatestAssessmentAttempt(userId = "officer_ananya_001") {
+  const savedLast = loadSaved("statskill_last_attempt", null);
+  if (savedLast && (!userId || savedLast.userId === userId)) {
+    return savedLast;
+  }
+  return localStore.assessment_attempts.find(a => !userId || a.userId === userId) || null;
+}
+
+export function getInitialAssessmentData() {
+  return {
+    metadata: MASTER_ASSESSMENT_METADATA,
+    questions: MASTER_ASSESSMENT_QUESTIONS
+  };
+}
+
 // 1. Users
 export async function getFirestoreUser(uid) {
   if (db) {
     try {
-      const snap = await getDoc(doc(db, "users", uid));
+      const snap = await withTimeout(getDoc(doc(db, "users", uid)));
       if (snap.exists()) return snap.data();
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore read failed, checking prototype store:", e.message);
     }
   }
   return localStore.users.find(u => u.uid === uid) || null;
@@ -108,10 +197,10 @@ export async function saveFirestoreUser(userData) {
 export async function getOfficerProfile(userId) {
   if (db) {
     try {
-      const snap = await getDoc(doc(db, "officer_profiles", userId));
+      const snap = await withTimeout(getDoc(doc(db, "officer_profiles", userId)));
       if (snap.exists()) return snap.data();
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore profile read skipped:", e.message);
     }
   }
   return localStore.officer_profiles.find(p => p.userId === userId) || demoData.DEMO_OFFICER_PROFILE;
@@ -145,10 +234,10 @@ export async function saveOfficerProfile(userId, profileData) {
 export async function getCompetencies() {
   if (db) {
     try {
-      const snap = await getDocs(collection(db, "competencies"));
+      const snap = await withTimeout(getDocs(collection(db, "competencies")));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore competencies read skipped:", e.message);
     }
   }
   return localStore.competencies;
@@ -180,13 +269,14 @@ export async function getSkillGaps(userId) {
   if (db) {
     try {
       const q = query(collection(db, "skill_gaps"), where("userId", "==", userId));
-      const snap = await getDocs(q);
+      const snap = await withTimeout(getDocs(q));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore skill_gaps read skipped:", e.message);
     }
   }
-  return localStore.skill_gaps.filter(g => !userId || g.userId === userId);
+  const filtered = localStore.skill_gaps.filter(g => !userId || g.userId === userId);
+  return filtered.length > 0 ? filtered : localStore.skill_gaps;
 }
 
 export async function saveSkillGaps(userId, gaps) {
@@ -212,10 +302,10 @@ export async function saveSkillGaps(userId, gaps) {
 export async function getCourseCatalog() {
   if (db) {
     try {
-      const snap = await getDocs(collection(db, "course_catalog"));
+      const snap = await withTimeout(getDocs(collection(db, "course_catalog")));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore course_catalog read skipped:", e.message);
     }
   }
   return localStore.course_catalog;
@@ -256,10 +346,10 @@ export async function getRecommendations(userId) {
   if (db) {
     try {
       const q = query(collection(db, "recommendations"), where("userId", "==", userId));
-      const snap = await getDocs(q);
+      const snap = await withTimeout(getDocs(q));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore recommendations read skipped:", e.message);
     }
   }
 
@@ -275,10 +365,10 @@ export async function getLearningProgress(userId) {
   if (db) {
     try {
       const q = query(collection(db, "learning_progress"), where("userId", "==", userId));
-      const snap = await getDocs(q);
+      const snap = await withTimeout(getDocs(q));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore read failed, checking prototype store:", e);
+      console.warn("Firestore learning_progress read skipped:", e.message);
     }
   }
   return localStore.learning_progress.map(lp => {
@@ -401,10 +491,10 @@ export async function getLatestAssessmentAttempt(userId) {
 export async function getQuestionBank() {
   if (db) {
     try {
-      const snap = await getDocs(collection(db, "question_bank"));
+      const snap = await withTimeout(getDocs(collection(db, "question_bank")));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore question_bank read failed:", e);
+      console.warn("Firestore question_bank read skipped:", e.message);
     }
   }
   return loadSaved("statskill_question_bank", localStore.question_bank);
@@ -490,10 +580,10 @@ export async function deleteQuestionBankQuestion(id) {
 export async function getUploadedMaterials() {
   if (db) {
     try {
-      const snap = await getDocs(collection(db, "learning_materials"));
+      const snap = await withTimeout(getDocs(collection(db, "learning_materials")));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore learning_materials read failed:", e);
+      console.warn("Firestore learning_materials read skipped:", e.message);
     }
   }
   return loadSaved("statskill_uploaded_materials", localStore.uploaded_materials);
@@ -635,10 +725,10 @@ export async function getQuizAttempts(userId) {
   if (db) {
     try {
       const q = query(collection(db, "quiz_attempts"), where("userId", "==", userId));
-      const snap = await getDocs(q);
+      const snap = await withTimeout(getDocs(q));
       if (!snap.empty) return snap.docs.map(d => d.data());
     } catch (e) {
-      console.warn("Firestore quiz_attempts read failed:", e);
+      console.warn("Firestore quiz_attempts read skipped:", e.message);
     }
   }
   return loadSaved("statskill_quiz_attempts", localStore.quiz_attempts || []);

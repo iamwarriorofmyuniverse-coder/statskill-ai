@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
-import { getCompetencyHistory, getSkillGaps } from "../../services/firestoreService.js";
+import {
+  getCompetencyHistory,
+  getSkillGaps,
+  getInitialCompetencyHistory,
+  getInitialSkillGaps
+} from "../../services/firestoreService.js";
 import StatusBadge from "../../components/common/StatusBadge.jsx";
 import {
   TrendingUp,
@@ -18,23 +23,23 @@ export default function ProgressPage({ setCurrentTab }) {
   const { language, t } = useLanguage();
   const isHi = language === "hi";
 
-  const [history, setHistory] = useState([]);
-  const [skillGaps, setSkillGaps] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Instant Hydration: 0ms initial render
+  const [history, setHistory] = useState(() => getInitialCompetencyHistory(currentUser?.uid));
+  const [skillGaps, setSkillGaps] = useState(() => getInitialSkillGaps(currentUser?.uid));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
       try {
         const uid = currentUser?.uid || "officer_ananya_001";
         const [hist, gaps] = await Promise.all([
           getCompetencyHistory(uid),
           getSkillGaps(uid)
         ]);
-        setHistory(hist || []);
-        setSkillGaps(gaps || []);
+        if (hist && hist.length > 0) setHistory(hist);
+        if (gaps && gaps.length > 0) setSkillGaps(gaps);
       } catch (e) {
-        console.error("Progress load error:", e);
+        console.warn("Progress background sync warning:", e);
       } finally {
         setLoading(false);
       }
@@ -48,7 +53,7 @@ export default function ProgressPage({ setCurrentTab }) {
     ? Math.round(skillGaps.reduce((acc, g) => acc + (g.currentLevel !== undefined ? g.currentLevel : 70), 0) / skillGaps.length)
     : 74;
 
-  if (loading) {
+  if (loading && history.length === 0 && skillGaps.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>

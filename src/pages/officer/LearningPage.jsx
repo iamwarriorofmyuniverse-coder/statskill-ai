@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
-import { getLearningProgress, updateLearningProgress } from "../../services/firestoreService.js";
+import {
+  getLearningProgress,
+  updateLearningProgress,
+  getInitialLearningProgress
+} from "../../services/firestoreService.js";
 import { api } from "../../services/api.js";
 import StatusBadge from "../../components/common/StatusBadge.jsx";
 import CoursePlayerModal from "../../components/officer/CoursePlayerModal.jsx";
@@ -24,11 +28,12 @@ export default function LearningPage({ setCurrentTab }) {
   const { language, t } = useLanguage();
   const isHi = language === "hi";
 
-  const [learningProgress, setLearningProgress] = useState([]);
+  // Instant Hydration: 0ms initial render
+  const [learningProgress, setLearningProgress] = useState(() => getInitialLearningProgress(currentUser?.uid));
   const [advisorQuery, setAdvisorQuery] = useState("");
   const [advisorAnswer, setAdvisorAnswer] = useState(null);
   const [asking, setAsking] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [activeCourse, setActiveCourse] = useState(null);
   const [playerModalCourse, setPlayerModalCourse] = useState(null);
 
@@ -41,13 +46,12 @@ export default function LearningPage({ setCurrentTab }) {
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
       try {
         const uid = currentUser?.uid || "officer_ananya_001";
         const prog = await getLearningProgress(uid);
-        setLearningProgress(prog || []);
+        if (prog && prog.length > 0) setLearningProgress(prog);
       } catch (e) {
-        console.error("Learning progress load error:", e);
+        console.warn("Learning progress background sync warning:", e);
       } finally {
         setLoading(false);
       }
@@ -212,7 +216,7 @@ export default function LearningPage({ setCurrentTab }) {
     setLearningProgress(updated);
   };
 
-  if (loading) {
+  if (loading && learningProgress.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>

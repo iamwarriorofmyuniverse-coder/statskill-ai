@@ -4,7 +4,8 @@ import { useLanguage } from "../../context/LanguageContext.jsx";
 import {
   getRecommendations,
   generateAndSaveRecommendations,
-  updateLearningProgress
+  updateLearningProgress,
+  getInitialRecommendations
 } from "../../services/firestoreService.js";
 import { api } from "../../services/api.js";
 import CourseRecommendationCard from "../../components/officer/CourseRecommendationCard.jsx";
@@ -28,10 +29,11 @@ export default function RecommendationsPage({ setCurrentTab }) {
   const { language, t } = useLanguage();
   const isHi = language === "hi";
 
-  const [recommendations, setRecommendations] = useState([]);
+  // Instant Hydration: 0ms initial render
+  const [recommendations, setRecommendations] = useState(() => getInitialRecommendations(currentUser?.uid));
   const [selectedPriority, setSelectedPriority] = useState("ALL");
   const [selectedDomain, setSelectedDomain] = useState("ALL");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [activeRoadmap, setActiveRoadmap] = useState(null);
   const [loadingRoadmap, setLoadingRoadmap] = useState(false);
@@ -41,16 +43,16 @@ export default function RecommendationsPage({ setCurrentTab }) {
     try {
       const uid = currentUser?.uid || "officer_ananya_001";
       const recs = await getRecommendations(uid);
-      setRecommendations(recs || []);
+      if (recs && recs.length > 0) setRecommendations(recs);
     } catch (e) {
-      console.error("Recommendations load error:", e);
+      console.warn("Recommendations background sync warning:", e);
     } finally {
       setLoading(false);
     }
   }, [currentUser]);
 
   useEffect(() => {
-    setLoading(true);
+    // Non-blocking background sync
     loadData();
   }, [loadData]);
 
@@ -88,7 +90,7 @@ export default function RecommendationsPage({ setCurrentTab }) {
     setActiveCourseModal(rec);
   };
 
-  if (loading) {
+  if (loading && recommendations.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>

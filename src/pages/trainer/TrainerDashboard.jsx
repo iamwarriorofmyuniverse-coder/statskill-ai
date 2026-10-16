@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
 import StatCard from "../../components/common/StatCard.jsx";
-import { getCohortPerformance, getUploadedMaterials, getQuestionBank, getGeneratedQuestions } from "../../services/firestoreService.js";
+import {
+  getCohortPerformance,
+  getUploadedMaterials,
+  getQuestionBank,
+  getGeneratedQuestions,
+  getInitialCohort,
+  getInitialUploadedMaterials,
+  getInitialQuestionBank,
+  getInitialGeneratedQuestions
+} from "../../services/firestoreService.js";
 import StatusBadge from "../../components/common/StatusBadge.jsx";
 import {
   Users,
@@ -24,15 +33,15 @@ export default function TrainerDashboard({ setCurrentTab }) {
   const { language, t } = useLanguage();
   const isHi = language === "hi";
 
-  const [cohort, setCohort] = useState([]);
-  const [materials, setMaterials] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [pendingGen, setPendingGen] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Instant Hydration State: Renders in 0ms with local cache, updates via background SWR
+  const [cohort, setCohort] = useState(() => getInitialCohort());
+  const [materials, setMaterials] = useState(() => getInitialUploadedMaterials());
+  const [questions, setQuestions] = useState(() => getInitialQuestionBank());
+  const [pendingGen, setPendingGen] = useState(() => getInitialGeneratedQuestions().filter(item => item.status === "PENDING"));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
       try {
         const [c, m, q, g] = await Promise.all([
           getCohortPerformance(),
@@ -40,12 +49,12 @@ export default function TrainerDashboard({ setCurrentTab }) {
           getQuestionBank(),
           getGeneratedQuestions()
         ]);
-        setCohort(c || []);
-        setMaterials(m || []);
-        setQuestions(q || []);
-        setPendingGen(g?.filter(item => item.status === "PENDING") || []);
+        if (c && c.length > 0) setCohort(c);
+        if (m && m.length > 0) setMaterials(m);
+        if (q && q.length > 0) setQuestions(q);
+        if (g && g.length > 0) setPendingGen(g.filter(item => item.status === "PENDING"));
       } catch (e) {
-        console.error("Trainer dashboard load error:", e);
+        console.warn("Trainer dashboard background sync warning:", e);
       } finally {
         setLoading(false);
       }
@@ -53,7 +62,7 @@ export default function TrainerDashboard({ setCurrentTab }) {
     load();
   }, []);
 
-  if (loading) {
+  if (loading && cohort.length === 0) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>

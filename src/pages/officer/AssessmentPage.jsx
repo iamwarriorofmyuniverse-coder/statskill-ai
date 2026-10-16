@@ -4,7 +4,9 @@ import { useLanguage } from "../../context/LanguageContext.jsx";
 import {
   getMasterAssessment,
   recordAssessmentAttempt,
-  getLatestAssessmentAttempt
+  getLatestAssessmentAttempt,
+  getInitialAssessmentData,
+  getInitialLatestAssessmentAttempt
 } from "../../services/firestoreService.js";
 import { evaluateAssessment } from "../../services/assessmentScoring.js";
 import AssessmentEngine from "../../components/officer/AssessmentEngine.jsx";
@@ -32,26 +34,26 @@ export default function AssessmentPage({ setCurrentTab }) {
   const isHi = language === "hi";
 
   const [mode, setMode] = useState("LANDING"); // "LANDING" | "RUNNING" | "RESULTS"
-  const [assessmentData, setAssessmentData] = useState(null);
-  const [latestAttempt, setLatestAttempt] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Instant Hydration: 0ms initial render
+  const [assessmentData, setAssessmentData] = useState(() => getInitialAssessmentData());
+  const [latestAttempt, setLatestAttempt] = useState(() => getInitialLatestAssessmentAttempt(currentUser?.uid));
+  const [loading, setLoading] = useState(false);
   const [showLandingReportModal, setShowLandingReportModal] = useState(false);
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
       try {
         const uid = currentUser?.uid || "officer_ananya_001";
         const [master, lastAttempt] = await Promise.all([
           getMasterAssessment(),
           getLatestAssessmentAttempt(uid)
         ]);
-        setAssessmentData(master);
+        if (master) setAssessmentData(master);
         if (lastAttempt) {
           setLatestAttempt(lastAttempt);
         }
       } catch (err) {
-        console.error("Failed to load assessment data:", err);
+        console.warn("Assessment data background sync warning:", err);
       } finally {
         setLoading(false);
       }
@@ -98,7 +100,7 @@ export default function AssessmentPage({ setCurrentTab }) {
     }
   };
 
-  if (loading) {
+  if (loading && !assessmentData) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>

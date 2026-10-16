@@ -18,22 +18,22 @@ import {
   ChevronUp
 } from "lucide-react";
 import StatusBadge from "../common/StatusBadge.jsx";
-import { getQuestionBank, deleteQuestionBankQuestion } from "../../services/firestoreService.js";
+import { getQuestionBank, deleteQuestionBankQuestion, getInitialQuestionBank } from "../../services/firestoreService.js";
 import { api } from "../../services/api.js";
 
 export default function QuestionBank({ onIngestNew }) {
   const { language, t } = useLanguage();
   const isHi = language === "hi";
 
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Instant Hydration: 0ms initial render
+  const [questions, setQuestions] = useState(() => getInitialQuestionBank());
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDomain, setSelectedDomain] = useState("ALL");
   const [selectedDifficulty, setSelectedDifficulty] = useState("ALL");
   const [expandedId, setExpandedId] = useState(null);
 
   const fetchQuestions = async () => {
-    setLoading(true);
     try {
       // First try server API, fallback to firestoreService
       let data = [];
@@ -49,9 +49,11 @@ export default function QuestionBank({ onIngestNew }) {
       if (!data || data.length === 0) {
         data = await getQuestionBank();
       }
-      setQuestions(data || []);
+      if (data && data.length > 0) {
+        setQuestions(data);
+      }
     } catch (err) {
-      console.error("Failed to load question bank:", err);
+      console.warn("Failed to background sync question bank:", err);
     } finally {
       setLoading(false);
     }
@@ -175,7 +177,7 @@ export default function QuestionBank({ onIngestNew }) {
       </div>
 
       {/* Questions List */}
-      {loading ? (
+      {loading && questions.length === 0 ? (
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue"></div>
         </div>

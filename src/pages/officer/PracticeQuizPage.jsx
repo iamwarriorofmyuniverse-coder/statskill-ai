@@ -5,7 +5,8 @@ import { useToast } from '../../context/ToastContext.jsx';
 import {
   getQuestionBank,
   getSkillGaps,
-  recordQuizAttempt
+  recordQuizAttempt,
+  getInitialSkillGaps
 } from '../../services/firestoreService.js';
 import { MASTER_ASSESSMENT_QUESTIONS } from '../../data/assessmentQuestions.js';
 import { api } from '../../services/api.js';
@@ -37,14 +38,15 @@ export default function PracticeQuizPage({ setCurrentTab, initialCompetencyId })
   const isHi = language === 'hi';
 
   const [step, setStep] = useState('CONFIG'); // 'CONFIG' | 'RUNNING' | 'RESULTS'
-  const [skillGaps, setSkillGaps] = useState([]);
+  // Instant Hydration: 0ms initial render
+  const [skillGaps, setSkillGaps] = useState(() => getInitialSkillGaps(currentUser?.uid));
   const [selectedCompetencyId, setSelectedCompetencyId] = useState(initialCompetencyId || 'comp-stat-01');
   const [numQuestions, setNumQuestions] = useState(5);
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [quizResult, setQuizResult] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -55,13 +57,12 @@ export default function PracticeQuizPage({ setCurrentTab, initialCompetencyId })
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
       try {
         const uid = currentUser?.uid || 'officer_ananya_001';
         const gaps = await getSkillGaps(uid);
-        setSkillGaps(gaps || []);
+        if (gaps && gaps.length > 0) setSkillGaps(gaps);
       } catch (e) {
-        console.error('Practice quiz load error:', e);
+        console.warn('Practice quiz background sync warning:', e);
       } finally {
         setLoading(false);
       }
@@ -191,7 +192,7 @@ export default function PracticeQuizPage({ setCurrentTab, initialCompetencyId })
     }
   };
 
-  if (loading) {
+  if (loading && skillGaps.length === 0) {
     return (
       <div className='flex items-center justify-center h-96'>
         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gov-blue'></div>
