@@ -93,13 +93,28 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
   // Derived metrics dynamically from active Firestore / state data
   const [simulatedTargetBoost, setSimulatedTargetBoost] = useState(0); // 0 = standard, 10 = Senior Analyst (+10%), 20 = Director (+20%)
 
-  const highGaps = skillGaps.filter((g) => g.priority === "HIGH" || g.priority === "CRITICAL");
-  const baseOverallScore = skillGaps && skillGaps.length > 0
-    ? Math.round(skillGaps.reduce((acc, g) => acc + (g.currentLevel !== undefined ? g.currentLevel : 70), 0) / skillGaps.length)
-    : 74;
-  const overallScore = Math.max(10, Math.min(100, baseOverallScore - Math.round(simulatedTargetBoost * 0.4)));
-  const assessedCount = skillGaps && skillGaps.length > 0 ? skillGaps.length : 14;
   const totalCount = 17;
+  const verifiedCount = Math.max(0, totalCount - (skillGaps?.length || 0));
+  const assessedCount = totalCount;
+  const highGaps = (skillGaps || []).filter((g) => g.priority === "HIGH" || g.priority === "CRITICAL");
+
+  // Calculate composite cadre competency score (0 - 100%)
+  const baseOverallScore = (() => {
+    if (!skillGaps || skillGaps.length === 0) return 75;
+    // Calculate fulfillment percentage of in-progress gaps
+    const gapAvgPct = skillGaps.reduce((acc, g) => {
+      const raw = g.currentLevel !== undefined ? Number(g.currentLevel) : 3.0;
+      const target = g.targetLevel ? Number(g.targetLevel) : 4.0;
+      const pct = raw <= 5.0 ? (raw / target) * 100 : raw;
+      return acc + Math.min(100, Math.max(0, pct));
+    }, 0) / skillGaps.length;
+
+    // Verified competencies at ~80% average + in-progress gaps at gapAvgPct (~66%)
+    const weightedScore = Math.round((verifiedCount * 80 + skillGaps.length * gapAvgPct) / totalCount);
+    return Math.max(50, Math.min(100, weightedScore));
+  })();
+
+  const overallScore = Math.max(10, Math.min(100, baseOverallScore - Math.round(simulatedTargetBoost * 0.7)));
   const avgProgress = learningProgress.length > 0
     ? Math.round(learningProgress.reduce((acc, c) => acc + (c.progressPercent || 0), 0) / learningProgress.length)
     : 62;
@@ -255,7 +270,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
                   <span>+12% this quarter</span>
                 </span>
                 <span className="text-[10px] text-slate-400 block mt-0.5">
-                  {assessedCount} of {totalCount} verified
+                  {verifiedCount} of {totalCount} verified • {skillGaps.length} gaps
                 </span>
               </div>
             </div>
@@ -373,8 +388,8 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         <div className="min-w-[190px] sm:min-w-0 snap-start flex-1 shrink-0">
           <StatCard
             title={t("assessedCompetencies")}
-            value={`${assessedCount} / ${totalCount}`}
-            subtitle={t("pendingDiagnostics")}
+            value={`${verifiedCount} / ${totalCount}`}
+            subtitle={`${skillGaps.length} priority gaps to close`}
             icon={CheckCircle2}
             color="emerald"
             cascadeClass="cascade-2"
