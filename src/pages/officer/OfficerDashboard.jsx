@@ -130,214 +130,159 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* Officer Welcome Banner */}
-      <div className="bg-gradient-to-r from-white via-blue-50/40 to-amber-50/30 dark:from-slate-900 dark:via-slate-850 dark:to-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-6 shadow-sm relative overflow-hidden transition-all">
-        <div className="absolute top-0 right-0 w-80 h-full bg-gradient-to-l from-gov-sky/30 dark:from-sky-900/10 to-transparent pointer-events-none" />
-        
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 relative z-10">
-          <div>
+      {/* ========================================================================= */}
+      {/* 1. EXECUTIVE COMMAND DECK (Hero Intelligence Console)                      */}
+      {/* ========================================================================= */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-gov-navy to-slate-950 text-white border border-slate-700/80 shadow-xl p-5 sm:p-6 transition-all">
+        {/* Subtle Ambient Radial Glow */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-sky-500/15 via-indigo-500/10 to-transparent blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          {/* Left: Officer Cadre Identity & Status */}
+          <div className="space-y-3 max-w-xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider bg-orange-100 dark:bg-orange-950/80 px-2.5 py-0.5 rounded-full border border-orange-200 dark:border-orange-800/60 text-gov-saffron dark:text-orange-300">
-                {t("officialCadre")}
+              <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 text-[10px] font-extrabold uppercase tracking-wider font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>MoSPI SSS/ISS LIVE CADRE</span>
               </span>
-              
-              {/* Live Cadre Sync Beacon */}
-              <div className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+
+              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-[10px] font-bold">
+                <Trophy className="w-3 h-3 text-amber-400" />
+                <span>Level 4 Cadre • 840 XP</span>
+              </span>
+
+              <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-300 text-[10px] font-bold">
+                <Flame className="w-3 h-3 text-orange-400 fill-orange-400 animate-pulse" />
+                <span>7-Day Streak</span>
+              </span>
+            </div>
+
+            <div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
+                {getGreeting()}, {officerName}!
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 flex items-center space-x-2">
+                <span>{designation}</span>
+                <span className="text-slate-500">•</span>
+                <span>Target: <strong className="text-sky-300 font-bold">{careerGoal}</strong></span>
+              </p>
+            </div>
+
+            {/* Target Role Benchmark Scrubber */}
+            <div className="flex items-center space-x-2 pt-1 text-xs">
+              <span className="text-slate-400 text-[11px] font-medium hidden sm:inline">Benchmark:</span>
+              <div className="inline-flex items-center p-0.5 rounded-lg bg-slate-800/90 border border-slate-700/80 text-[11px] font-semibold">
+                <button
+                  onClick={() => {
+                    setSimulatedTargetBoost(0);
+                    showSuccess(isHi ? "मानक सांख्यिकी अधिकारी संवर्ग स्तर लागू" : "Standard Statistical Officer benchmark active", isHi ? "लक्ष्य अपडेट" : "Target Active");
+                  }}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    simulatedTargetBoost === 0
+                      ? "bg-sky-500 text-white font-bold shadow-xs"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  🎯 Current (75%)
+                </button>
+                <button
+                  onClick={() => {
+                    setSimulatedTargetBoost(10);
+                    showSuccess(isHi ? "वरिष्ठ विश्लेषक पदोन्नति बेंचमार्क (+10%) सक्रिय" : "Senior Analyst Target benchmark (+10%) simulated", isHi ? "लक्ष्य अनुकरण" : "Target Simulated");
+                  }}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    simulatedTargetBoost === 10
+                      ? "bg-sky-500 text-white font-bold shadow-xs"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  ⭐ Sr Analyst (85%)
+                </button>
+                <button
+                  onClick={() => {
+                    setSimulatedTargetBoost(20);
+                    showSuccess(isHi ? "निदेशक/प्रमुख सांख्यिकीविद बेंचमार्क (+20%) सक्रिय" : "Director Cadre benchmark (+20%) simulated", isHi ? "लक्ष्य अनुकरण" : "Target Simulated");
+                  }}
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    simulatedTargetBoost === 20
+                      ? "bg-sky-500 text-white font-bold shadow-xs"
+                      : "text-slate-300 hover:text-white"
+                  }`}
+                >
+                  🚀 Director (95%)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Circular Competency Radial Gauge & Diagnostic Action */}
+          <div className="flex items-center justify-between sm:justify-end space-x-5 border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6 shrink-0">
+            <div className="flex items-center space-x-3.5">
+              <div className="relative w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center shrink-0">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-slate-800"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-sky-400 transition-all duration-1000 ease-out"
+                    strokeDasharray={`${overallScore}, 100`}
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute flex flex-col items-center justify-center">
+                  <span className="text-base sm:text-lg font-black text-white font-mono leading-none">
+                    {overallScore}%
+                  </span>
+                  <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold mt-0.5">
+                    Score
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <span className="text-xs font-bold text-slate-200 block">Cadre Readiness</span>
+                <span className="text-[11px] text-emerald-400 font-semibold flex items-center space-x-1">
+                  <TrendingUp className="w-3 h-3" />
+                  <span>+12% this quarter</span>
                 </span>
-                <span>{isHi ? "MoSPI एनएसएसओ/एएसआई संवर्ग लाइव सिंक" : "MoSPI NSSO/ASI Cadre Live Sync"}</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">
+                  {assessedCount} of {totalCount} verified
+                </span>
               </div>
             </div>
 
-            <h1 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mt-2">
-              {getGreeting()}, {officerName}!
-            </h1>
-            <p className="text-xs md:text-sm text-slate-600 dark:text-slate-300 mt-1">
-              {t("designationLabel")}: <strong>{designation}</strong> | {t("careerTargetLabel")}: <strong className="text-gov-blue dark:text-sky-400">{careerGoal}</strong>
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-3">
             <button
               onClick={() => setCurrentTab("assessment")}
-              className="px-4 py-2.5 bg-gov-blue hover:bg-gov-navy text-white text-xs font-extrabold rounded-xl shadow-md hover:shadow-lg flex items-center space-x-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              className="px-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-sky-500/25 flex items-center space-x-2 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
             >
               <span>{t("takeDiagnosticBtn")}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Interactive Career Target Goal Scrubber (What-If Readiness Slider) */}
-        <div className="mt-5 pt-4 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="font-bold text-slate-700 dark:text-slate-200">
-              {isHi ? "संवर्ग लक्ष्य सिमुलेशन (What-If Target Benchmark):" : "Cadre Benchmark Simulation:"}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 bg-white dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs w-full sm:w-auto">
-            <button
-              onClick={() => {
-                setSimulatedTargetBoost(0);
-                showSuccess(isHi ? "मानक सांख्यिकी अधिकारी संवर्ग स्तर लागू" : "Standard Statistical Officer benchmark active", isHi ? "लक्ष्य अपडेट" : "Target Active");
-              }}
-              className={`flex-1 sm:flex-none px-2.5 py-1.5 sm:py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer text-center whitespace-nowrap ${
-                simulatedTargetBoost === 0
-                  ? "bg-gov-blue text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              }`}
-            >
-              🎯 {isHi ? "वर्तमान पद (75%)" : "Statistical Officer (75%)"}
-            </button>
-
-            <button
-              onClick={() => {
-                setSimulatedTargetBoost(10);
-                showSuccess(isHi ? "वरिष्ठ विश्लेषक पदोन्नति बेंचमार्क (+10%) सक्रिय" : "Senior Analyst Target benchmark (+10%) simulated", isHi ? "लक्ष्य अनुकरण" : "Target Simulated");
-              }}
-              className={`flex-1 sm:flex-none px-2.5 py-1.5 sm:py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer text-center whitespace-nowrap ${
-                simulatedTargetBoost === 10
-                  ? "bg-gov-blue text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              }`}
-            >
-              ⭐ {isHi ? "वरिष्ठ विश्लेषक (85%)" : "Senior Analyst (85%)"}
-            </button>
-
-            <button
-              onClick={() => {
-                setSimulatedTargetBoost(20);
-                showSuccess(isHi ? "निदेशक/प्रमुख सांख्यिकीविद बेंचमार्क (+20%) सक्रिय" : "Director Cadre benchmark (+20%) simulated", isHi ? "लक्ष्य अनुकरण" : "Target Simulated");
-              }}
-              className={`flex-1 sm:flex-none px-2.5 py-1.5 sm:py-1 rounded-lg font-bold text-[11px] transition-all cursor-pointer text-center whitespace-nowrap ${
-                simulatedTargetBoost === 20
-                  ? "bg-gov-blue text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              }`}
-            >
-              🚀 {isHi ? "निदेशक विशेषज्ञ (95%)" : "Director Cadre (95%)"}
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Gamified Mobile XP & Streak Strip (Exciting & Interactive) */}
-      <div className="bg-gradient-to-r from-gov-navy via-slate-900 to-gov-blue text-white rounded-2xl p-4 shadow-md border border-white/10 relative overflow-hidden">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 flex items-center justify-center text-white shadow-lg shrink-0">
-              <Trophy className="w-6 h-6 animate-bounce" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center space-x-1.5 flex-wrap">
-                <span className="text-xs font-black tracking-wide text-amber-300 uppercase truncate">
-                  {isHi ? "स्तर 4 अधिकारी" : "Level 4 Cadre Officer"}
-                </span>
-                <span className="px-1.5 py-0.2 rounded bg-white/20 text-[10px] font-bold text-sky-200 shrink-0">
-                  840 XP
-                </span>
-              </div>
-              <h2 className="text-xs sm:text-sm font-bold text-white mt-0.5 truncate">
-                {isHi ? "संवर्ग लक्ष्य तैयारी: 74% पूर्ण" : "Target Competency: 74% Ready"}
-              </h2>
-            </div>
-          </div>
-
-          {/* Daily Streak Pill */}
-          <div className="flex flex-col items-center justify-center px-3 py-1.5 rounded-xl bg-orange-500/20 border border-orange-400/40 text-orange-300 shrink-0">
-            <div className="flex items-center space-x-1">
-              <Flame className="w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" />
-              <span className="font-extrabold text-sm text-white">7</span>
-            </div>
-            <span className="text-[9px] font-semibold uppercase tracking-wider text-orange-200">
-              {isHi ? "दिन स्ट्रीक" : "Streak"}
-            </span>
-          </div>
-        </div>
-
-        {/* Level XP Progress Bar */}
-        <div className="mt-2.5">
-          <div className="flex justify-between text-[10px] text-slate-300 mb-1">
-            <span>{isHi ? "वरिष्ठ विश्लेषक संवर्ग स्तर की ओर" : "Towards Senior Analyst Promotion"}</span>
-            <span className="font-bold text-sky-300">160 XP to Lv 5</span>
-          </div>
-          <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-            <div
-              className="bg-gradient-to-r from-amber-400 via-orange-500 to-emerald-400 h-full rounded-full transition-all duration-500"
-              style={{ width: "74%" }}
-            />
-          </div>
-        </div>
-
-        {/* 1-Tap Quick Action Chips (Swipeable Horizontal Strip) */}
-        <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center space-x-2 overflow-x-auto no-scrollbar pb-0.5">
-          <button
-            onClick={() => setCurrentTab("flight-simulator")}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95 cursor-pointer ring-1 ring-white/30"
-          >
-            <Binary className="w-3.5 h-3.5 text-amber-300" />
-            <span>{isHi ? "🔬 फ्लाइट सिम्युलेटर (नया)" : "🔬 Flight Simulator (Live)"}</span>
-          </button>
-
-          <button
-            onClick={() => setCurrentTab("viva-voce")}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95 cursor-pointer ring-1 ring-white/30"
-          >
-            <Mic className="w-3.5 h-3.5 text-amber-300" />
-            <span>{isHi ? "🎙️ मौखिक बोर्ड परीक्षा" : "🎙️ AI Oral Viva-Voce"}</span>
-          </button>
-
-          <button
-            onClick={() => setShowIrtModal(true)}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
-          >
-            <BrainCircuit className="w-3.5 h-3.5 text-amber-300" />
-            <span>{isHi ? "मनोमितीय IRT क्षमता (θ)" : "2PL IRT Engine (θ = +1.84)"}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              if (onLaunchQuiz) onLaunchQuiz(null);
-              else setCurrentTab("practice-quiz");
-            }}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold shadow-sm shrink-0 active:scale-95 cursor-pointer"
-          >
-            <Zap className="w-3.5 h-3.5 fill-white" />
-            <span>{isHi ? "3-मिनट प्रश्नोत्तरी (+50 XP)" : "Quick 3-Min Quiz (+50 XP)"}</span>
-          </button>
-
-          <button
-            onClick={() => setCurrentTab("assessment")}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
-          >
-            <CheckCircle2 className="w-3.5 h-3.5 text-sky-300" />
-            <span>{isHi ? "दक्षता निदान (10 प्रश्न)" : "Diagnostic (10 Qs)"}</span>
-          </button>
-
-          <button
-            onClick={() => setCurrentTab("ai-assistant")}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold shrink-0 active:scale-95 cursor-pointer border border-white/20"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>{isHi ? "AI सलाहकार से पूछें" : "Ask AI Advisor"}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Flagship Innovation Spotlight: What sets StatSkill AI apart from any generic app */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      {/* ========================================================================= */}
+      {/* 2. FLAGSHIP CADRE SIMULATION DECK (3 Distinct High-Impact Cards)            */}
+      {/* ========================================================================= */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        {/* Card 1: Flight Simulator */}
         <div
           onClick={() => setCurrentTab("flight-simulator")}
-          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-900 via-gov-navy to-slate-900 text-white border border-blue-500/30 shadow-md hover:border-sky-400 transition-all cursor-pointer flex flex-col justify-between group"
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-blue-950 p-4 sm:p-5 border border-blue-500/30 hover:border-sky-400 shadow-md hover:shadow-sky-500/10 transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                Next-Gen Simulation
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                Data Forensics
               </span>
               <Binary className="w-5 h-5 text-sky-400 group-hover:scale-110 transition-transform" />
             </div>
@@ -346,24 +291,25 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             </h3>
             <p className="text-[11px] text-slate-300 leading-relaxed">
               {isHi
-                ? "केवल बहुविकल्पीय प्रश्न नहीं! वास्तविक NSSO, PLFS एवं DPDP 2023 माइक्रोडाटा में विसंगतियों और पीआईआई लीकेज की फोरेंसिक जांच करें।"
-                : "No mere MCQs! Audit live synthetic NSSO & PLFS microdata for sampling skew, fabrications, and DPDP Act 2023 PII breaches."}
+                ? "NSSO व PLFS माइक्रोडाटा में फर्जीवाड़ा, प्रतिचयन विषमता और DPDP 2023 गोपनीयता उल्लंघनों की लाइव फोरेंसिक जांच करें।"
+                : "Audit live synthetic NSSO & PLFS microdata for sampling skew, fabrications, and DPDP Act 2023 PII breaches."}
             </p>
           </div>
           <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-sky-300 font-bold">
-            <span>{isHi ? "सिमुलेटर लैब खोलें →" : "Launch Simulator Lab →"}</span>
+            <span>{isHi ? "सिमुलेटर लॉन्च करें →" : "Launch Simulator Lab →"}</span>
             <span className="text-[10px] text-slate-400 font-normal">NSSTA Sandbox</span>
           </div>
         </div>
 
+        {/* Card 2: AI Oral Viva-Voce */}
         <div
           onClick={() => setCurrentTab("viva-voce")}
-          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-950 text-white border border-indigo-500/30 shadow-md hover:border-indigo-400 transition-all cursor-pointer flex flex-col justify-between group"
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 p-4 sm:p-5 border border-indigo-500/30 hover:border-indigo-400 shadow-md hover:shadow-indigo-500/10 transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
-                Real-Time Voice AI
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                Voice AI Board
               </span>
               <Mic className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
             </div>
@@ -372,8 +318,8 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
             </h3>
             <p className="text-[11px] text-slate-300 leading-relaxed">
               {isHi
-                ? "सिविल सेवा साक्षात्कार परिदृश्य! एआई बोर्ड परीक्षक का प्रश्न सुनें, बोलकर उत्तर दें और बहु-आयामी विधिक व सांख्यिकीय स्कोर प्राप्त करें।"
-                : "UPSC/NSSTA Oral Board Simulation! Listen to audio prompts, speak your field strategy aloud, and receive real-time statutory & technical grading."}
+                ? "UPSC/NSSTA बोर्ड साक्षात्कार परिदृश्य: परीक्षक का प्रश्न सुनें, बोलकर उत्तर दें और रीयल-टाइम अंक प्राप्त करें।"
+                : "UPSC/NSSTA Oral Board Simulation: Listen to audio prompts, speak your field strategy, and get instant statutory grading."}
             </p>
           </div>
           <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-indigo-300 font-bold">
@@ -382,55 +328,30 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
           </div>
         </div>
 
+        {/* Card 3: Deep-Tech Architecture & Psychometrics */}
         <div
-          onClick={() => setShowIrtModal(true)}
-          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-900 text-white border border-emerald-500/30 shadow-md hover:border-emerald-400 transition-all cursor-pointer flex flex-col justify-between group"
+          onClick={() => setCurrentTab("engineering")}
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-emerald-950 p-4 sm:p-5 border border-emerald-500/30 hover:border-emerald-400 shadow-md hover:shadow-emerald-500/10 transition-all cursor-pointer flex flex-col justify-between"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                Psychometric Math
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                Applied Systems & Math
               </span>
-              <BrainCircuit className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <Terminal className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
             </div>
             <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
-              {isHi ? "2PL आइटम रिस्पांस थ्योरी (IRT) इंजन" : "2PL Item Response Theory (IRT) Engine"}
+              {isHi ? "डीप-टेक सिस्टम आर्किटेक्चर एवं आईआरटी" : "Deep-Tech Specs & 2PL IRT Engine"}
             </h3>
             <p className="text-[11px] text-slate-300 leading-relaxed">
               {isHi
-                ? "कच्चे प्रतिशत को त्यागें! अनुकूली गुप्त क्षमता (θ), वस्तु कठिनाई (b) और भेदभाव शक्ति (a) के वैज्ञानिक गणितीय मॉडल का निरीक्षण करें।"
-                : "Beyond crude percentages! Inspect latent cadre ability (θ = +1.84), item difficulty (b), and Fisher information curves."}
+                ? "मुख्य तकनीकी विनिर्देश: 2PL IRT क्षमता मॉडल (θ = +1.84), ऑफलाइन CRDT सिंक, 768-D वेक्टर्स एवं C4 इकोनॉमिक्स।"
+                : "Hard-core systems specs: 2PL IRT latent ability (θ = +1.84), offline CRDT sync, 768-D vector search & C4 unit economics."}
             </p>
           </div>
           <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-emerald-300 font-bold">
-            <span>{isHi ? "आईआरटी गणितीय विश्लेषण देखें →" : "Inspect IRT Math Model →"}</span>
-            <span className="text-[10px] text-slate-400 font-normal">Bayesian Scoring</span>
-          </div>
-        </div>
-
-        <div
-          onClick={() => setCurrentTab("engineering")}
-          className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-950 via-slate-900 to-slate-900 text-white border border-amber-500/40 shadow-md hover:border-amber-400 transition-all cursor-pointer flex flex-col justify-between group"
-        >
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
-                Core Tech & Architecture
-              </span>
-              <Terminal className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
-            </div>
-            <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
-              {isHi ? "सिस्टम आर्किटेक्चर एवं सीआरडीटी कॉकपिट" : "Deep-Tech Systems & CRDT Engine"}
-            </h3>
-            <p className="text-[11px] text-slate-300 leading-relaxed">
-              {isHi
-                ? "स्टार्टअप और मुख्य वास्तुकार विनिर्देश: लैम्पॉर्ट वेक्टर घड़ियां, 768-D कोसाइन वेक्टर्स, 10k मोंटे कार्लो और C4 यूनिट इकोनॉमिक्स।"
-                : "Hard-core distributed specs: Lamport vector clocks, 768-D cosine vectors, client 10k Monte Carlo & C4 economics."}
-            </p>
-          </div>
-          <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between text-[11px] text-amber-300 font-bold">
             <span>{isHi ? "सिस्टम कॉकपिट खोलें →" : "Open Systems Specs →"}</span>
-            <span className="text-[10px] text-slate-400 font-normal">C4 / Distributed</span>
+            <span className="text-[10px] text-slate-400 font-normal">C4 / CRDT / IRT</span>
           </div>
         </div>
       </div>
