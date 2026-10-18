@@ -36,8 +36,8 @@ export default function Header({ toggleMobileSidebar, setCurrentTab }) {
       </div>
 
       {/* Main navigation header */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 w-full">
-        <div className="flex items-center space-x-1.5 sm:space-x-3 min-w-0 shrink-0">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 w-full overflow-hidden">
+        <div className="flex items-center space-x-1.5 sm:space-x-3 min-w-0 flex-1">
           <button
             onClick={toggleMobileSidebar}
             className="md:hidden p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg focus:outline-none shrink-0 cursor-pointer"
@@ -50,7 +50,7 @@ export default function Header({ toggleMobileSidebar, setCurrentTab }) {
           <div className="flex items-center space-x-2 min-w-0">
             <AppLogo className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 shadow-md" />
             <div className="min-w-0">
-              <span className="font-extrabold text-sm sm:text-lg tracking-tight text-white whitespace-nowrap block">
+              <span className="font-extrabold text-sm sm:text-lg tracking-tight text-white whitespace-nowrap block truncate">
                 {t("appTitle", "StatSkill AI")}
               </span>
               <p className="text-[11px] text-slate-300 hidden md:block truncate max-w-xs lg:max-w-md">
@@ -61,22 +61,23 @@ export default function Header({ toggleMobileSidebar, setCurrentTab }) {
         </div>
 
         {/* User Info & Actions */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
+        <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
           {/* Deep-Tech Systems Specs Button */}
           {setCurrentTab && (
             <button
               onClick={() => setCurrentTab("engineering")}
-              className="px-2.5 py-1 bg-gradient-to-r from-indigo-900/90 to-slate-900 hover:from-indigo-800 hover:to-indigo-950 text-indigo-200 border border-indigo-400/50 rounded-lg text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer transition-all hover:scale-105 shrink-0"
+              className="px-2 sm:px-2.5 py-1 bg-gradient-to-r from-indigo-900/90 to-slate-900 hover:from-indigo-800 hover:to-indigo-950 text-indigo-200 border border-indigo-400/50 rounded-lg text-xs font-bold shadow-xs flex items-center space-x-1 sm:space-x-1.5 cursor-pointer transition-all hover:scale-105 shrink-0"
               title="Open Deep-Tech Systems Architecture & Applied Science Cockpit"
             >
-              <Terminal className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
-              <span className="hidden md:inline font-mono">⚡ Deep-Tech Specs</span>
-              <span className="md:hidden font-mono text-[10px]">⚡ ARCH</span>
+              <Terminal className="w-3.5 h-3.5 text-indigo-400 animate-pulse shrink-0" />
+              <span className="hidden xl:inline font-mono">⚡ Deep-Tech Specs</span>
+              <span className="hidden sm:inline xl:hidden font-mono text-[11px]">⚡ Specs</span>
+              <span className="sm:hidden font-mono text-[10px]">⚡</span>
             </button>
           )}
 
-          {/* PWA Install Button (Desktop & Tablet) */}
-          <div className="hidden sm:block">
+          {/* PWA Install Button (Desktop XL only) */}
+          <div className="hidden xl:block">
             <InstallAppButton variant="header" />
           </div>
 
@@ -89,7 +90,7 @@ export default function Header({ toggleMobileSidebar, setCurrentTab }) {
           {currentUser && (
             <div className="flex items-center space-x-2 sm:space-x-3">
               {/* Role badge */}
-              <div className="hidden lg:flex flex-col items-end">
+              <div className="hidden xl:flex flex-col items-end">
                 <span className="text-sm font-semibold text-white leading-tight truncate max-w-[140px]">
                   {isOfficer ? (officerProfile?.fullName || currentUser.displayName) : currentUser.displayName}
                 </span>
@@ -129,7 +130,7 @@ export default function Header({ toggleMobileSidebar, setCurrentTab }) {
               {isGoogleUser && (
                 <span
                   title="Authenticated via Google OAuth (Verified Identity)"
-                  className="hidden md:inline-flex items-center space-x-1 text-[10px] bg-white/10 hover:bg-white/15 border border-white/20 text-slate-200 px-2 py-0.5 rounded-full font-medium"
+                  className="hidden 2xl:inline-flex items-center space-x-1 text-[10px] bg-white/10 hover:bg-white/15 border border-white/20 text-slate-200 px-2 py-0.5 rounded-full font-medium shrink-0"
                 >
                   <svg className="w-3 h-3" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

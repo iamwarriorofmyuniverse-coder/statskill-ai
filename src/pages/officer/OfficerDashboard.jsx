@@ -153,9 +153,9 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         {/* Subtle Ambient Radial Glow */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-sky-500/15 via-indigo-500/10 to-transparent blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
           {/* Left: Officer Cadre Identity & Status */}
-          <div className="space-y-3 max-w-xl">
+          <div className="space-y-3 max-w-xl min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 text-[10px] font-extrabold uppercase tracking-wider font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
@@ -232,8 +232,8 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
           </div>
 
           {/* Right: Circular Competency Radial Gauge & Diagnostic Action */}
-          <div className="flex items-center justify-between sm:justify-end space-x-5 border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6 shrink-0">
-            <div className="flex items-center space-x-3.5">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between xl:justify-end gap-4 border-t xl:border-t-0 xl:border-l border-white/10 pt-4 xl:pt-0 xl:pl-6 min-w-0">
+            <div className="flex items-center space-x-3.5 min-w-0">
               <div className="relative w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center shrink-0">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                   <path
@@ -277,7 +277,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
 
             <button
               onClick={() => setCurrentTab("assessment")}
-              className="px-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-sky-500/25 flex items-center space-x-2 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+              className="px-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-black rounded-xl shadow-lg hover:shadow-sky-500/25 flex items-center space-x-2 transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0 whitespace-nowrap"
             >
               <span>{t("takeDiagnosticBtn")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -289,11 +289,11 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
       {/* ========================================================================= */}
       {/* 2. FLAGSHIP CADRE SIMULATION DECK (3 Distinct High-Impact Cards)            */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5">
         {/* Card 1: Flight Simulator */}
         <div
           onClick={() => setCurrentTab("flight-simulator")}
-          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-blue-950 p-4 sm:p-5 border border-blue-500/30 hover:border-sky-400 shadow-md hover:shadow-sky-500/10 transition-all cursor-pointer flex flex-col justify-between"
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-blue-950 p-4 sm:p-5 border border-blue-500/30 hover:border-sky-400 shadow-md hover:shadow-sky-500/10 transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -320,7 +320,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         {/* Card 2: AI Oral Viva-Voce */}
         <div
           onClick={() => setCurrentTab("viva-voce")}
-          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 p-4 sm:p-5 border border-indigo-500/30 hover:border-indigo-400 shadow-md hover:shadow-indigo-500/10 transition-all cursor-pointer flex flex-col justify-between"
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 p-4 sm:p-5 border border-indigo-500/30 hover:border-indigo-400 shadow-md hover:shadow-indigo-500/10 transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -347,7 +347,7 @@ export default function OfficerDashboard({ setCurrentTab, onLaunchQuiz }) {
         {/* Card 3: Deep-Tech Architecture & Psychometrics */}
         <div
           onClick={() => setCurrentTab("engineering")}
-          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-emerald-950 p-4 sm:p-5 border border-emerald-500/30 hover:border-emerald-400 shadow-md hover:shadow-emerald-500/10 transition-all cursor-pointer flex flex-col justify-between"
+          className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-emerald-950 p-4 sm:p-5 border border-emerald-500/30 hover:border-emerald-400 shadow-md hover:shadow-emerald-500/10 transition-all cursor-pointer flex flex-col justify-between min-w-0"
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
