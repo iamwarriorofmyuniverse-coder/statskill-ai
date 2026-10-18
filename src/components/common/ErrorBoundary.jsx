@@ -39,6 +39,11 @@ export default class ErrorBoundary extends React.Component {
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 An isolated interface exception was contained. Your session and progress data are securely preserved.
               </p>
+              {this.state.error && (
+                <div className="mt-2 p-2 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-mono text-red-600 dark:text-red-400 text-left overflow-x-auto max-h-24">
+                  {this.state.error.toString()}
+                </div>
+              )}
             </div>
             <div className="flex items-center justify-center gap-3 pt-2">
               <button

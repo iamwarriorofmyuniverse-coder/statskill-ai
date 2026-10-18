@@ -38,7 +38,8 @@ import {
   Mic,
   Globe2,
   FileCheck2,
-  Terminal
+  Terminal,
+  TrendingUp
 } from "lucide-react";
 import IrtAnalyticsModal from "../../components/officer/IrtAnalyticsModal.jsx";
 
